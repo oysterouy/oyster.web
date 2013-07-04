@@ -122,6 +122,8 @@ namespace oyster.web.codegenerator
             bool bgyhleft = false;
 
             int bgkhleft = bgkh;
+            bool canHtml = false;
+            bool bigyhleft = false;
 
             for (; i < code.Length; i++)
             {
@@ -233,7 +235,17 @@ namespace oyster.web.codegenerator
                     bgkhleft--;
                 }
 
-                if (bgkhleft < 0 || code[i] == '<')
+                if (code[i] == '"' && code[i - 1] != '\\')
+                {
+                    bigyhleft = !bigyhleft;
+                }
+
+                if (!bigyhleft && (code[i] == '\n' || code[i] == ';'))
+                    canHtml = true;
+                else
+                    canHtml = false;
+
+                if (bgkhleft < 0 || (code[i] == '<' && canHtml))
                 {
                     int len3 = i - ii;
                     if (len3 > 0)

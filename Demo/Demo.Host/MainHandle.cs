@@ -9,7 +9,12 @@ namespace Demo.Host
     {
         protected override void Init()
         {
-            oyster.web.TemplateFactory.SetFactory(new TemplateFactory());
+
+        }
+
+        protected override Type MapTemplate(HttpContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

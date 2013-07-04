@@ -8,7 +8,7 @@ namespace oyster.web
 {
     public interface ITemplate
     {
-        RequestInfo Request();
-        StringBuilder RanderTemplate(DTContainer container);
+        RequestInfo RequestTemplate();
+        StringBuilder RanderTemplate();
     }
 }

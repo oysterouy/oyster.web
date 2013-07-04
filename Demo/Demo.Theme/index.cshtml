@@ -19,7 +19,10 @@
         <!--page:20130812012234-logininfo-fawqdsdsdmwemwekqlwqw21dsd
             <div></div>
         -->
-        @(PageManager<Login>.ShowPage("subLoginPage"))
+        @{
+            var login = TemplateHelper.GetDataFromContext<RequestInfo>("Login");            
+        }
+        @login.Show()
     </div>
     <div>
     </div>
@@ -34,7 +37,7 @@
     var sss = s.Length + t;
 
     var d = Login.Request(0, 312, null).Load();
-
+    TemplateHelper.SetDataToContext("Login", d);
     return new RequestInfo<Index>
     {
     };

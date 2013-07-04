@@ -29,14 +29,14 @@ public static object[] Parameters(HttpContext context)
     var sss = s.Length + t;
 
     var d = Login.Request(0, 312, null).Load();
-
+    TemplateHelper.SetDataToContext("Login", d);
     return new RequestInfo<Index>
     {
     };
 
         }
 
-        public static StringBuilder Rander(DTContainer container)
+        public static StringBuilder Rander()
         {
             StringBuilder html = new StringBuilder();
     var tttt = 12;
@@ -60,7 +60,9 @@ public static object[] Parameters(HttpContext context)
             <div></div>
         -->
         ");
-            Echo(html, PageManager<Login>.ShowPage("subLoginPage"));
+            var login = TemplateHelper.GetDataFromContext<RequestInfo>("Login");            
+        
+            Echo(html, login.Show());
             Echo(html, @"
     </div>
     <div>
@@ -68,7 +70,7 @@ public static object[] Parameters(HttpContext context)
 </body>
 </html>
 ");
-            container.RanderResult=html;
+            //container.RanderResult=html;
             return html;
         }
 
@@ -78,9 +80,14 @@ public static object[] Parameters(HttpContext context)
             return html;
         }
 
-        StringBuilder ITemplate.RanderTemplate(DTContainer container)
+        StringBuilder ITemplate.RanderTemplate()
         {
-           return Rander(container);
+           return Rander();
+        }
+
+        RequestInfo ITemplate.RequestTemplate()
+        {
+            return Request();
         }
     }
 }

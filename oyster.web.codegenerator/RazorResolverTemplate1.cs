@@ -133,12 +133,12 @@ namespace " + NameSpace + @"
 " + paramsMethod + @"
 " + iloadMethod + @"
 " + initMethod + @"
-        public static StringBuilder Rander(DTContainer container)
+        public static StringBuilder Rander()
         {
             StringBuilder html = new StringBuilder();"
 + codeBody.ToString()
 + @"
-            container.RanderResult=html;
+            //container.RanderResult=html;
             return html;
         }
 
@@ -148,9 +148,14 @@ namespace " + NameSpace + @"
             return html;
         }
 
-        StringBuilder ITemplate.RanderTemplate(DTContainer container)
+        StringBuilder ITemplate.RanderTemplate()
         {
-           return Rander(container);
+           return Rander();
+        }
+
+        RequestInfo ITemplate.RequestTemplate()
+        {
+            return Request();
         }
     }
 }

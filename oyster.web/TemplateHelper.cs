@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using oyster.web;
+using System.Runtime.Remoting.Messaging;
 
 namespace oyster.web
 {
@@ -69,6 +70,16 @@ namespace oyster.web
         public static string Parameters(Func<HttpContext, object[]> func)
         {
             return "";
+        }
+
+        public static void SetDataToContext<T>(string key, T data)
+        {
+            CallContext.SetData(key, data);
+        }
+
+        public static T GetDataFromContext<T>(string key)
+        {
+            return (T)CallContext.GetData(key);
         }
     }
 }

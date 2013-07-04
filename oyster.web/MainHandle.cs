@@ -37,13 +37,13 @@ namespace oyster.web
             var t = TemplateFactory.GetTemplateInstance(templateType);
             var set = TemplateFactory.GetTemplateSetting(templateType);
 
-            var info = t.Request();
+            var html = t.RanderTemplate();
             if (set != null)
             {
-                set.Filter(FilterOnEnum.AfterRoute, context, t, null);
+                set.Filter(FilterOnEnum.AfterRoute, context, t, html);
             }
 
-
+            context.Response.Write(html.ToString());
         }
 
         #endregion

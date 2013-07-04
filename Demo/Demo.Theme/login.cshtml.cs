@@ -30,7 +30,7 @@ public static object[] Parameters(HttpContext c)
 
         }
 
-        public static StringBuilder Rander(DTContainer container)
+        public static StringBuilder Rander()
         {
             StringBuilder html = new StringBuilder();
             Echo(html, @"<div>
@@ -39,7 +39,7 @@ public static object[] Parameters(HttpContext c)
             Echo(html, @"</span>
 </div>
 ");
-            container.RanderResult=html;
+            //container.RanderResult=html;
             return html;
         }
 
@@ -49,9 +49,14 @@ public static object[] Parameters(HttpContext c)
             return html;
         }
 
-        StringBuilder ITemplate.RanderTemplate(DTContainer container)
+        StringBuilder ITemplate.RanderTemplate()
         {
-           return Rander(container);
+           return Rander();
+        }
+
+        RequestInfo ITemplate.RequestTemplate()
+        {
+            return Request();
         }
     }
 }

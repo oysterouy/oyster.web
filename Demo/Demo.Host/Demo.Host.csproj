@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="MainHandle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TemplateFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\oyster.web\oyster.web.csproj">

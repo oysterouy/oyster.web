@@ -51,7 +51,7 @@ namespace oyster.web
                             if (typeof(ISetting).IsAssignableFrom(tp))
                             {
                                 set = Activator.CreateInstance(tp) as ISetting;
-                                if (tt != null)
+                                if (set != null)
                                 {
                                     settingDic.Add(asmb, set);
                                 }
