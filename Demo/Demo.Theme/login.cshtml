@@ -1,0 +1,12 @@
+﻿@using demotheme
+@using oyster.web
+<div>
+    <span>姓名：张三</span> <span>年龄：@(Settings.aa + 1203)</span>
+</div>
+@oyster.web.TemplateHelper.Request((int i, double d, Index idx) =>
+{
+    var ii = i + d;
+    string stype = idx.GetType().FullName;
+    return new RequestInfo<Login>();
+})
+@oyster.web.TemplateHelper.Parameters((c) => { return null; })

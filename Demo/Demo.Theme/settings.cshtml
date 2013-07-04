@@ -1,0 +1,14 @@
+﻿@using oyster.web;
+@using demotheme;
+@TemplateHelper.Config((int i) => 6)
+@TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd")
+@TemplateHelper.Config((ISetting ii) => new demotheme.Settings())
+@TemplateHelper.Config((decimal aa) => 6.978879M)
+@TemplateHelper.Route((context) =>
+{
+    return new Index();
+})
+@TemplateHelper.Filter(FilterOnEnum.AfterRoute, (context, it, str) =>
+{
+    return true;
+});
