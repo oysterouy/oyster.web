@@ -20,7 +20,7 @@ namespace oyster.web
 
         public StringBuilder Show()
         {
-            return null;
+            return TemplateFactory.GetTemplateInstance(TemplateType).RanderTemplate();
         }
     }
     public class RequestInfo<T> : RequestInfo where T : ITemplate

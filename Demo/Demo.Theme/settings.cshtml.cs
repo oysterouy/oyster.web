@@ -33,7 +33,7 @@ namespace demotheme
             //******** filter setting *********//
 
             var ls0 = new List<Func<HttpContext, ITemplate, StringBuilder, bool>>();
-            filterDic.Add(FilterOnEnum.AfterRoute, ls0);
+            filterDic.Add(FilterOnEnum.BeforeRequest, ls0);
             ls0.Add( (context, it, str) =>
 {
     return true;

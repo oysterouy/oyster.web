@@ -12,7 +12,7 @@ namespace demotheme
     {
 public static object[] Parameters(HttpContext c)
         
-        { return null; }
+        { return new object[] { 1, 4.2, new Index() }; }
 
         public static RequestInfo Request(){
             var parms = Parameters(HttpContext.Current);
@@ -30,6 +30,13 @@ public static object[] Parameters(HttpContext c)
 
         }
 
+
+        public static void Load()
+        {
+             
+        }
+
+
         public static StringBuilder Rander()
         {
             StringBuilder html = new StringBuilder();
@@ -39,6 +46,7 @@ public static object[] Parameters(HttpContext c)
             Echo(html, @"</span>
 </div>
 ");
+            Echo(html, oyster.web.TemplateHelper.Load(() => { }));
             //container.RanderResult=html;
             return html;
         }
@@ -57,6 +65,11 @@ public static object[] Parameters(HttpContext c)
         RequestInfo ITemplate.RequestTemplate()
         {
             return Request();
+        }
+
+        void ITemplate.LoadTemplate()
+        {
+            Load();
         }
     }
 }

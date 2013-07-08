@@ -49,6 +49,7 @@
     <Compile Include="contract\data\RequestInfo.cs" />
     <Compile Include="contract\ISetting.cs" />
     <Compile Include="contract\ITemplate.cs" />
+    <Compile Include="HttpErrorFactory.cs" />
     <Compile Include="MainHandle.cs" />
     <Compile Include="TemplateFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

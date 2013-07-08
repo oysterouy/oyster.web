@@ -81,5 +81,10 @@ namespace oyster.web
         {
             return (T)CallContext.GetData(key);
         }
+
+        public static string Load(Action action)
+        {
+            return "";
+        }
     }
 }

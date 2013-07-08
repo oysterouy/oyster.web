@@ -21,29 +21,48 @@ namespace oyster.web
         protected abstract void Init();
         public void ProcessRequest(HttpContext context)
         {
-            context.Response.ClearHeaders();
-            context.Response.Clear();
-            context.Response.HeaderEncoding = Encoding.UTF8;
-
-
-            var templateType = MapTemplate(context);
-            if (templateType == null)
+            try
             {
-                //baseMap
+                context.Response.ClearHeaders();
+                context.Response.Clear();
+                context.Response.HeaderEncoding = Encoding.UTF8;
+
+
+                var templateType = MapTemplate(context);
+                if (templateType == null)
+                {
+                    //baseMap
+                }
+                if (templateType == null)
+                {
+                    HttpErrorFactory.Err404(context);
+                    return;
+                }
+                var t = TemplateFactory.GetTemplateInstance(templateType);
+                var set = TemplateFactory.GetTemplateSetting(templateType);
+
+                var reqInfo = t.RequestTemplate();
+                if (set != null)
+                {
+                    set.Filter(FilterOnEnum.BeforeRequest, context, t, null);
+                }
+                reqInfo.Load();
+                if (set != null)
+                {
+                    set.Filter(FilterOnEnum.BeforeLoad, context, t, null);
+                }
+                var html = reqInfo.Show();
+                if (set != null)
+                {
+                    set.Filter(FilterOnEnum.BeforeShow, context, t, html);
+                }
+                context.Response.Write(html.ToString());
             }
-            if (templateType == null)
-                throw new Exception("404");
-
-            var t = TemplateFactory.GetTemplateInstance(templateType);
-            var set = TemplateFactory.GetTemplateSetting(templateType);
-
-            var html = t.RanderTemplate();
-            if (set != null)
+            finally
             {
-                set.Filter(FilterOnEnum.AfterRoute, context, t, html);
+                context.Response.Flush();
+                context.Response.End();
             }
-
-            context.Response.Write(html.ToString());
         }
 
         #endregion

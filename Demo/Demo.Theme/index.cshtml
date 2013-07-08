@@ -30,15 +30,17 @@
 </html>
 @TemplateHelper.Parameters((context) =>
 {
-    return new object[4];
+    return new object[1];
 })
-@TemplateHelper.Request((string s, int t) =>
+@TemplateHelper.Request((string pageIdx) =>
 {
-    var sss = s.Length + t;
-
-    var d = Login.Request(0, 312, null).Load();
+    var d = Login.Request(0, 312, new Index()).Load();
     TemplateHelper.SetDataToContext("Login", d);
     return new RequestInfo<Index>
     {
     };
+})
+@TemplateHelper.Load(() =>
+{
+    int t = 5;
 })

@@ -8,7 +8,8 @@ namespace oyster.web
     public enum FilterOnEnum
     {
         BeforeRoute = 1,
-        AfterRoute = 2,
-        BeforeExport = 3,
+        BeforeRequest = 2,
+        BeforeLoad = 3,
+        BeforeShow = 4,
     }
 }

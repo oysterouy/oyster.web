@@ -9,4 +9,5 @@
     string stype = idx.GetType().FullName;
     return new RequestInfo<Login>();
 })
-@oyster.web.TemplateHelper.Parameters((c) => { return null; })
+@oyster.web.TemplateHelper.Parameters((c) => { return new object[] { 1, 4.2, new Index() }; })
+@oyster.web.TemplateHelper.Load(() => { })

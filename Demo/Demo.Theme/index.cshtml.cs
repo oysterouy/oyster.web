@@ -13,28 +13,35 @@ namespace demotheme
 public static object[] Parameters(HttpContext context)
         
         {
-    return new object[4];
+    return new object[1];
 }
 
         public static RequestInfo Request(){
             var parms = Parameters(HttpContext.Current);
-            return Request((string)parms[0],(int)parms[1]);
+            return Request((string)parms[0]);
         }      
 
 
 
-        public static RequestInfo Request(string s, int t)
+        public static RequestInfo Request(string pageIdx)
         {
             
-    var sss = s.Length + t;
-
-    var d = Login.Request(0, 312, null).Load();
+    var d = Login.Request(0, 312, new Index()).Load();
     TemplateHelper.SetDataToContext("Login", d);
     return new RequestInfo<Index>
     {
     };
 
         }
+
+
+        public static void Load()
+        {
+            
+    int t = 5;
+
+        }
+
 
         public static StringBuilder Rander()
         {
@@ -70,6 +77,10 @@ public static object[] Parameters(HttpContext context)
 </body>
 </html>
 ");
+            Echo(html, TemplateHelper.Load(() =>
+{
+    int t = 5;
+}));
             //container.RanderResult=html;
             return html;
         }
@@ -88,6 +99,11 @@ public static object[] Parameters(HttpContext context)
         RequestInfo ITemplate.RequestTemplate()
         {
             return Request();
+        }
+
+        void ITemplate.LoadTemplate()
+        {
+            Load();
         }
     }
 }

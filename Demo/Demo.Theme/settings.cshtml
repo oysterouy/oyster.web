@@ -8,7 +8,7 @@
 {
     return new Index();
 })
-@TemplateHelper.Filter(FilterOnEnum.AfterRoute, (context, it, str) =>
+@TemplateHelper.Filter(FilterOnEnum.BeforeRequest, (context, it, str) =>
 {
     return true;
 });

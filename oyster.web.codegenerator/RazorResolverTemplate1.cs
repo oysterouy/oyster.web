@@ -25,12 +25,14 @@ namespace oyster.web.codegenerator
 
         public string DoResolve()
         {
-            Regex regParameters = new Regex("TemplateHelper\\.Parameters\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\)", RegexOptions.Singleline);
+            Regex regParameters = new Regex("TemplateHelper\\.Parameters\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
 
-            Regex regInit = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\)", RegexOptions.Singleline);
+            Regex regRequest = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
+
+            Regex regLoad = new Regex("TemplateHelper\\.Load\\(\\(\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
-            string paramsMethod = null, initMethod = null, pstr = "";
+            string paramsMethod = null, reqMethod = null, loadMethod = null, pstr = "";
 
             var keyLs = r.OutCodeList.Keys.ToArray();
             foreach (var codeIdx in keyLs)
@@ -58,12 +60,12 @@ namespace oyster.web.codegenerator
                 }
                 else if (code.Contains("TemplateHelper.Request("))
                 {
-                    var m = regInit.Match(code);
+                    var m = regRequest.Match(code);
                     if (m.Success && m.Groups.Count > 1)
                     {
-                        if (initMethod == null)
+                        if (reqMethod == null)
                         {
-                            initMethod = string.Format(@"
+                            reqMethod = string.Format(@"
         public static RequestInfo Request({0})
         {1}
             {2}
@@ -82,8 +84,28 @@ namespace oyster.web.codegenerator
                         r.OutCodeList[codeIdx] = null;
                     }
                 }
+                else if (code.Contains("TemplateHelper.Load("))
+                {
+                    var m = regLoad.Match(code);
+                    if (m.Success && m.Groups.Count > 1)
+                    {
+                        if (loadMethod == null)
+                        {
+                            loadMethod = string.Format(@"
+        public static void Load()
+        {1}
+            {0}
+        {2}
+", new string[] { m.Groups[1].Value, "{", "}" });
+
+
+
+                        }
+                    }
+                }
             }
-            string iloadMethod = @"
+
+            string ireqMethod = @"
         public static RequestInfo Request(){
             var parms = Parameters(HttpContext.Current);
             return Request(" + pstr + @");
@@ -131,8 +153,10 @@ namespace " + NameSpace + @"
     public class " + ClassName + @" : ITemplate
     {
 " + paramsMethod + @"
-" + iloadMethod + @"
-" + initMethod + @"
+" + ireqMethod + @"
+" + reqMethod + @"
+" + loadMethod + @"
+
         public static StringBuilder Rander()
         {
             StringBuilder html = new StringBuilder();"
@@ -156,6 +180,11 @@ namespace " + NameSpace + @"
         RequestInfo ITemplate.RequestTemplate()
         {
             return Request();
+        }
+
+        void ITemplate.LoadTemplate()
+        {
+            Load();
         }
     }
 }
