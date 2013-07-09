@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Text;
+using System.Collections.Generic;
 
 namespace oyster.web
 {
@@ -66,7 +67,27 @@ namespace oyster.web
         }
 
         #endregion
+        static Dictionary<string, Type> dicTemplates = new Dictionary<string, Type>();
+        protected void AddTemplate(Type tempType)
+        {
+            string[] names = tempType.FullName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (names.Length > 1)
+            {
+                string nm = "/" + string.Join("/", names, 1, names.Length - 1);
+                dicTemplates.Add(nm.ToLower(), tempType);
+            }
+        }
 
-        protected abstract Type MapTemplate(HttpContext context);
+        protected virtual Type MapTemplate(HttpContext context)
+        {
+            string path = context.Request.Path.ToLower().Trim();
+            path = path.EndsWith("/") ? path + "index" : path;
+            Type tp = null;
+            if (!dicTemplates.TryGetValue(path, out tp))
+            {
+
+            }
+            return tp;
+        }
     }
 }
