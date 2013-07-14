@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Demo\Demo.Host\sites\libs\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDomainDTO.cs" />
     <Compile Include="contract\data\CacheTypeEnum.cs" />
     <Compile Include="contract\data\DTContainer.cs" />
     <Compile Include="contract\data\FilterOnEnum.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="TemplateFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateHelper.cs" />
+    <Compile Include="TemplateApplication.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
