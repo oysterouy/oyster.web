@@ -16,34 +16,46 @@ public static object[] Parameters(HttpContext context)
     return new object[1];
 }
 
-        public static RequestInfo Request(){
-            var parms = Parameters(HttpContext.Current);
-            return Request((string)parms[0]);
+        Request ITemplate.Init(HttpContext context)
+        {
+            return Init(context);
+        }
+
+        public static Request Init(HttpContext context){
+            var parms = Parameters(context);
+            return Init((string)parms[0]);
         }      
 
-
-
-        public static RequestInfo Request(string pageIdx)
+        public static Request Init(string pageIdx)
         {
             
-    var d = Login.Request(0, 312, new Index()).Load();
-    TemplateHelper.SetDataToContext("Login", d);
-    return new RequestInfo<Index>
+    //var d = Login.Request( 0, 312, new Index()).Load();
+    //TemplateHelper.SetDataToContext("Login", d);
+    return new oyster.web.Request
     {
+        Head = new oyster.web.RequestHead
+        {
+            CacheKey = "",
+        },
+        Body = new { A = 1, B = 3 }
     };
 
         }
+        Response ITemplate.Request(Request request)
+        {
+            return Request(request);
+        }
 
-
-        public static void Load()
+        public static Response Request(Request request)
         {
             
     int t = 5;
+    return new oyster.web.Response { Model = new { a1 = 1, b = "" } };
 
         }
 
 
-        public static StringBuilder Rander()
+        public static StringBuilder Rander(dynamic Model)
         {
             StringBuilder html = new StringBuilder();
     var tttt = 12;
@@ -57,7 +69,7 @@ public static object[] Parameters(HttpContext context)
 </head>
 <body>
     ");
-        var ttt = Settings.i + 1 + tttt;
+        var ttt = Settings.i + 1 + tttt + Model.Index;
     
             Echo(html, @"
     <h1>
@@ -66,23 +78,18 @@ public static object[] Parameters(HttpContext context)
         <!--page:20130812012234-logininfo-fawqdsdsdmwemwekqlwqw21dsd
             <div></div>
         -->
-        ");
-            var login = TemplateHelper.GetDataFromContext<RequestInfo>("Login");            
-        
-            Echo(html, login.Show());
-            Echo(html, @"
     </div>
     <div>
     </div>
 </body>
 </html>
 ");
-            Echo(html, TemplateHelper.Load(() =>
-{
-    int t = 5;
-}));
-            //container.RanderResult=html;
             return html;
+        }
+        
+        StringBuilder ITemplate.Rander(dynamic Model)
+        {
+            return Rander(Model);
         }
 
         internal  static  StringBuilder Echo(StringBuilder html, object p)
@@ -91,19 +98,6 @@ public static object[] Parameters(HttpContext context)
             return html;
         }
 
-        StringBuilder ITemplate.RanderTemplate()
-        {
-           return Rander();
-        }
-
-        RequestInfo ITemplate.RequestTemplate()
-        {
-            return Request();
-        }
-
-        void ITemplate.LoadTemplate()
-        {
-            Load();
-        }
+        
     }
 }

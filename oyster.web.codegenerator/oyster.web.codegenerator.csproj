@@ -50,7 +50,6 @@
     <Compile Include="RazorResolver.cs" />
     <Compile Include="RazorResolverSettings.cs" />
     <Compile Include="RazorResolverTemplate.cs" />
-    <Compile Include="RazorResolverTemplate1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

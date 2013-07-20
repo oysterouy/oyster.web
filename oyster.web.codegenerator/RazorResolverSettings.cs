@@ -29,7 +29,7 @@ namespace oyster.web.codegenerator
 
             Regex regRoute = new Regex("TemplateHelper\\.Route\\((.*)\\)", RegexOptions.Singleline);
 
-            Regex regFilter = new Regex("TemplateHelper\\.Filter\\(([^,]+),(.*)\\)", RegexOptions.Singleline);
+            Regex regFilter = new Regex("TemplateHelper\\.Filter(^[\\(])+\\s*\\((.*)\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
 
@@ -56,7 +56,7 @@ namespace oyster.web.codegenerator
                         routeCodeList.Add(m.Groups[1].Value);
                     }
                 }
-                else if (code.Contains("TemplateHelper.Filter("))
+                else if (code.Contains("TemplateHelper.Filter"))
                 {
                     var m = regFilter.Match(code);
                     if (m.Success && m.Groups.Count > 2)
@@ -97,14 +97,9 @@ namespace oyster.web.codegenerator
             foreach (string fon in filterCodeDic.Keys)
             {
                 var ls = filterCodeDic[fon];
-                string lsName = "ls" + i++;
-                addcodeFilter.AppendFormat(@"
-            var " + lsName + @" = new List<Func<HttpContext, ITemplate, StringBuilder, bool>>();
-            filterDic.Add({0}, " + lsName + @");
-", fon);
                 foreach (var f in ls)
                 {
-                    addcodeFilter.AppendFormat("            " + lsName + ".Add({0});\r\n", f);
+                    addcodeFilter.AppendFormat("            filter{0}.Add({0});\r\n", fon, f);
                 }
             }
 
@@ -118,11 +113,16 @@ namespace " + NameSpace + @"
     {
 " + codeFields.ToString() +
   @"
+        
         static readonly List<Func<HttpContext, ITemplate>> routes = new List<Func<HttpContext, ITemplate>>();
 
-        static readonly Dictionary<FilterOnEnum,
-            List<Func<HttpContext, ITemplate, StringBuilder, bool>>> filterDic =
-            new Dictionary<FilterOnEnum, List<Func<HttpContext, ITemplate, StringBuilder, bool>>>();
+        static readonly List<Func<HttpContext,bool>> filterBeforeRoute = new List<Func<HttpContext,bool>>();
+
+        static readonly List<Func<HttpContext,ITemplate,Request,bool>> filterBeforeRequest = new  List<Func<HttpContext,ITemplate,Request,bool>>();
+
+        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterBeforeRander = new  List<Func<HttpContext,ITemplate,Request,Response,bool>>();
+
+        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterAfterRander = new List<Func<HttpContext,ITemplate,Request,Response,bool>>();
 
         static Settings()
         {
@@ -133,6 +133,7 @@ namespace " + NameSpace + @"
 " + addcodeFilter + @"
         }
 
+        int ISetting.LoadingTimeout{get{ return _loadingTimeout;}}
         ITemplate ISetting.Route(HttpContext context)
         {
             foreach (var rt in routes)
@@ -144,16 +145,42 @@ namespace " + NameSpace + @"
             return null;
         }
 
-        bool ISetting.Filter(FilterOnEnum fon, HttpContext context, ITemplate it, StringBuilder str)
+        bool ISetting.BeforeRouteFilter(HttpContext context)
         {
-            List<Func<HttpContext, ITemplate, StringBuilder, bool>> ls = null;
-            if (filterDic.TryGetValue(fon, out ls))
+            foreach (var filter in filterBeforeRoute)
             {
-                foreach (var f in ls)
-                {
-                    if (!f(context, it, str))
-                        return false;
-                }
+                if (!filter(context))
+                    return false;
+            }
+            return true;
+        }
+
+        bool ISetting.BeforeRequestFilter(HttpContext context, ITemplate template, Request request)
+        {
+            foreach (var filter in filterBeforeRequest)
+            {
+                if (!filter(context, template, request))
+                    return false;
+            }
+            return true;
+        }
+
+        bool ISetting.BeforeRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        {
+            foreach (var filter in filterBeforeRander)
+            {
+                if (!filter(context, template, request, response))
+                    return false;
+            }
+            return true;
+        }
+
+        bool ISetting.AfterRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        {
+            foreach (var filter in filterBeforeRander)
+            {
+                if (!filter(context, template, request, response))
+                    return false;
             }
             return true;
         }

@@ -5,10 +5,8 @@ using System.Text;
 
 namespace oyster.web
 {
-    public enum CacheTypeEnum
+    [Serializable]
+    public class ResponseHead
     {
-        BeforeRoute = 1,
-        AfterRoute = 2,
-        BeforeExport = 3,
     }
 }

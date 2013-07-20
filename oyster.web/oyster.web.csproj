@@ -43,19 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDomainDTO.cs" />
-    <Compile Include="contract\data\CacheTypeEnum.cs" />
-    <Compile Include="contract\data\DTContainer.cs" />
-    <Compile Include="contract\data\FilterOnEnum.cs" />
-    <Compile Include="contract\data\RequestInfo.cs" />
+    <Compile Include="template\FilterOnEnum.cs" />
     <Compile Include="contract\ISetting.cs" />
     <Compile Include="contract\ITemplate.cs" />
-    <Compile Include="HttpErrorFactory.cs" />
-    <Compile Include="MainHandle.cs" />
-    <Compile Include="TemplateFactory.cs" />
+    <Compile Include="contract\Request.cs" />
+    <Compile Include="contract\RequestHead.cs" />
+    <Compile Include="contract\Response.cs" />
+    <Compile Include="contract\ResponseHead.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TemplateHelper.cs" />
-    <Compile Include="TemplateApplication.cs" />
+    <Compile Include="template\TemplateHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

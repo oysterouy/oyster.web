@@ -20,7 +20,7 @@ namespace oyster.web.codegenerator
             }
             else
             {
-                var rt = new RazorResolverTemplate1(templateCode, filePathWithoutExt);
+                var rt = new RazorResolverTemplate(templateCode, filePathWithoutExt);
                 return rt.DoResolve();
             }
         }

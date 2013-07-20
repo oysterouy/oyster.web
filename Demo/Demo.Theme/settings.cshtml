@@ -1,5 +1,6 @@
 ﻿@using oyster.web;
 @using demotheme;
+@TemplateHelper.Config((int _loadingTimeout) => 300)
 @TemplateHelper.Config((int i) => 6)
 @TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd")
 @TemplateHelper.Config((ISetting ii) => new demotheme.Settings())
@@ -8,7 +9,19 @@
 {
     return new Index();
 })
-@TemplateHelper.Filter(FilterOnEnum.BeforeRequest, (context, it, str) =>
+@TemplateHelper.FilterBeforeRoute((context) =>
 {
     return true;
-});
+})
+@TemplateHelper.FilterBeforeRequest((context, itemp, request) =>
+{
+    return true;
+})
+@TemplateHelper.FilterBeforeRander((context, itemp, request, resp) =>
+{
+    return true;
+})
+@TemplateHelper.FilterAfterRander((context, itemp, request, resp) =>
+{
+    return true;
+})

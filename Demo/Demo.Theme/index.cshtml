@@ -1,5 +1,6 @@
 ﻿@using demotheme
 @using oyster.web
+@{dynamic Model = null;}
 @{
     var tttt = 12;
 }
@@ -11,7 +12,7 @@
 </head>
 <body>
     @{
-        var ttt = Settings.i + 1 + tttt;
+        var ttt = Settings.i + 1 + tttt + Model.Index;
     }
     <h1>
         Hello world~</h1>
@@ -19,10 +20,6 @@
         <!--page:20130812012234-logininfo-fawqdsdsdmwemwekqlwqw21dsd
             <div></div>
         -->
-        @{
-            var login = TemplateHelper.GetDataFromContext<RequestInfo>("Login");            
-        }
-        @login.Show()
     </div>
     <div>
     </div>
@@ -32,15 +29,21 @@
 {
     return new object[1];
 })
-@TemplateHelper.Request((string pageIdx) =>
+@TemplateHelper.Init((string pageIdx) =>
 {
-    var d = Login.Request(0, 312, new Index()).Load();
-    TemplateHelper.SetDataToContext("Login", d);
-    return new RequestInfo<Index>
+    //var d = Login.Request( 0, 312, new Index()).Load();
+    //TemplateHelper.SetDataToContext("Login", d);
+    return new oyster.web.Request
     {
+        Head = new oyster.web.RequestHead
+        {
+            CacheKey = "",
+        },
+        Body = new { A = 1, B = 3 }
     };
 })
-@TemplateHelper.Load(() =>
+@TemplateHelper.Request((request) =>
 {
     int t = 5;
+    return new oyster.web.Response { Model = new { a1 = 1, b = "" } };
 })

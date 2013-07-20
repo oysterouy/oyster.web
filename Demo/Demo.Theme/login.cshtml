@@ -1,13 +1,14 @@
 ﻿@using demotheme
 @using oyster.web
+@using oyster.web.contract
 <div>
     <span>姓名：张三</span> <span>年龄：@(Settings.aa + 1203)</span>
 </div>
-@oyster.web.TemplateHelper.Request((int i, double d, Index idx) =>
+@oyster.web.TemplateHelper.Init((int i, double d, Index idx) =>
 {
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return new RequestInfo<Login>();
+    return null;
 })
 @oyster.web.TemplateHelper.Parameters((c) => { return new object[] { 1, 4.2, new Index() }; })
-@oyster.web.TemplateHelper.Load(() => { })
+@oyster.web.TemplateHelper.Request((req) => { return null; })

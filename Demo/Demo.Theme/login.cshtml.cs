@@ -14,30 +14,36 @@ public static object[] Parameters(HttpContext c)
         
         { return new object[] { 1, 4.2, new Index() }; }
 
-        public static RequestInfo Request(){
-            var parms = Parameters(HttpContext.Current);
-            return Request((int)parms[0],(double)parms[1],(Index)parms[2]);
+        Request ITemplate.Init(HttpContext context)
+        {
+            return Init(context);
+        }
+
+        public static Request Init(HttpContext context){
+            var parms = Parameters(context);
+            return Init((int)parms[0],(double)parms[1],(Index)parms[2]);
         }      
 
-
-
-        public static RequestInfo Request(int i, double d, Index idx)
+        public static Request Init(int i, double d, Index idx)
         {
             
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return new RequestInfo<Login>();
+    return null;
 
         }
-
-
-        public static void Load()
+        Response ITemplate.Request(Request request)
         {
-             
+            return Request(request);
+        }
+
+        public static Response Request(Request req)
+        {
+             return null; 
         }
 
 
-        public static StringBuilder Rander()
+        public static StringBuilder Rander(dynamic Model)
         {
             StringBuilder html = new StringBuilder();
             Echo(html, @"<div>
@@ -46,9 +52,12 @@ public static object[] Parameters(HttpContext c)
             Echo(html, @"</span>
 </div>
 ");
-            Echo(html, oyster.web.TemplateHelper.Load(() => { }));
-            //container.RanderResult=html;
             return html;
+        }
+        
+        StringBuilder ITemplate.Rander(dynamic Model)
+        {
+            return Rander(Model);
         }
 
         internal  static  StringBuilder Echo(StringBuilder html, object p)
@@ -57,19 +66,6 @@ public static object[] Parameters(HttpContext c)
             return html;
         }
 
-        StringBuilder ITemplate.RanderTemplate()
-        {
-           return Rander();
-        }
-
-        RequestInfo ITemplate.RequestTemplate()
-        {
-            return Request();
-        }
-
-        void ITemplate.LoadTemplate()
-        {
-            Load();
-        }
+        
     }
 }
