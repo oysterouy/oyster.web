@@ -32,7 +32,13 @@ namespace demotheme
             //******** route setting *********//
             routes.Add((context) =>
 {
-    return new Index();
+    string path = context.Request.Path.ToLower();
+    path = path == "/" ? "/index" : path;
+    if (path.Equals("/index"))
+        return new Index();
+    if (path.Equals("/login"))
+        return new Index();
+    return null;
 });
 
 

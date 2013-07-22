@@ -8,7 +8,7 @@
 {
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return null;
+    return new Request<Login>();
 })
 @oyster.web.TemplateHelper.Parameters((c) => { return new object[] { 1, 4.2, new Index() }; })
-@oyster.web.TemplateHelper.Request((req) => { return null; })
+@oyster.web.TemplateHelper.Request((req, resp) => { })

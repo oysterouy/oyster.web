@@ -26,7 +26,7 @@ namespace oyster.web
             return "";
         }
 
-        public static string Request(Func<Request, Response> func)
+        public static string Request(Action<Request, Response> func)
         {
             return "";
         }

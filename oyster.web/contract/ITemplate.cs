@@ -10,7 +10,7 @@ namespace oyster.web
     public interface ITemplate
     {
         Request Init(HttpContext context);
-        Response Request(Request request);
+        void Request(Request request, Response response);
         StringBuilder Rander(dynamic Model);
     }
 }

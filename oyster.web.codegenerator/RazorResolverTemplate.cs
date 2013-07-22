@@ -8,9 +8,11 @@ namespace oyster.web.codegenerator
 {
     class RazorResolverTemplate : IResolve
     {
-        public RazorResolverTemplate(string codeText, string classFullName)
+        public RazorResolverTemplate(string codeText, string classFullName, string filePath)
         {
             _codeText = codeText;
+            _fileFullPath = filePath;
+
             string nameSpace = System.IO.Path.GetFileNameWithoutExtension(classFullName);
             string className = System.IO.Path.GetExtension(classFullName);
             className = className.StartsWith(".") ? className.Substring(1) : className;
@@ -20,6 +22,7 @@ namespace oyster.web.codegenerator
             ClassName = className;
         }
         string _codeText;
+        string _fileFullPath;
         string NameSpace { get; set; }
         string ClassName { get; set; }
 
@@ -87,12 +90,18 @@ namespace oyster.web.codegenerator
                     {
                         if (loadMethod == null)
                         {
+                            string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (ps.Length < 2)
+                            {
+                                Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
+                                Environment.Exit(1);
+                            }
                             loadMethod = string.Format(@"
-        public static Response Request(Request {0})
-        {2}
-            {1}
+        public static void Request(Request {0},Response {1})
         {3}
-", new string[] { m.Groups[1].Value, m.Groups[2].Value, "{", "}" });
+            {2}
+        {4}
+", new string[] { ps[0], ps[1], m.Groups[2].Value, "{", "}" });
 
 
 
@@ -159,9 +168,9 @@ namespace " + NameSpace + @"
         }
 "
   + ireqMethod + reqMethod + @"
-        Response ITemplate.Request(Request request)
+        void ITemplate.Request(Request request,Response response)
         {
-            return Request(request);
+            Request(request,response);
         }
 " + loadMethod + @"
 

@@ -22,7 +22,7 @@ namespace Demo.Host
 
         ISetting GetAppHost(HttpContext webContext)
         {
-            return null;
+            return new demotheme.Settings();
         }
         public void ProcessRequest(HttpContext context)
         {
@@ -32,6 +32,9 @@ namespace Demo.Host
             if (host.BeforeRouteFilter(context))
             {
                 var temp = host.Route(context);
+                if (temp == null)
+                    goto status404;
+
                 if (host.BeforeRouteFilter(context))
                 {
                     req = temp.Init(context);
@@ -40,7 +43,7 @@ namespace Demo.Host
                         resp = req.Execute();
                         if (host.BeforeRanderFilter(context, temp, req, resp))
                         {
-                            resp.Waiting(host.LoadingTimeout);
+                            resp.Waiting();
                             resp.Body = temp.Rander(resp.Model);
                             host.AfterRanderFilter(context, temp, req, resp);
                         }
@@ -49,6 +52,14 @@ namespace Demo.Host
             }
 
             context.Response.Write(resp.Body);
+
+            return;
+
+        status404:
+            context.Response.StatusCode = 404;
+            context.Response.Write("Page no found!");
+            return;
+            ;
         }
 
         #endregion

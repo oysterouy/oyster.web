@@ -8,9 +8,11 @@ namespace oyster.web.codegenerator
 {
     class RazorResolverSettings : IResolve
     {
-        public RazorResolverSettings(string codeText, string classFullName)
+        public RazorResolverSettings(string codeText, string classFullName, string filePath)
         {
             _codeText = codeText;
+            _fileFullPath = filePath;
+
             string nameSpace = System.IO.Path.GetFileNameWithoutExtension(classFullName);
             string className = System.IO.Path.GetExtension(classFullName);
             className = className.StartsWith(".") ? className.Substring(1) : className;
@@ -20,6 +22,7 @@ namespace oyster.web.codegenerator
             ClassName = className;
         }
         string _codeText;
+        string _fileFullPath;
         string NameSpace { get; set; }
         string ClassName { get; set; }
 
@@ -93,7 +96,6 @@ namespace oyster.web.codegenerator
             }
 
             StringBuilder addcodeFilter = new StringBuilder();
-            int i = 0;
             foreach (string fon in filterCodeDic.Keys)
             {
                 var ls = filterCodeDic[fon];

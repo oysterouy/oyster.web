@@ -29,28 +29,27 @@ public static object[] Parameters(HttpContext context)
         public static Request Init(string pageIdx)
         {
             
-    //var d = Login.Request( 0, 312, new Index()).Load();
-    //TemplateHelper.SetDataToContext("Login", d);
-    return new oyster.web.Request
+    var resp = Login.Init(1, 23, new Index()).Execute();
+    return new oyster.web.Request<Index>
     {
         Head = new oyster.web.RequestHead
         {
             CacheKey = "",
         },
-        Body = new { A = 1, B = 3 }
+        Body = new { A = 1, B = 3, login = resp }
     };
 
         }
-        Response ITemplate.Request(Request request)
+        void ITemplate.Request(Request request,Response response)
         {
-            return Request(request);
+            Request(request,response);
         }
 
-        public static Response Request(Request request)
+        public static void Request(Request request,Response  response)
         {
             
     int t = 5;
-    return new oyster.web.Response { Model = new { a1 = 1, b = "" } };
+    response.Model = new { Index = request.Body.A + request.Body.B * 13, login = request.Body.login.Rander() };
 
         }
 
@@ -75,9 +74,10 @@ public static object[] Parameters(HttpContext context)
     <h1>
         Hello world~</h1>
     <div>
-        <!--page:20130812012234-logininfo-fawqdsdsdmwemwekqlwqw21dsd
-            <div></div>
-        -->
+        ");
+            Echo(html, Model.login.Body
+);
+            Echo(html, @"
     </div>
     <div>
     </div>

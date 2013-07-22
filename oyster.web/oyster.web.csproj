@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="template\FilterOnEnum.cs" />
     <Compile Include="contract\ISetting.cs" />
     <Compile Include="contract\ITemplate.cs" />
     <Compile Include="contract\Request.cs" />
@@ -52,6 +51,7 @@
     <Compile Include="contract\ResponseHead.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="template\TemplateHelper.cs" />
+    <Compile Include="template\TemplateManager.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

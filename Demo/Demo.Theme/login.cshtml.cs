@@ -29,17 +29,17 @@ public static object[] Parameters(HttpContext c)
             
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return null;
+    return new Request<Login>();
 
         }
-        Response ITemplate.Request(Request request)
+        void ITemplate.Request(Request request,Response response)
         {
-            return Request(request);
+            Request(request,response);
         }
 
-        public static Response Request(Request req)
+        public static void Request(Request req,Response  resp)
         {
-             return null; 
+             
         }
 
 
