@@ -10,7 +10,7 @@ namespace oyster.web
 {
     public abstract class HostBase
     {
-        public virtual Response DoRequest(RequestHead header)
+        public virtual ResponseInfo DoRequest(RequestHead header)
         {
             Request request = new Request { Head = header };
             Response response = null;
@@ -41,7 +41,8 @@ namespace oyster.web
             }
 
         outmethod:
-            return response;
+
+            return new ResponseInfo { Header = response.Head, Body = response.Body };
         }
         public abstract ITemplate Route(Request request);
         public abstract bool BeforeRouteFilter(Request request);

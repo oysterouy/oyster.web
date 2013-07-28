@@ -8,19 +8,29 @@ namespace demotheme
     using System.Text;
     using System.Web;
 
-    public class Login : ITemplate
+    public class _layout : ITemplate
     {
         static Dictionary<string, List<string>> htmlBlockPool = new Dictionary<string, List<string>>();
         static Dictionary<string, Action<StringBuilder>> sectionBlockPool = new Dictionary<string, Action<StringBuilder>>();
         static Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>> childTemplates = new Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>>();
 
-        static Login()
+        static _layout()
         {
-            
+            sectionBlockPool.Add("Body",(html)=>{
+            Echo(html, @"<div>
+                        默认Body!!!</div>
+               ");});
+sectionBlockPool.Add("Foot",(html)=>{
+            Echo(html, @"<p>
+                        我是默认脚</p>
+               ");});
+
         }
-public static object[] Parameters(Request c)
+public static object[] Parameters(Request req)
         
-        { return new object[] { 1, 4.2, new Index() }; }
+        {
+    return new object[] { };
+}
 
         dynamic ITemplate.Init(Request request)
         {
@@ -29,15 +39,13 @@ public static object[] Parameters(Request c)
 
         public static dynamic Init(Request request){
             var parms = Parameters(request);
-            return Init((int)parms[0],(double)parms[1],(Index)parms[2]);
+            return Init((long)parms[0],(string)parms[1]);
         }      
 
-        public static dynamic Init(int i, double d, Index idx)
+        public static dynamic Init(long userId, string name)
         {
             
-    var ii = i + d;
-    string stype = idx.GetType().FullName;
-    return new { Type = stype };
+    return null;
 
         }
         void ITemplate.Request(Request request,Response response)
@@ -47,18 +55,49 @@ public static object[] Parameters(Request c)
 
         public static void Request(Request req,Response  resp)
         {
-             
+            
+    //req.Block<Login>(("AAAAAAAAAAAAAAAAAAAA")=>{
+    //return null;
+    //});
+
         }
 
 
         public static StringBuilder Rander(dynamic Model)
         {
             StringBuilder html = new StringBuilder();
+            Echo(html, @"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+<html xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>
+        我是布局页面的标题</h1>
+    <div>
+        ");
+            var t = 0;
+            t += 10;
+            
             Echo(html, @"<div>
-    <span>姓名：张三</span> <span>年龄：");
-            Echo(html, Settings.aa + 1203);
-            Echo(html, @"</span>
-</div>
+                <h2>
+                    Body开始了</h2>
+                ");
+            Echo(html, @"
+            </div>
+            <div>
+                <h2>
+                    Foot 开始</h2>
+                ");
+            Echo(html, @"
+            </div>
+        }
+        <p>");
+            Echo(html, @"
+        </p>
+    </div>
+</body>
+</html>
 ");
             return html;
         }

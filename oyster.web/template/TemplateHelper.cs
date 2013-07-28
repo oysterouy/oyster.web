@@ -91,5 +91,10 @@ namespace oyster.web
         {
             return "";
         }
+
+        public static string Block<T>(Func<T, string> act)
+        {
+            return "";
+        }
     }
 }

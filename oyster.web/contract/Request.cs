@@ -38,5 +38,15 @@ namespace oyster.web
 
             return resp;
         }
+
+        public void Layout<T>(Func<dynamic> initLayoutAction) where T : ITemplate
+        {
+
+        }
+
+        public void Block<T>(Func<string, dynamic> initBlockAction) where T : ITemplate
+        {
+
+        }
     }
 }

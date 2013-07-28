@@ -16,38 +16,9 @@ namespace oyster.web.hosting
         {
             return TemplateManager.GetSetting(ProxyModuleName);
         }
-        public Response DoRequest(RequestHead header)
+        public ResponseInfo DoRequest(RequestHead header)
         {
             return GetHosting().DoRequest(header);
-        }
-        public ITemplate Route(Request request)
-        {
-            return GetHosting().Route(request);
-        }
-
-        public bool BeforeRouteFilter(Request request)
-        {
-            return GetHosting().BeforeRouteFilter(request);
-        }
-
-        public bool BeforeRequestFilter(Request request)
-        {
-            return GetHosting().BeforeRequestFilter(request);
-        }
-
-        public bool BeforeRanderFilter(Request request, Response response)
-        {
-            return GetHosting().BeforeRanderFilter(request, response);
-        }
-
-        public bool AfterRanderFilter(Request request, Response response)
-        {
-            return GetHosting().BeforeRanderFilter(request, response);
-        }
-
-        public int LoadingTimeout
-        {
-            get { return GetHosting().LoadingTimeout; }
         }
     }
 }

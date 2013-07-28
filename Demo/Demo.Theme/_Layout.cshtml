@@ -1,0 +1,50 @@
+﻿@using oyster.web
+@using demotheme
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <h1>
+        我是布局页面的标题</h1>
+    <div>
+        @{
+            var t = 0;
+            t += 10;
+            <div>
+                <h2>
+                    Body开始了</h2>
+                @section Body{
+                    <div>
+                        默认Body!!!</div>
+                }
+            </div>
+            <div>
+                <h2>
+                    Foot 开始</h2>
+                @section Foot{
+                    <p>
+                        我是默认脚</p>
+                }
+            </div>
+        }
+        <p>@TemplateHelper.Block((Login Log)=>"AAAAAAAAAAAAAAAAAAAA")
+        </p>
+    </div>
+</body>
+</html>
+@TemplateHelper.Parameters((req) =>
+{
+    return new object[] { };
+})
+@TemplateHelper.Init((long userId, string name) =>
+{
+    return null;
+})
+@TemplateHelper.Request((req, resp) =>
+{
+    //req.Block<Login>(("AAAAAAAAAAAAAAAAAAAA")=>{
+    //return null;
+    //});
+})

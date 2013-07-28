@@ -5,22 +5,24 @@ using System.Text;
 
 namespace oyster.web
 {
-    [Serializable]
     public class Response
     {
-        public ITemplate Template { get; internal set; }
+        public Response()
+        {
+            Head = new ResponseHead();
+        }
+        internal ITemplate Template { get; set; }
 
         public ResponseHead Head { get; set; }
 
-        [NonSerialized]
-        public dynamic Model = null;
+        public dynamic Model { get; set; }
 
         public StringBuilder Body { get; set; }
 
-        [NonSerialized]
-        public Exception Exception = null;
+        public Exception Exception { get; set; }
 
         internal System.Threading.AutoResetEvent waitHandle { get; set; }
+
         public Response Waiting(int millisecond = -1)
         {
             if (millisecond < 0)
@@ -41,6 +43,13 @@ namespace oyster.web
             Waiting();
             Body = Template.Rander(Model);
             return this;
+        }
+
+        Response LayoutResponse { get; set; }
+
+        public void SetLayoutModel<T>(Func<dynamic, dynamic> setLayoutModelAction)
+        {
+            LayoutResponse.Model = setLayoutModelAction(LayoutResponse.Model);
         }
     }
 }

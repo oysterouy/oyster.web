@@ -16,6 +16,7 @@
     <h1>
         Hello world~</h1>
     <div>
+        @section Body{}
     </div>
     <div>
     </div>
@@ -25,12 +26,18 @@
 {
     return new object[1];
 })
-@TemplateHelper.Init((string pageIdx) =>
+@TemplateHelper.Init((Request request, string pageIdx) =>
 {
-    return new { A = 1, B = 3};
+    request.Layout<_layout>(() => _layout.Init(1, ""));
+    return new { A = 1, B = 3 };
 })
 @TemplateHelper.Request((request, response) =>
 {
     int t = 5;
+    response.SetLayoutModel<_layout>((md) =>
+    {
+        md.Title = "AAAAAAAAAAA";
+        return md;
+    });
     response.Model = new { Index = request.Body.A + request.Body.B * 13 };
 })

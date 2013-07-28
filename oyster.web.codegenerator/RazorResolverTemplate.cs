@@ -109,6 +109,10 @@ namespace oyster.web.codegenerator
                     }
                     r.OutCodeList[codeIdx] = null;
                 }
+                else if (code.Contains("TemplateHelper.Block("))
+                {
+                    r.OutCodeList[codeIdx] = null;
+                }
             }
 
             string ireqMethod = @"
@@ -143,6 +147,38 @@ namespace oyster.web.codegenerator
                 }
             }
 
+            StringBuilder codeSection = new StringBuilder();
+            foreach (var idx in r.sectionCodeList.Keys)
+            {
+                var kv = r.sectionCodeList[idx];
+                var secR = kv.Value;
+                var secFunc = new StringBuilder();
+                for (int i = 0; i < secR.NodeCount; i++)
+                {
+                    string code = "";
+                    if (secR.CodeList.TryGetValue(i, out code))
+                    {
+                        if (string.IsNullOrEmpty(code))
+                            continue;
+                        secFunc.Append(code);
+                    }
+                    else if (secR.OutCodeList.TryGetValue(i, out code))
+                    {
+                        if (string.IsNullOrEmpty(code))
+                            continue;
+                        secFunc.AppendFormat("\r\n            Echo(html, {0});", code);
+                    }
+                    else if (secR.StaticHtmlList.TryGetValue(i, out code) && code.Trim().Length > 0)
+                    {
+                        if (string.IsNullOrEmpty(code))
+                            continue;
+                        secFunc.AppendFormat("\r\n            Echo(html, @\"{0}\");", code.Replace("\"", "\"\""));
+                    }
+                }
+                codeSection.AppendFormat("sectionBlockPool.Add(\"{0}\",(html)=>{1});\r\n", kv.Key, "{" + secFunc.ToString() + "}");
+
+            }
+
             string codeUsing = "";
             r.UsingNames.Sort();
             foreach (string s in r.UsingNames)
@@ -159,6 +195,14 @@ namespace " + NameSpace + @"
 " + codeUsing + @"
     public class " + ClassName + @" : ITemplate
     {
+        static Dictionary<string, List<string>> htmlBlockPool = new Dictionary<string, List<string>>();
+        static Dictionary<string, Action<StringBuilder>> sectionBlockPool = new Dictionary<string, Action<StringBuilder>>();
+        static Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>> childTemplates = new Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>>();
+
+        static " + ClassName + @"()
+        {
+            " + codeSection.ToString() + @"
+        }
 " + paramsMethod
   + @"
 

@@ -10,6 +10,15 @@ namespace demotheme
 
     public class Index : ITemplate
     {
+        static Dictionary<string, List<string>> htmlBlockPool = new Dictionary<string, List<string>>();
+        static Dictionary<string, Action<StringBuilder>> sectionBlockPool = new Dictionary<string, Action<StringBuilder>>();
+        static Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>> childTemplates = new Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>>();
+
+        static Index()
+        {
+            sectionBlockPool.Add("Body",(html)=>{});
+
+        }
 public static object[] Parameters(Request context)
         
         {
@@ -23,13 +32,14 @@ public static object[] Parameters(Request context)
 
         public static dynamic Init(Request request){
             var parms = Parameters(request);
-            return Init((string)parms[0]);
+            return Init((Request)parms[0],(string)parms[1]);
         }      
 
-        public static dynamic Init(string pageIdx)
+        public static dynamic Init(Request request, string pageIdx)
         {
             
-    return new { A = 1, B = 3};
+    request.Layout<_layout>(() => _layout.Init(1, ""));
+    return new { A = 1, B = 3 };
 
         }
         void ITemplate.Request(Request request,Response response)
@@ -41,6 +51,11 @@ public static object[] Parameters(Request context)
         {
             
     int t = 5;
+    response.SetLayoutModel<_layout>((md) =>
+    {
+        md.Title = "AAAAAAAAAAA";
+        return md;
+    });
     response.Model = new { Index = request.Body.A + request.Body.B * 13 };
 
         }
@@ -65,6 +80,8 @@ public static object[] Parameters(Request context)
     <h1>
         Hello world~</h1>
     <div>
+        ");
+            Echo(html, @"
     </div>
     <div>
     </div>

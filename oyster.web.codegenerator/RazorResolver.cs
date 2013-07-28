@@ -22,6 +22,7 @@ namespace oyster.web.codegenerator
             StaticHtmlList = new Dictionary<int, string>();
             CodeList = new Dictionary<int, string>();
             OutCodeList = new Dictionary<int, string>();
+            sectionCodeList = new Dictionary<int, KeyValuePair<string, RazorResolver>>();
             Init();
         }
 
@@ -30,6 +31,7 @@ namespace oyster.web.codegenerator
         public Dictionary<int, string> StaticHtmlList { get; set; }
         public Dictionary<int, string> CodeList { get; set; }
         public Dictionary<int, string> OutCodeList { get; set; }
+        public Dictionary<int, KeyValuePair<string, RazorResolver>> sectionCodeList { get; set; }
 
 
         void Init()
@@ -124,6 +126,7 @@ namespace oyster.web.codegenerator
             int bgkhleft = bgkh;
             bool canHtml = false;
             bool bigyhleft = false;
+            bool inSection = false;
 
             for (; i < code.Length; i++)
             {
@@ -178,6 +181,45 @@ namespace oyster.web.codegenerator
                             ii = j;
                             break;
 
+                        //@section XXX{}
+                        case 's':
+                            if (code[j + 1] == 's' && code[j + 2] == 'e' && code[j + 3] == 'c' && code[j + 4] == 't' && code[j + 5] == 'i' && code[j + 6] == 'o' && code[j + 7] == 'n' && code[j + 8] == ' ')
+                            {
+                                string sectionName = "";
+                                string secText = "";
+                                int secKh = 0;
+                                int secBgidx = -1;
+                                for (int secI = j + 9; secI < code.Length; secI++)
+                                {
+                                    if (code[secI] == '{')
+                                    {
+                                        if (secKh == 0)
+                                        {
+                                            sectionName = code.Substring(j + 9, secI - j - 9);
+                                            secBgidx = secI + 1;
+                                        }
+                                        secKh++;
+                                    }
+                                    if (code[secI] == '}')
+                                    {
+                                        secKh--;
+                                        if (secKh == 0)
+                                        {
+                                            secText = code.Substring(secBgidx, secI - secBgidx);
+                                            j = secI + 1;
+                                            ii = j;
+                                            var sectionRz = new RazorResolver(secText);
+
+                                            sectionCodeList.Add(NewNodeIndex,
+                                                new KeyValuePair<string, RazorResolver>(sectionName, sectionRz));
+
+                                            goto DoHtmlCodeResolve;
+                                        }
+                                    }
+                                }
+                            }
+                            goto default;
+                            break;
                         //@XXXX
                         default:
 
@@ -242,7 +284,8 @@ namespace oyster.web.codegenerator
 
                 if (!bigyhleft && (code[i] == '\n' || code[i] == ';'))
                     canHtml = true;
-                else
+                else if (!canHtml || (code[i] != ' ' && code[i] != '\r' && code[i] != '\n' && code[i] != '\t'
+                    && code[i] != '<'))
                     canHtml = false;
 
                 if (bgkhleft < 0 || (code[i] == '<' && canHtml))

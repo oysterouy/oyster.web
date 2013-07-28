@@ -74,7 +74,7 @@ namespace Demo.Host
             var host = GetAppHost(context);
             var reqheader = new RequestHead { Path = context.Request.Path };
             var resp = host.DoRequest(reqheader);
-            context.Response.StatusCode = resp.Head.StatusCode;
+            context.Response.StatusCode = resp.Header.StatusCode;
             context.Response.Write(resp.Body);
         }
 

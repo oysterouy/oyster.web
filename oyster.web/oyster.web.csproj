@@ -54,6 +54,7 @@
     <Compile Include="hosting\HostApplication.cs" />
     <Compile Include="hosting\HostAssermblyLoader.cs" />
     <Compile Include="hosting\HostProxy.cs" />
+    <Compile Include="hosting\ResponseInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="template\TemplateHelper.cs" />
     <Compile Include="hosting\TemplateManager.cs" />
