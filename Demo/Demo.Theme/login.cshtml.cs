@@ -10,26 +10,26 @@ namespace demotheme
 
     public class Login : ITemplate
     {
-public static object[] Parameters(HttpContext c)
+public static object[] Parameters(Request c)
         
         { return new object[] { 1, 4.2, new Index() }; }
 
-        Request ITemplate.Init(HttpContext context)
+        dynamic ITemplate.Init(Request request)
         {
-            return Init(context);
+            return Init(request);
         }
 
-        public static Request Init(HttpContext context){
-            var parms = Parameters(context);
+        public static dynamic Init(Request request){
+            var parms = Parameters(request);
             return Init((int)parms[0],(double)parms[1],(Index)parms[2]);
         }      
 
-        public static Request Init(int i, double d, Index idx)
+        public static dynamic Init(int i, double d, Index idx)
         {
             
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return new Request<Login>();
+    return new { Type = stype };
 
         }
         void ITemplate.Request(Request request,Response response)

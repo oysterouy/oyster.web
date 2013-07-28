@@ -16,5 +16,7 @@ namespace oyster.web
     {
         public CacheToWhere CacheToWhere { get; set; }
         public string CacheKey { get; set; }
+
+        public string Path { get; set; }
     }
 }

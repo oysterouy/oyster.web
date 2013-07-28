@@ -8,11 +8,7 @@ namespace oyster.web
     [Serializable]
     public class Response
     {
-        public Response(ITemplate temp)
-        {
-            Template = temp;
-        }
-        public ITemplate Template { get; protected set; }
+        public ITemplate Template { get; internal set; }
 
         public ResponseHead Head { get; set; }
 
@@ -28,7 +24,7 @@ namespace oyster.web
         public Response Waiting(int millisecond = -1)
         {
             if (millisecond < 0)
-                millisecond = TemplateManager.GetSettingFromTemplate(Template).LoadingTimeout;
+                millisecond = TemplateManager.GetSetting(Template.GetType().Assembly).LoadingTimeout;
 
             if (waitHandle != null)
             {
@@ -45,15 +41,6 @@ namespace oyster.web
             Waiting();
             Body = Template.Rander(Model);
             return this;
-        }
-    }
-
-    public class Response<T> : Response
-         where T : ITemplate, new()
-    {
-        public Response()
-            : base(new T())
-        {
         }
     }
 }

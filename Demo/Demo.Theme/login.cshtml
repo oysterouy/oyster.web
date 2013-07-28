@@ -1,6 +1,5 @@
 ﻿@using demotheme
 @using oyster.web
-@using oyster.web.contract
 <div>
     <span>姓名：张三</span> <span>年龄：@(Settings.aa + 1203)</span>
 </div>
@@ -8,7 +7,7 @@
 {
     var ii = i + d;
     string stype = idx.GetType().FullName;
-    return new Request<Login>();
+    return new { Type = stype };
 })
 @oyster.web.TemplateHelper.Parameters((c) => { return new object[] { 1, 4.2, new Index() }; })
 @oyster.web.TemplateHelper.Request((req, resp) => { })

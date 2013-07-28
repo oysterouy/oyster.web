@@ -1,13 +1,10 @@
 ﻿@using oyster.web;
 @using demotheme;
-@TemplateHelper.Config((int _loadingTimeout) => 300)
-@TemplateHelper.Config((int i) => 6)
-@TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd")
-@TemplateHelper.Config((ISetting ii) => new demotheme.Settings())
-@TemplateHelper.Config((decimal aa) => 6.978879M)
-@TemplateHelper.Route((context) =>
+@TemplateHelper.Config((int _loadingTimeout) => 300) @TemplateHelper.Config((int i) => 6)
+@TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd") @TemplateHelper.Config((decimal aa) => 6.978879M)
+@TemplateHelper.Route((Request) =>
 {
-    string path = context.Request.Path.ToLower();
+    string path = Request.Head.Path.ToLower();
     path = path == "/" ? "/index" : path;
     if (path.Equals("/index"))
         return new Index();
@@ -15,19 +12,17 @@
         return new Index();
     return null;
 })
-@TemplateHelper.FilterBeforeRoute((context) =>
+@TemplateHelper.FilterBeforeRoute((request) =>
+{
+    return true;
+}) @TemplateHelper.FilterBeforeRequest((request) =>
 {
     return true;
 })
-@TemplateHelper.FilterBeforeRequest((context, itemp, request) =>
+@TemplateHelper.FilterBeforeRander((request, resp) =>
 {
     return true;
-})
-@TemplateHelper.FilterBeforeRander((context, itemp, request, resp) =>
-{
-    return true;
-})
-@TemplateHelper.FilterAfterRander((context, itemp, request, resp) =>
+}) @TemplateHelper.FilterAfterRander((request, resp) =>
 {
     return true;
 })

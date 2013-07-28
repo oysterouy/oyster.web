@@ -9,18 +9,13 @@ namespace oyster.web
     [Serializable]
     public class Request
     {
-        public Request(ITemplate temp)
-        {
-            Template = temp;
-        }
-        public ITemplate Template { get; protected set; }
+        public ITemplate Template { get; internal set; }
         public RequestHead Head { get; set; }
         public dynamic Body { get; set; }
 
         public Response Execute()
         {
-            Exception exeEx = null;
-            Response resp = new Response(Template);
+            Response resp = new Response { Template = Template };
 
             resp.waitHandle = new AutoResetEvent(false);
             ThreadPool.QueueUserWorkItem((state) =>
@@ -42,15 +37,6 @@ namespace oyster.web
 
 
             return resp;
-        }
-    }
-
-    public class Request<T> : Request
-        where T : ITemplate, new()
-    {
-        public Request()
-            : base(new T())
-        {
         }
     }
 }

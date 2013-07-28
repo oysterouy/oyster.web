@@ -50,7 +50,7 @@ namespace oyster.web.codegenerator
                         {
                             bool hadKh = m.Groups[2].Value.Trim().StartsWith("{");
                             paramsMethod = string.Format(
-@"                                           public static object[] Parameters(HttpContext {0})
+@"                                           public static object[] Parameters(Request {0})
         {1}
         {2}
         {3}", new string[] { m.Groups[1].Value, hadKh ? "" : "{", m.Groups[2].Value, hadKh ? "" : "}" }).Trim();
@@ -66,7 +66,7 @@ namespace oyster.web.codegenerator
                         if (reqMethod == null)
                         {
                             reqMethod = string.Format(@"
-        public static Request Init({0})
+        public static dynamic Init({0})
         {1}
             {2}
         {3}", new string[] { m.Groups[1].Value, "{", m.Groups[2].Value, "}" });
@@ -112,8 +112,8 @@ namespace oyster.web.codegenerator
             }
 
             string ireqMethod = @"
-        public static Request Init(HttpContext context){
-            var parms = Parameters(context);
+        public static dynamic Init(Request request){
+            var parms = Parameters(request);
             return Init(" + pstr + @");
         }      
 ";
@@ -162,9 +162,9 @@ namespace " + NameSpace + @"
 " + paramsMethod
   + @"
 
-        Request ITemplate.Init(HttpContext context)
+        dynamic ITemplate.Init(Request request)
         {
-            return Init(context);
+            return Init(request);
         }
 "
   + ireqMethod + reqMethod + @"

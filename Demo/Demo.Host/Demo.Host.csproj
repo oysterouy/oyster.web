@@ -62,10 +62,6 @@
       <Project>{4C2FE7E3-1AEA-4440-88F9-8FDCC9918B01}</Project>
       <Name>oyster.web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Demo.Theme\Demo.Theme.csproj">
-      <Project>{DFB44D12-4FA8-4718-9F57-42D6C5052E3C}</Project>
-      <Name>Demo.Theme</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="sites\libs\" />

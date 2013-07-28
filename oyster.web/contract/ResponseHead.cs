@@ -8,5 +8,6 @@ namespace oyster.web
     [Serializable]
     public class ResponseHead
     {
+        public int StatusCode { get; set; }
     }
 }

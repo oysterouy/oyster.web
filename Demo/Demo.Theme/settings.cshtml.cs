@@ -8,31 +8,30 @@ namespace demotheme
     using System.Text;
     using System.Web;
 
-    public class Settings : ISetting
+    public class Settings : HostBase
     {
         public static readonly int _loadingTimeout = 300;
         public static readonly int i = 6;
         public static readonly string Name = "sdljflasdjfljwel,sd";
-        public static readonly ISetting ii = new demotheme.Settings();
         public static readonly decimal aa = 6.978879M;
 
         
-        static readonly List<Func<HttpContext, ITemplate>> routes = new List<Func<HttpContext, ITemplate>>();
+        static readonly List<Func<Request, ITemplate>> routes = new List<Func<Request, ITemplate>>();
 
-        static readonly List<Func<HttpContext,bool>> filterBeforeRoute = new List<Func<HttpContext,bool>>();
+        static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,bool>> filterBeforeRequest = new  List<Func<HttpContext,ITemplate,Request,bool>>();
+        static readonly List<Func<Request,bool>> filterBeforeRequest = new  List<Func<Request,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterBeforeRander = new  List<Func<HttpContext,ITemplate,Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterAfterRander = new List<Func<HttpContext,ITemplate,Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
         static Settings()
         {
             //******** route setting *********//
-            routes.Add((context) =>
+            routes.Add((Request) =>
 {
-    string path = context.Request.Path.ToLower();
+    string path = Request.Head.Path.ToLower();
     path = path == "/" ? "/index" : path;
     if (path.Equals("/index"))
         return new Index();
@@ -46,53 +45,53 @@ namespace demotheme
 
         }
 
-        int ISetting.LoadingTimeout{get{ return _loadingTimeout;}}
-        ITemplate ISetting.Route(HttpContext context)
+        public override int LoadingTimeout{get{ return _loadingTimeout;}}
+        public override ITemplate Route(Request request)
         {
             foreach (var rt in routes)
             {
-                var it = rt(context);
+                var it = rt(request);
                 if (it != null)
                     return it;
             }
             return null;
         }
 
-        bool ISetting.BeforeRouteFilter(HttpContext context)
+        public override  bool BeforeRouteFilter(Request request)
         {
             foreach (var filter in filterBeforeRoute)
             {
-                if (!filter(context))
+                if (!filter(request))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.BeforeRequestFilter(HttpContext context, ITemplate template, Request request)
+        public override  bool BeforeRequestFilter(Request request)
         {
             foreach (var filter in filterBeforeRequest)
             {
-                if (!filter(context, template, request))
+                if (!filter(request))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.BeforeRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        public override  bool BeforeRanderFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRander)
             {
-                if (!filter(context, template, request, response))
+                if (!filter(request, response))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.AfterRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        public override  bool AfterRanderFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRander)
             {
-                if (!filter(context, template, request, response))
+                if (!filter(request, response))
                     return false;
             }
             return true;

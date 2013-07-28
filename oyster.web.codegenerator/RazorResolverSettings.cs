@@ -111,20 +111,20 @@ namespace " + NameSpace + @"
 {
     using oyster.web;
 " + codeUsing + @"
-    public class " + ClassName + @" : ISetting
+    public class " + ClassName + @" : HostBase
     {
 " + codeFields.ToString() +
   @"
         
-        static readonly List<Func<HttpContext, ITemplate>> routes = new List<Func<HttpContext, ITemplate>>();
+        static readonly List<Func<Request, ITemplate>> routes = new List<Func<Request, ITemplate>>();
 
-        static readonly List<Func<HttpContext,bool>> filterBeforeRoute = new List<Func<HttpContext,bool>>();
+        static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,bool>> filterBeforeRequest = new  List<Func<HttpContext,ITemplate,Request,bool>>();
+        static readonly List<Func<Request,bool>> filterBeforeRequest = new  List<Func<Request,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterBeforeRander = new  List<Func<HttpContext,ITemplate,Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
 
-        static readonly List<Func<HttpContext,ITemplate,Request,Response,bool>> filterAfterRander = new List<Func<HttpContext,ITemplate,Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
         static Settings()
         {
@@ -135,53 +135,53 @@ namespace " + NameSpace + @"
 " + addcodeFilter + @"
         }
 
-        int ISetting.LoadingTimeout{get{ return _loadingTimeout;}}
-        ITemplate ISetting.Route(HttpContext context)
+        public override int LoadingTimeout{get{ return _loadingTimeout;}}
+        public override ITemplate Route(Request request)
         {
             foreach (var rt in routes)
             {
-                var it = rt(context);
+                var it = rt(request);
                 if (it != null)
                     return it;
             }
             return null;
         }
 
-        bool ISetting.BeforeRouteFilter(HttpContext context)
+        public override  bool BeforeRouteFilter(Request request)
         {
             foreach (var filter in filterBeforeRoute)
             {
-                if (!filter(context))
+                if (!filter(request))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.BeforeRequestFilter(HttpContext context, ITemplate template, Request request)
+        public override  bool BeforeRequestFilter(Request request)
         {
             foreach (var filter in filterBeforeRequest)
             {
-                if (!filter(context, template, request))
+                if (!filter(request))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.BeforeRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        public override  bool BeforeRanderFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRander)
             {
-                if (!filter(context, template, request, response))
+                if (!filter(request, response))
                     return false;
             }
             return true;
         }
 
-        bool ISetting.AfterRanderFilter(HttpContext context, ITemplate template, Request request, Response response)
+        public override  bool AfterRanderFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRander)
             {
-                if (!filter(context, template, request, response))
+                if (!filter(request, response))
                     return false;
             }
             return true;

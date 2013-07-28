@@ -10,34 +10,26 @@ namespace demotheme
 
     public class Index : ITemplate
     {
-public static object[] Parameters(HttpContext context)
+public static object[] Parameters(Request context)
         
         {
     return new object[1];
 }
 
-        Request ITemplate.Init(HttpContext context)
+        dynamic ITemplate.Init(Request request)
         {
-            return Init(context);
+            return Init(request);
         }
 
-        public static Request Init(HttpContext context){
-            var parms = Parameters(context);
+        public static dynamic Init(Request request){
+            var parms = Parameters(request);
             return Init((string)parms[0]);
         }      
 
-        public static Request Init(string pageIdx)
+        public static dynamic Init(string pageIdx)
         {
             
-    var resp = Login.Init(1, 23, new Index()).Execute();
-    return new oyster.web.Request<Index>
-    {
-        Head = new oyster.web.RequestHead
-        {
-            CacheKey = "",
-        },
-        Body = new { A = 1, B = 3, login = resp }
-    };
+    return new { A = 1, B = 3};
 
         }
         void ITemplate.Request(Request request,Response response)
@@ -49,7 +41,7 @@ public static object[] Parameters(HttpContext context)
         {
             
     int t = 5;
-    response.Model = new { Index = request.Body.A + request.Body.B * 13, login = request.Body.login.Rander() };
+    response.Model = new { Index = request.Body.A + request.Body.B * 13 };
 
         }
 
@@ -60,7 +52,6 @@ public static object[] Parameters(HttpContext context)
     var tttt = 12;
 
             Echo(html, @"
-<!--page:-->
 <!DOCTYPE html>
 <html xmlns=""http://www.w3.org/1999/xhtml"">
 <head>
@@ -74,10 +65,6 @@ public static object[] Parameters(HttpContext context)
     <h1>
         Hello world~</h1>
     <div>
-        ");
-            Echo(html, Model.login.Body
-);
-            Echo(html, @"
     </div>
     <div>
     </div>

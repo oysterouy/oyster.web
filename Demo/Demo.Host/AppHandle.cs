@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Web;
 using oyster.web;
+using System.IO;
+using System.Collections.Generic;
+using oyster.web.hosting;
+using System.Configuration;
 
 namespace Demo.Host
 {
@@ -19,47 +23,59 @@ namespace Demo.Host
             // 如果按请求保留某些状态信息，则通常这将为 false。
             get { return true; }
         }
-
-        ISetting GetAppHost(HttpContext webContext)
+        static object lockLoaderDomain = new object();
+        static DateTime lastLoadTime = DateTime.MinValue;
+        static List<HostProxy> settings = new List<HostProxy>();
+        static void LoadTemplateModules(string tempRoot, string libRoot)
         {
-            return new demotheme.Settings();
-        }
-        public void ProcessRequest(HttpContext context)
-        {
-            var host = GetAppHost(context);
-            Request req = null;
-            Response resp = null;
-            if (host.BeforeRouteFilter(context))
+            if (lastLoadTime.AddMinutes(5) < DateTime.Now)
             {
-                var temp = host.Route(context);
-                if (temp == null)
-                    goto status404;
-
-                if (host.BeforeRouteFilter(context))
+                lock (lockLoaderDomain)
                 {
-                    req = temp.Init(context);
-                    if (host.BeforeRequestFilter(context, temp, req))
+                    if (lastLoadTime.AddMinutes(5) < DateTime.Now)
                     {
-                        resp = req.Execute();
-                        if (host.BeforeRanderFilter(context, temp, req, resp))
+                        lastLoadTime = DateTime.Now;
+                        var tempFs = Directory.GetFiles(tempRoot, "*.dll", SearchOption.AllDirectories);
+                        var ls = new List<string>();
+                        foreach (var fs in tempFs)
                         {
-                            resp.Waiting();
-                            resp.Body = temp.Rander(resp.Model);
-                            host.AfterRanderFilter(context, temp, req, resp);
+                            var loader = HostAssermblyLoader.CreateLoader(Path.GetFileNameWithoutExtension(fs),
+                               libRoot, fs, AppDomain.CurrentDomain.BaseDirectory);
+
+                            if (loader != null)
+                                settings.Add(loader.Application.HostSetting);
                         }
                     }
                 }
             }
+        }
 
+        static AppHandle()
+        {
+            string cnfTempRoot = ConfigurationManager.AppSettings["TemplateRoot"];
+            string tempRoot = HttpContext.Current.Server.MapPath(cnfTempRoot);
+
+            string cnfLibRoot = ConfigurationManager.AppSettings["LibRoot"];
+            string libRoot = HttpContext.Current.Server.MapPath(cnfLibRoot);
+
+            LoadTemplateModules(tempRoot, libRoot);
+        }
+
+        HostProxy GetAppHost(HttpContext webContext)
+        {
+            foreach (var set in settings)
+            {
+                return set;
+            }
+            return null;
+        }
+        public void ProcessRequest(HttpContext context)
+        {
+            var host = GetAppHost(context);
+            var reqheader = new RequestHead { Path = context.Request.Path };
+            var resp = host.DoRequest(reqheader);
+            context.Response.StatusCode = resp.Head.StatusCode;
             context.Response.Write(resp.Body);
-
-            return;
-
-        status404:
-            context.Response.StatusCode = 404;
-            context.Response.Write("Page no found!");
-            return;
-            ;
         }
 
         #endregion

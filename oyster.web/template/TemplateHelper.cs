@@ -16,12 +16,12 @@ namespace oyster.web
             return "";
         }
 
-        public static string Route(Func<HttpContext, ITemplate> Route)
+        public static string Route(Func<Request, ITemplate> Route)
         {
             return "";
         }
 
-        public static string Parameters(Func<HttpContext, object[]> func)
+        public static string Parameters(Func<Request, object[]> func)
         {
             return "";
         }
@@ -31,63 +31,63 @@ namespace oyster.web
             return "";
         }
 
-        public static string FilterBeforeRoute(Func<HttpContext, bool> filter)
+        public static string FilterBeforeRoute(Func<Request, bool> filter)
         {
             return "";
         }
 
-        public static string FilterBeforeRequest(Func<HttpContext, ITemplate, Request, bool> filter)
+        public static string FilterBeforeRequest(Func<Request, bool> filter)
         {
             return "";
         }
 
-        public static string FilterBeforeRander(Func<HttpContext, ITemplate, Request, Response, bool> filter)
+        public static string FilterBeforeRander(Func<Request, Response, bool> filter)
         {
             return "";
         }
 
-        public static string FilterAfterRander(Func<HttpContext, ITemplate, Request, Response, bool> filter)
+        public static string FilterAfterRander(Func<Request, Response, bool> filter)
         {
             return "";
         }
 
-        public static string Init<T1>(Func<T1, Request> func)
+        public static string Init<T1>(Func<T1, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2>(Func<T1, T2, Request> func)
+        public static string Init<T1, T2>(Func<T1, T2, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3>(Func<T1, T2, T3, Request> func)
+        public static string Init<T1, T2, T3>(Func<T1, T2, T3, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4>(Func<T1, T2, T3, T4, Request> func)
+        public static string Init<T1, T2, T3, T4>(Func<T1, T2, T3, T4, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, Request> func)
+        public static string Init<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, Request> func)
+        public static string Init<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7>(Func<T1, T2, T3, T4, T5, T6, T7, Request> func)
+        public static string Init<T1, T2, T3, T4, T5, T6, T7>(Func<T1, T2, T3, T4, T5, T6, T7, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8>(Func<T1, T2, T3, T4, T5, T6, T7, T8, Request> func)
+        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8>(Func<T1, T2, T3, T4, T5, T6, T7, T8, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, Request> func)
+        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, Request> func)
+        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, dynamic> func)
         {
             return "";
         }
