@@ -26,14 +26,14 @@ namespace oyster.web
                 if (BeforeRouteFilter(request))
                 {
                     var reqData = temp.Init(request);
-                    request.Body = reqData;
+
                     if (BeforeRequestFilter(request))
                     {
                         response = request.Execute();
+                        response.Waiting();
                         if (BeforeRanderFilter(request, response))
                         {
-                            response.Waiting();
-                            response.Body = temp.Rander(response.Model);
+                            response.Rander();
                             AfterRanderFilter(request, response);
                         }
                     }
@@ -44,7 +44,7 @@ namespace oyster.web
 
             return new ResponseInfo { Header = response.Head, Body = response.Body };
         }
-        public abstract ITemplate Route(Request request);
+        public abstract TemplateBase Route(Request request);
         public abstract bool BeforeRouteFilter(Request request);
         public abstract bool BeforeRequestFilter(Request request);
         public abstract bool BeforeRanderFilter(Request request, Response response);

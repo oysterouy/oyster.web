@@ -44,11 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="contract\HostBase.cs" />
-    <Compile Include="contract\ITemplate.cs" />
+    <Compile Include="contract\TemplateBase.cs" />
     <Compile Include="contract\Request.cs" />
     <Compile Include="contract\RequestHead.cs" />
     <Compile Include="contract\Response.cs" />
     <Compile Include="contract\ResponseHead.cs" />
+    <Compile Include="contract\SectionInvork.cs" />
     <Compile Include="hosting\AssemblyManager.cs" />
     <Compile Include="hosting\DefaultResponseManager.cs" />
     <Compile Include="hosting\HostApplication.cs" />

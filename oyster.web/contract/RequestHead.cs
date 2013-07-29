@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Dynamic;
 
 namespace oyster.web
 {
@@ -14,9 +15,17 @@ namespace oyster.web
     [Serializable]
     public class RequestHead
     {
+        public string Path { get; set; }
+    }
+    public class RequestBody
+    {
         public CacheToWhere CacheToWhere { get; set; }
         public string CacheKey { get; set; }
+        public dynamic Model { get; set; }
 
-        public string Path { get; set; }
+        public RequestBody()
+        {
+            Model = new ExpandoObject();
+        }
     }
 }

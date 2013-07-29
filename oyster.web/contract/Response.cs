@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Dynamic;
 
 namespace oyster.web
 {
@@ -10,8 +11,9 @@ namespace oyster.web
         public Response()
         {
             Head = new ResponseHead();
+            Model = new ExpandoObject();
         }
-        internal ITemplate Template { get; set; }
+        internal TemplateBase Template { get; set; }
 
         public ResponseHead Head { get; set; }
 
@@ -22,15 +24,31 @@ namespace oyster.web
         public Exception Exception { get; set; }
 
         internal System.Threading.AutoResetEvent waitHandle { get; set; }
+        object waitLock = new object();
+        bool hadWaitingBack = false;
 
-        public Response Waiting(int millisecond = -1)
+        public Response Waiting(int misecond = -1)
         {
-            if (millisecond < 0)
+            int millisecond = -1;
+            if (misecond < 0)
                 millisecond = TemplateManager.GetSetting(Template.GetType().Assembly).LoadingTimeout;
+            else
+                millisecond = misecond;
 
-            if (waitHandle != null)
+            if (waitHandle != null && !hadWaitingBack)
             {
-                waitHandle.WaitOne(millisecond);
+                if (LayoutResponse != null)
+                {
+                    LayoutResponse.Waiting(0);
+                }
+                lock (waitLock)
+                {
+                    if (millisecond == 0)
+                        waitHandle.WaitOne();
+                    else
+                        waitHandle.WaitOne(millisecond);
+                    hadWaitingBack = true;
+                }
             }
             if (Exception != null)
                 throw Exception;
@@ -40,16 +58,55 @@ namespace oyster.web
 
         public Response Rander()
         {
-            Waiting();
-            Body = Template.Rander(Model);
-            return this;
+            Body = new StringBuilder();
+            return Rander(Body);
         }
 
-        Response LayoutResponse { get; set; }
+        public Response LayoutResponse { get; set; }
 
         public void SetLayoutModel<T>(Func<dynamic, dynamic> setLayoutModelAction)
         {
             LayoutResponse.Model = setLayoutModelAction(LayoutResponse.Model);
+        }
+
+        public Response Rander(StringBuilder html)
+        {
+            return RanderInternal(html, null);
+        }
+
+        internal Response RanderInternal(StringBuilder html, Dictionary<string, InvorkInfo> action)
+        {
+            Waiting();
+            var actDic = new Dictionary<string, InvorkInfo>();
+            foreach (var actKv in Template.Sections)
+            {
+                actDic.Add(actKv.Key, new InvorkInfo { Response = this, Section = actKv.Value });
+            }
+            if (action != null)
+            {
+                foreach (var kv in action)
+                {
+                    var actKv = kv;
+                    if (actKv.Key == "Page")
+                    {
+                        actKv = new KeyValuePair<string, InvorkInfo>("Body", kv.Value);
+                    }
+                    if (actDic.ContainsKey(actKv.Key))
+                        actDic[actKv.Key] = actKv.Value;
+                    else
+                        actDic.Add(actKv.Key, actKv.Value);
+                }
+            }
+            if (LayoutResponse != null)
+            {
+                LayoutResponse.RanderInternal(html, actDic);
+            }
+            else
+            {
+                var invorker = new SectionInvork { Html = html, Sections = actDic };
+                invorker.Invork();
+            }
+            return this;
         }
     }
 }

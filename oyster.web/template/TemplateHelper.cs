@@ -16,7 +16,7 @@ namespace oyster.web
             return "";
         }
 
-        public static string Route(Func<Request, ITemplate> Route)
+        public static string Route(Func<Request, TemplateBase> Route)
         {
             return "";
         }
@@ -50,7 +50,11 @@ namespace oyster.web
         {
             return "";
         }
-
+        public static string Init(Func<Request, dynamic> func)
+        {
+            return "";
+        }
+        /*
         public static string Init<T1>(Func<T1, dynamic> func)
         {
             return "";
@@ -91,7 +95,7 @@ namespace oyster.web
         {
             return "";
         }
-
+        */
         public static string Block<T>(Func<T, string> act)
         {
             return "";

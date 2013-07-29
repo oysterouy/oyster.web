@@ -35,41 +35,51 @@ namespace oyster.web.codegenerator
             Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
-            string paramsMethod = null, reqMethod = null, loadMethod = null, pstr = "";
+            string paramsMethod = null, initMethod = null, requestMethod = null, pstr = "";
 
             var keyLs = r.OutCodeList.Keys.ToArray();
             foreach (var codeIdx in keyLs)
             {
                 string code = r.OutCodeList[codeIdx];
-                if (code.Contains("TemplateHelper.Parameters("))
-                {
-                    var m = regParameters.Match(code);
-                    if (m.Success && m.Groups.Count > 2)
-                    {
-                        if (paramsMethod == null)
-                        {
-                            bool hadKh = m.Groups[2].Value.Trim().StartsWith("{");
-                            paramsMethod = string.Format(
-@"                                           public static object[] Parameters(Request {0})
-        {1}
-        {2}
-        {3}", new string[] { m.Groups[1].Value, hadKh ? "" : "{", m.Groups[2].Value, hadKh ? "" : "}" }).Trim();
-                        }
-                        r.OutCodeList[codeIdx] = null;
-                    }
-                }
-                else if (code.Contains("TemplateHelper.Init("))
+                //                if (code.Contains("TemplateHelper.Parameters("))
+                //                {
+                //                    var m = regParameters.Match(code);
+                //                    if (m.Success && m.Groups.Count > 2)
+                //                    {
+                //                        if (paramsMethod == null)
+                //                        {
+                //                            bool hadKh = m.Groups[2].Value.Trim().StartsWith("{");
+                //                            paramsMethod = string.Format(
+                //@"                                           public static object[] Parameters(Request {0})
+                //        {1}
+                //        {2}
+                //        {3}", new string[] { m.Groups[1].Value, hadKh ? "" : "{", m.Groups[2].Value, hadKh ? "" : "}" }).Trim();
+                //                        }
+                //                        r.OutCodeList[codeIdx] = null;
+                //                    }
+                //                }
+                //                else 
+                if (code.Contains("TemplateHelper.Init("))
                 {
                     var m = regRequest.Match(code);
                     if (m.Success && m.Groups.Count > 1)
                     {
-                        if (reqMethod == null)
+                        if (initMethod == null)
                         {
-                            reqMethod = string.Format(@"
-        public static dynamic Init({0})
+                            string[] parms = m.Groups[1].Value.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            string parmName = "";
+                            if (parms.Length > 1)
+                                parmName = m.Groups[1].Value;
+                            else
+                                parmName = "Request " + parms[0];
+
+
+                            initMethod = string.Format(@"
+        public override dynamic Init({0})
         {1}
             {2}
-        {3}", new string[] { m.Groups[1].Value, "{", m.Groups[2].Value, "}" });
+        {3}", new string[] { parmName, "{", m.Groups[2].Value, "}" });
 
 
                             string[] argTypes = m.Groups[1].Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -88,7 +98,7 @@ namespace oyster.web.codegenerator
                     var m = regLoad.Match(code);
                     if (m.Success && m.Groups.Count > 1)
                     {
-                        if (loadMethod == null)
+                        if (requestMethod == null)
                         {
                             string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             if (ps.Length < 2)
@@ -96,8 +106,8 @@ namespace oyster.web.codegenerator
                                 Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
                                 Environment.Exit(1);
                             }
-                            loadMethod = string.Format(@"
-        public static void Request(Request {0},Response {1})
+                            requestMethod = string.Format(@"
+        public override void Request(Request {0},Response {1})
         {3}
             {2}
         {4}
@@ -115,17 +125,18 @@ namespace oyster.web.codegenerator
                 }
             }
 
-            string ireqMethod = @"
-        public static dynamic Init(Request request){
-            var parms = Parameters(request);
-            return Init(" + pstr + @");
-        }      
-";
+            //            string ireqMethod = @"
+            //        public static dynamic Init(Request request){
+            //            var parms = Parameters(request);
+            //            return Init(" + pstr + @");
+            //        }      
+            //";
 
 
             StringBuilder codeBody = new StringBuilder();
             for (int i = 0; i < r.NodeCount; i++)
             {
+                var section = new KeyValuePair<string, RazorResolver>();
                 string code = "";
                 if (r.CodeList.TryGetValue(i, out code))
                 {
@@ -145,9 +156,21 @@ namespace oyster.web.codegenerator
                         continue;
                     codeBody.AppendFormat("\r\n            Echo(html, @\"{0}\");", code.Replace("\"", "\"\""));
                 }
+                else if (r.sectionCodeList.TryGetValue(i, out section))
+                {
+                    codeBody.AppendFormat("\r\n            invorker.Invork(\"{0}\");", section.Key);
+                }
             }
+            Regex regxModel = new Regex("dynamic\\s*Model\\s*=\\s*null;");
+            string codeBodyText = regxModel.Replace(codeBody.ToString(), "");
 
             StringBuilder codeSection = new StringBuilder();
+            codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
+                    @"{
+    dynamic Model=response.Model;
+" + codeBodyText + "}");
+
+
             foreach (var idx in r.sectionCodeList.Keys)
             {
                 var kv = r.sectionCodeList[idx];
@@ -175,7 +198,10 @@ namespace oyster.web.codegenerator
                         secFunc.AppendFormat("\r\n            Echo(html, @\"{0}\");", code.Replace("\"", "\"\""));
                     }
                 }
-                codeSection.AppendFormat("sectionBlockPool.Add(\"{0}\",(html)=>{1});\r\n", kv.Key, "{" + secFunc.ToString() + "}");
+                codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", kv.Key,
+                    @"{
+    dynamic Model=response.Model;
+" + secFunc.ToString() + "}");
 
             }
 
@@ -185,20 +211,35 @@ namespace oyster.web.codegenerator
             {
                 codeUsing += string.Format("    using {0};\r\n", s);
             }
-            Regex regxModel = new Regex("dynamic\\s*Model\\s*=\\s*null;");
-            string codeBodyText = regxModel.Replace(codeBody.ToString(), "");
+
 
             string codetxt = @"
 namespace " + NameSpace + @"
 {
     using oyster.web;
 " + codeUsing + @"
-    public class " + ClassName + @" : ITemplate
+    public class " + ClassName + @" : TemplateBase<" + ClassName + @">
     {
-        static Dictionary<string, List<string>> htmlBlockPool = new Dictionary<string, List<string>>();
-        static Dictionary<string, Action<StringBuilder>> sectionBlockPool = new Dictionary<string, Action<StringBuilder>>();
-        static Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>> childTemplates = new Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>>();
+        static " + ClassName + @"()
+        {
+            " + codeSection.ToString() + @"
+        }
 
+        " + initMethod + @"
+        " + requestMethod + @"
+    }
+}
+";
+
+
+            /* ------old --------
+            string codetxt = @"
+namespace " + NameSpace + @"
+{
+    using oyster.web;
+" + codeUsing + @"
+    public class " + ClassName + @" : TemplateBase
+    {
         static " + ClassName + @"()
         {
             " + codeSection.ToString() + @"
@@ -211,12 +252,12 @@ namespace " + NameSpace + @"
             return Init(request);
         }
 "
-  + ireqMethod + reqMethod + @"
+  + ireqMethod + initMethod + @"
         void ITemplate.Request(Request request,Response response)
         {
             Request(request,response);
         }
-" + loadMethod + @"
+" + requestMethod + @"
 
         public static StringBuilder Rander(dynamic Model)
         {
@@ -241,7 +282,7 @@ namespace " + NameSpace + @"
     }
 }
 ";
-
+            */
             Regex regliner = new Regex("(\r([^\n]))", RegexOptions.Singleline);
             codetxt = regliner.Replace(codetxt, "\r\n$2");
 

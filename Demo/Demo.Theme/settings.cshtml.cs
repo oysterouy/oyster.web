@@ -16,7 +16,7 @@ namespace demotheme
         public static readonly decimal aa = 6.978879M;
 
         
-        static readonly List<Func<Request, ITemplate>> routes = new List<Func<Request, ITemplate>>();
+        static readonly List<Func<Request, TemplateBase>> routes = new List<Func<Request, TemplateBase>>();
 
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
@@ -46,7 +46,7 @@ namespace demotheme
         }
 
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
-        public override ITemplate Route(Request request)
+        public override TemplateBase Route(Request request)
         {
             foreach (var rt in routes)
             {

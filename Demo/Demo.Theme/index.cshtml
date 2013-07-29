@@ -4,32 +4,27 @@
 @{
     var tttt = 12;
 }
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>index</title>
-</head>
-<body>
-    @{
-        var ttt = Settings.i + 1 + tttt + Model.Index;
-    }
-    <h1>
-        Hello world~</h1>
+@{
+    var ttt = Settings.i + 1 + tttt + Model.Index;
+}
+<h1>
+    Hello world~ 我是继承页的BODY</h1>
+<div>
+</div>
+<div>
+    <p>
+        哈哈哈哈</p>
+</div>
+@section Foot{
     <div>
-        @section Body{}
+        <h2>
+            我是继承页页脚</h2>
     </div>
-    <div>
-    </div>
-</body>
-</html>
-@TemplateHelper.Parameters((context) =>
+}
+@TemplateHelper.Init((request) =>
 {
-    return new object[1];
-})
-@TemplateHelper.Init((Request request, string pageIdx) =>
-{
-    request.Layout<_layout>(() => _layout.Init(1, ""));
-    return new { A = 1, B = 3 };
+    request.Layout<_layout>();
+    return request.Body = new RequestBody { Model = new { A = 1, B = 3 } };
 })
 @TemplateHelper.Request((request, response) =>
 {
@@ -39,5 +34,5 @@
         md.Title = "AAAAAAAAAAA";
         return md;
     });
-    response.Model = new { Index = request.Body.A + request.Body.B * 13 };
+    response.Model = new { Index = request.Body.Model.A + request.Body.Model.B * 13 };
 })

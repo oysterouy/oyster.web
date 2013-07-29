@@ -8,64 +8,13 @@ namespace demotheme
     using System.Text;
     using System.Web;
 
-    public class _layout : ITemplate
+    public class _layout : TemplateBase<_layout>
     {
-        static Dictionary<string, List<string>> htmlBlockPool = new Dictionary<string, List<string>>();
-        static Dictionary<string, Action<StringBuilder>> sectionBlockPool = new Dictionary<string, Action<StringBuilder>>();
-        static Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>> childTemplates = new Dictionary<KeyValuePair<string, int>, KeyValuePair<string, Type>>();
-
         static _layout()
         {
-            sectionBlockPool.Add("Body",(html)=>{
-            Echo(html, @"<div>
-                        默认Body!!!</div>
-               ");});
-sectionBlockPool.Add("Foot",(html)=>{
-            Echo(html, @"<p>
-                        我是默认脚</p>
-               ");});
+            templateSections.Add("Page",(html,response,invorker)=>{
+    dynamic Model=response.Model;
 
-        }
-public static object[] Parameters(Request req)
-        
-        {
-    return new object[] { };
-}
-
-        dynamic ITemplate.Init(Request request)
-        {
-            return Init(request);
-        }
-
-        public static dynamic Init(Request request){
-            var parms = Parameters(request);
-            return Init((long)parms[0],(string)parms[1]);
-        }      
-
-        public static dynamic Init(long userId, string name)
-        {
-            
-    return null;
-
-        }
-        void ITemplate.Request(Request request,Response response)
-        {
-            Request(request,response);
-        }
-
-        public static void Request(Request req,Response  resp)
-        {
-            
-    //req.Block<Login>(("AAAAAAAAAAAAAAAAAAAA")=>{
-    //return null;
-    //});
-
-        }
-
-
-        public static StringBuilder Rander(dynamic Model)
-        {
-            StringBuilder html = new StringBuilder();
             Echo(html, @"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
 <html xmlns=""http://www.w3.org/1999/xhtml"">
 <head>
@@ -83,12 +32,14 @@ public static object[] Parameters(Request req)
                 <h2>
                     Body开始了</h2>
                 ");
+            invorker.Invork("Body");
             Echo(html, @"
             </div>
             <div>
                 <h2>
                     Foot 开始</h2>
                 ");
+            invorker.Invork("Foot");
             Echo(html, @"
             </div>
         }
@@ -98,21 +49,36 @@ public static object[] Parameters(Request req)
     </div>
 </body>
 </html>
-");
-            return html;
-        }
-        
-        StringBuilder ITemplate.Rander(dynamic Model)
-        {
-            return Rander(Model);
+");});
+templateSections.Add("Body",(html,response,invorker)=>{
+    dynamic Model=response.Model;
+
+            Echo(html, @"<div>
+                        默认Body!!!</div>
+               ");});
+templateSections.Add("Foot",(html,response,invorker)=>{
+    dynamic Model=response.Model;
+
+            Echo(html, @"<p>
+                        我是默认脚</p>
+               ");});
+
         }
 
-        internal  static  StringBuilder Echo(StringBuilder html, object p)
+        
+        public override dynamic Init(Request request)
         {
-            html.Append(p == null ? "" : p.ToString());
-            return html;
+            
+    return request.Body;
+
+        }
+        
+        public override void Request(Request req,Response  resp)
+        {
+            
+
+
         }
 
-        
     }
 }
