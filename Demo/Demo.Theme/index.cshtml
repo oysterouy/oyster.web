@@ -14,6 +14,10 @@
 <div>
     <p>
         哈哈哈哈</p>
+    <div>
+        <b>加载Login..</b>
+        @TemplateHelper.Block((Login log,string "Index_Login") => true)
+    </div>
 </div>
 @section Foot{
     <div>
@@ -24,6 +28,7 @@
 @TemplateHelper.Init((request) =>
 {
     request.Layout<_layout>();
+    request.BlockModel<Login>("Index_Login",Login.Parameters("AAA"));
     return new object[] { 1, 3 };
 })
 @TemplateHelper.Request((int idx, Response response) =>

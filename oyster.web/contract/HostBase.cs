@@ -12,7 +12,7 @@ namespace oyster.web
     {
         public virtual ResponseInfo DoRequest(RequestHead header)
         {
-            Request request = new Request { Head = header };
+            Request request = new Request(header);
             Response response = null;
             if (BeforeRouteFilter(request))
             {
@@ -27,16 +27,15 @@ namespace oyster.web
                 {
                     var parms = temp.Init(request);
                     request.Body.Paramters = parms;
-
                     if (BeforeRequestFilter(request))
                     {
-                        response = request.Execute();
-                        response.Waiting();
-                        if (BeforeRanderFilter(request, response))
-                        {
-                            response.Rander();
-                            AfterRanderFilter(request, response);
-                        }
+                        response = RequestInternal(request);
+                    }
+                    response.Waiting();
+                    if (BeforeRanderFilter(request, response))
+                    {
+                        response.Rander();
+                        AfterRanderFilter(request, response);
                     }
                 }
             }
@@ -51,5 +50,12 @@ namespace oyster.web
         public abstract bool BeforeRanderFilter(Request request, Response response);
         public abstract bool AfterRanderFilter(Request request, Response response);
         public abstract int LoadingTimeout { get; }
+
+        internal Response RequestInternal(Request Request)
+        {
+            Response response = Request.Execute();
+
+            return response;
+        }
     }
 }

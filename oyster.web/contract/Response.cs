@@ -10,12 +10,22 @@ namespace oyster.web
     {
         public Response()
         {
+            Id = Guid.NewGuid().ToString("N");
             Head = new ResponseHead();
             Model = new DynamicModel();
         }
+
+        internal Request Request { get; set; }
+
         internal TemplateBase Template { get; set; }
 
         public ResponseHead Head { get; internal set; }
+
+        public string Id
+        {
+            get;
+            private set;
+        }
 
         public dynamic Model { get; internal set; }
 
@@ -26,6 +36,8 @@ namespace oyster.web
         internal System.Threading.AutoResetEvent waitHandle { get; set; }
         object waitLock = new object();
         bool hadWaitingBack = false;
+        bool hadWaitingSuccess = false;
+        bool hadRander = false;
 
         public Response Waiting(int misecond = -1)
         {
@@ -44,9 +56,9 @@ namespace oyster.web
                 lock (waitLock)
                 {
                     if (millisecond == 0)
-                        waitHandle.WaitOne();
+                        hadWaitingSuccess = waitHandle.WaitOne();
                     else
-                        waitHandle.WaitOne(millisecond);
+                        hadWaitingSuccess = waitHandle.WaitOne(millisecond);
                     hadWaitingBack = true;
                 }
             }
@@ -110,7 +122,33 @@ namespace oyster.web
                 var invorker = new SectionInvork { Html = html, Sections = actDic };
                 invorker.Invork(Template.GetType());
             }
+            hadRander = true;
             return this;
+        }
+
+        public string Block<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
+        {
+            return Request.Block<TTemplate>(callId, sync);
+        }
+
+        public void BlockModel<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
+        {
+            Request.BlockModel<TTemplate>(callId, reqParams);
+        }
+
+        public void InvorkBlock<TTemplate>(string callId) where TTemplate : TemplateBase
+        {
+            Request.InvorkBlock<TTemplate>(callId);
+        }
+
+        public string GetOutPut()
+        {
+            if (hadRander)
+                return Body.ToString();
+            if (hadWaitingSuccess)
+                return Rander().Body.ToString();
+
+            return string.Format("<!--block:callbackid:{0}-->", Id);
         }
     }
 }

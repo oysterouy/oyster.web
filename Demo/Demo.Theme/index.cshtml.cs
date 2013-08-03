@@ -28,6 +28,12 @@ namespace demotheme
 <div>
     <p>
         哈哈哈哈</p>
+    <div>
+        <b>加载Login..</b>
+        ");
+            Echo(html, response.Block<Login>("Index_Login",false));
+            Echo(html, @"
+    </div>
 </div>
 ");
             invorker.Invork(typeof(Index),"Foot");});
@@ -45,8 +51,11 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         
         public override object[] Init(Request request)
         {
+            request.InvorkBlock<Login>("Index_Login");
+
             
     request.Layout<_layout>();
+    request.BlockModel<Login>("Index_Login",Login.Parameters("AAA"));
     return new object[] { 1, 3 };
 
         }
@@ -71,6 +80,11 @@ templateSections.Add("Foot",(html,response,invorker)=>{
             var model= RequestInternal((int)parms[0],response);
             if (response.Model != model)
                 throw new Exception("Please Set Model To Response.Model!");
+        }
+        
+        public static object[] Parameters(int p0)
+        {
+            return new object[] {p0 };
         }
 
     }

@@ -28,14 +28,15 @@ namespace oyster.web.codegenerator
 
         public string DoResolve()
         {
-            Regex regParameters = new Regex("TemplateHelper\\.Parameters\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
+            Regex regBlock = new Regex("TemplateHelper\\.Block\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
 
             Regex regRequest = new Regex("TemplateHelper\\.Init\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
             Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
-            string paramsMethod = null, initMethod = null, requestMethod = null, pstr = "";
+            string blockInvorks = "", initMethod = null, initParamName = "", requestMethod = null, pstr = "";
+
 
             var keyLs = r.OutCodeList.Keys.ToArray();
             foreach (var codeIdx in keyLs)
@@ -50,18 +51,17 @@ namespace oyster.web.codegenerator
                         {
                             string[] parms = m.Groups[1].Value.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            string parmName = "";
                             if (parms.Length > 1)
-                                parmName = m.Groups[1].Value;
+                                initParamName = parms[1];
                             else
-                                parmName = "Request " + parms[0];
-
+                                initParamName = parms[0];
 
                             initMethod = string.Format(@"
-        public override object[] Init({0})
+        public override object[] Init(Request {0})
         {1}
+            /*inputblocks*/
             {2}
-        {3}", new string[] { parmName, "{", m.Groups[2].Value, "}" });
+        {3}", new string[] { initParamName, "{", m.Groups[2].Value, "}" });
 
 
                             string[] argTypes = m.Groups[1].Value.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -95,12 +95,17 @@ namespace oyster.web.codegenerator
         {3}
 ", new string[] { m.Groups[1].Value, m.Groups[2].Value, "{", "}" });
 
-                            string pVal = "";
+                            string pVal = "", pParameters = "", pParametersVal = "";
                             for (int i = 0; i < ps.Length - 1; i++)
                             {
                                 string pType = ps[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
                                 pVal += string.Format("({0})parms[{1}],", pType, i);
+                                pParameters += string.Format("{0} p{1},", pType, i);
+                                pParametersVal += string.Format("p{0},", i);
                             }
+
+                            pParameters = pParameters.EndsWith(",") ? pParameters.Substring(0, pParameters.Length - 1) : pParameters;
+                            pParametersVal = pParametersVal.EndsWith(",") ? pParametersVal.Substring(0, pParametersVal.Length - 1) : pParametersVal;
 
                             string requestOverride = @"
         public override void Request(Request request,Response response)
@@ -109,6 +114,11 @@ namespace oyster.web.codegenerator
             var model= RequestInternal(" + pVal + @"response);
             if (response.Model != model)
                 throw new Exception(""Please Set Model To Response.Model!"");
+        }
+        
+        public static object[] Parameters(" + pParameters + @")
+        {
+            return new object[] {" + pParametersVal + @" };
         }
 ";
                             requestMethod += requestOverride;
@@ -119,7 +129,23 @@ namespace oyster.web.codegenerator
                 }
                 else if (code.Contains("TemplateHelper.Block("))
                 {
-                    r.OutCodeList[codeIdx] = null;
+                    var m = regBlock.Match(code);
+                    if (m.Success && m.Groups.Count > 1)
+                    {
+                        string[] parms = m.Groups[1].Value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parms.Length != 4)
+                        {
+                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string callId)=>true) 参数设置不正确,必须使用明确类型的参数方式!");
+                            Environment.Exit(1);
+                        }
+                        string template = parms[0];
+                        string id = parms[3];
+                        bool sync = m.Groups[2].Value.Contains("false");
+                        r.OutCodeList[codeIdx] = string.Format("response.Block<{0}>({1},{2})", template, id, sync ? "true" : "false");
+                        blockInvorks += string.Format("__initParamName__.InvorkBlock<{1}>({2});\r\n", initParamName, template, id);
+                    }
+                    else
+                        r.OutCodeList[codeIdx] = null;
                 }
             }
             StringBuilder codeBody = new StringBuilder();
@@ -201,8 +227,8 @@ namespace oyster.web.codegenerator
             {
                 codeUsing += string.Format("    using {0};\r\n", s);
             }
-
-
+            blockInvorks = blockInvorks.Replace("__initParamName__", initParamName);
+            initMethod = initMethod.Replace("/*inputblocks*/", blockInvorks);
             string codetxt = @"
 namespace " + NameSpace + @"
 {
@@ -220,59 +246,6 @@ namespace " + NameSpace + @"
     }
 }
 ";
-
-
-            /* ------old --------
-            string codetxt = @"
-namespace " + NameSpace + @"
-{
-    using oyster.web;
-" + codeUsing + @"
-    public class " + ClassName + @" : TemplateBase
-    {
-        static " + ClassName + @"()
-        {
-            " + codeSection.ToString() + @"
-        }
-" + paramsMethod
-  + @"
-
-        dynamic ITemplate.Init(Request request)
-        {
-            return Init(request);
-        }
-"
-  + ireqMethod + initMethod + @"
-        void ITemplate.Request(Request request,Response response)
-        {
-            Request(request,response);
-        }
-" + requestMethod + @"
-
-        public static StringBuilder Rander(dynamic Model)
-        {
-            StringBuilder html = new StringBuilder();"
-+ codeBodyText
-+ @"
-            return html;
-        }
-        
-        StringBuilder ITemplate.Rander(dynamic Model)
-        {
-            return Rander(Model);
-        }
-
-        internal  static  StringBuilder Echo(StringBuilder html, object p)
-        {
-            html.Append(p == null ? """" : p.ToString());
-            return html;
-        }
-
-        
-    }
-}
-";
-            */
             Regex regliner = new Regex("(\r([^\n]))", RegexOptions.Singleline);
             codetxt = regliner.Replace(codetxt, "\r\n$2");
 

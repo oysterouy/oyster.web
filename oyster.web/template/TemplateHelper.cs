@@ -81,7 +81,8 @@ namespace oyster.web
             return "";
         }
 
-        public static string Block<T>(Func<T, string> act)
+        public static string Block<T>(Func<T, string, bool> act)
+            where T : TemplateBase
         {
             return "";
         }

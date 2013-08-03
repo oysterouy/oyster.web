@@ -45,10 +45,11 @@ namespace demotheme
             </div>
             ");int cc = t + 1000;
             Echo(html, @"
-             <a></a>
+            <a></a>
         ");
         
             Echo(html, @"<p>");
+            Echo(html, response.Block<Login>("LLL",true));
             Echo(html, @"
         </p>
     </div>
@@ -73,6 +74,8 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         
         public override object[] Init(Request request)
         {
+            request.InvorkBlock<Login>("LLL");
+
             
     request.Body.Paramters = new object[] { 1, 2, "str" };
     return request.Body.Paramters;
@@ -82,6 +85,7 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         public dynamic RequestInternal(int index, int count, Response resp)
         {
             
+    resp.BlockModel<Login>("LLL",Login.Parameters("BBB"));
     return resp.Model;
 
         }
@@ -92,6 +96,11 @@ templateSections.Add("Foot",(html,response,invorker)=>{
             var model= RequestInternal((int)parms[0],(int)parms[1],response);
             if (response.Model != model)
                 throw new Exception("Please Set Model To Response.Model!");
+        }
+        
+        public static object[] Parameters(int p0,int p1)
+        {
+            return new object[] {p0,p1 };
         }
 
     }

@@ -9,9 +9,13 @@ namespace oyster.web
     public class Request
     {
         public Request()
+            : this(new RequestHead())
+        { }
+        public Request(RequestHead header)
         {
-            Head = new RequestHead();
+            Head = header;
             Body = new RequestBody();
+            BlockCall = new BlockCall(Head);
         }
         public TemplateBase Template { get; internal set; }
         public RequestHead Head { get; internal set; }
@@ -19,7 +23,7 @@ namespace oyster.web
 
         public Response Execute()
         {
-            Response resp = new Response { Template = Template };
+            Response resp = new Response { Template = Template, Request = this };
             if (LayoutRequest != null)
             {
                 resp.LayoutResponse = LayoutRequest.Execute();
@@ -71,9 +75,21 @@ namespace oyster.web
 
         }
 
-        public void Block<T>(Func<string, DynamicModel> initBlockAction) where T : TemplateBase
+        [NonSerialized]
+        BlockCall BlockCall = null;
+        public string Block<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
         {
+            return BlockCall.Block<TTemplate>(callId, sync);
+        }
 
+        public void BlockModel<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
+        {
+            BlockCall.BlockModel<TTemplate>(callId, reqParams);
+        }
+
+        public void InvorkBlock<TTemplate>(string callId) where TTemplate : TemplateBase
+        {
+            BlockCall.InvorkBlock<TTemplate>(callId);
         }
     }
 }

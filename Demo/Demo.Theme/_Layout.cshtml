@@ -29,9 +29,9 @@
                 }
             </div>
             @{int cc = t + 1000;}
-             <a></a>
+            <a></a>
         }
-        <p>@TemplateHelper.Block((Login Log) => "AAAAAAAAAAAAAAAAAAAA")
+        <p>@TemplateHelper.Block((Login Log,string "LLL") => false)
         </p>
     </div>
 </body>
@@ -43,5 +43,6 @@
 })
 @TemplateHelper.Request((int index, int count, Response resp) =>
 {
+    resp.BlockModel<Login>("LLL",Login.Parameters("BBB"));
     return resp.Model;
 })

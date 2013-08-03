@@ -36,7 +36,7 @@ namespace demotheme
     if (path.Equals("/index"))
         return new Index();
     if (path.Equals("/login"))
-        return new Index();
+        return new Login();
     return null;
 });
 

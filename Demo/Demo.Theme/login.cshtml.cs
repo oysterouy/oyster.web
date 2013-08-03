@@ -16,8 +16,11 @@ namespace demotheme
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<div>
-    <span>姓名：张三</span> <span>年龄：");
+            Echo(html, @"
+<div>
+    <span>姓名：");
+            Echo(html, Model.Name);
+            Echo(html, @"</span> <span>年龄：");
             Echo(html, Settings.aa + 1203);
             Echo(html, @"</span>
     ");
@@ -44,13 +47,15 @@ namespace demotheme
         public override object[] Init(Request request)
         {
             
+            
     return new object[] { 1 };
 
         }
         
-        public dynamic RequestInternal(string req, Response resp)
+        public dynamic RequestInternal(string name, Response resp)
         {
             
+    resp.Model.Name=name;
     return resp.Model;
 
         }
@@ -61,6 +66,11 @@ namespace demotheme
             var model= RequestInternal((string)parms[0],response);
             if (response.Model != model)
                 throw new Exception("Please Set Model To Response.Model!");
+        }
+        
+        public static object[] Parameters(string p0)
+        {
+            return new object[] {p0 };
         }
 
     }
