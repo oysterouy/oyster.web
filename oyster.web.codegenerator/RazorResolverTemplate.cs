@@ -41,24 +41,6 @@ namespace oyster.web.codegenerator
             foreach (var codeIdx in keyLs)
             {
                 string code = r.OutCodeList[codeIdx];
-                //                if (code.Contains("TemplateHelper.Parameters("))
-                //                {
-                //                    var m = regParameters.Match(code);
-                //                    if (m.Success && m.Groups.Count > 2)
-                //                    {
-                //                        if (paramsMethod == null)
-                //                        {
-                //                            bool hadKh = m.Groups[2].Value.Trim().StartsWith("{");
-                //                            paramsMethod = string.Format(
-                //@"                                           public static object[] Parameters(Request {0})
-                //        {1}
-                //        {2}
-                //        {3}", new string[] { m.Groups[1].Value, hadKh ? "" : "{", m.Groups[2].Value, hadKh ? "" : "}" }).Trim();
-                //                        }
-                //                        r.OutCodeList[codeIdx] = null;
-                //                    }
-                //                }
-                //                else 
                 if (code.Contains("TemplateHelper.Init("))
                 {
                     var m = regRequest.Match(code);
@@ -76,7 +58,7 @@ namespace oyster.web.codegenerator
 
 
                             initMethod = string.Format(@"
-        public override dynamic Init({0})
+        public override object[] Init({0})
         {1}
             {2}
         {3}", new string[] { parmName, "{", m.Groups[2].Value, "}" });
@@ -107,13 +89,29 @@ namespace oyster.web.codegenerator
                                 Environment.Exit(1);
                             }
                             requestMethod = string.Format(@"
-        public override void Request(Request {0},Response {1})
+        public dynamic RequestInternal({0})
+        {2}
+            {1}
         {3}
-            {2}
-        {4}
-", new string[] { ps[0], ps[1], m.Groups[2].Value, "{", "}" });
+", new string[] { m.Groups[1].Value, m.Groups[2].Value, "{", "}" });
 
+                            string pVal = "";
+                            for (int i = 0; i < ps.Length - 1; i++)
+                            {
+                                string pType = ps[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                                pVal += string.Format("({0})parms[{1}],", pType, i);
+                            }
 
+                            string requestOverride = @"
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            var model= RequestInternal(" + pVal + @"response);
+            if (response.Model != model)
+                throw new Exception(""Please Set Model To Response.Model!"");
+        }
+";
+                            requestMethod += requestOverride;
 
                         }
                     }
@@ -124,15 +122,6 @@ namespace oyster.web.codegenerator
                     r.OutCodeList[codeIdx] = null;
                 }
             }
-
-            //            string ireqMethod = @"
-            //        public static dynamic Init(Request request){
-            //            var parms = Parameters(request);
-            //            return Init(" + pstr + @");
-            //        }      
-            //";
-
-
             StringBuilder codeBody = new StringBuilder();
             for (int i = 0; i < r.NodeCount; i++)
             {
@@ -158,7 +147,7 @@ namespace oyster.web.codegenerator
                 }
                 else if (r.sectionCodeList.TryGetValue(i, out section))
                 {
-                    codeBody.AppendFormat("\r\n            invorker.Invork(\"{0}\");", section.Key);
+                    codeBody.AppendFormat("\r\n            invorker.Invork(typeof({0}),\"{1}\");", ClassName, section.Key);
                 }
             }
             Regex regxModel = new Regex("dynamic\\s*Model\\s*=\\s*null;");
@@ -206,6 +195,7 @@ namespace oyster.web.codegenerator
             }
 
             string codeUsing = "";
+            r.UsingNames.Add("oyster.web.define");
             r.UsingNames.Sort();
             foreach (string s in r.UsingNames)
             {

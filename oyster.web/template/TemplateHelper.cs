@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
-using oyster.web;
-using System.Runtime.Remoting.Messaging;
+using oyster.web.define;
 
 
 namespace oyster.web
@@ -17,16 +12,6 @@ namespace oyster.web
         }
 
         public static string Route(Func<Request, TemplateBase> Route)
-        {
-            return "";
-        }
-
-        public static string Parameters(Func<Request, object[]> func)
-        {
-            return "";
-        }
-
-        public static string Request(Action<Request, Response> func)
         {
             return "";
         }
@@ -50,52 +35,52 @@ namespace oyster.web
         {
             return "";
         }
-        public static string Init(Func<Request, dynamic> func)
+        public static string Init(Func<Request, object[]> func)
         {
             return "";
         }
-        /*
-        public static string Init<T1>(Func<T1, dynamic> func)
+
+        public static string Request<T1>(Func<T1, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2>(Func<T1, T2, dynamic> func)
+        public static string Request<T1, T2>(Func<T1, T2, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3>(Func<T1, T2, T3, dynamic> func)
+        public static string Request<T1, T2, T3>(Func<T1, T2, T3, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4>(Func<T1, T2, T3, T4, dynamic> func)
+        public static string Request<T1, T2, T3, T4>(Func<T1, T2, T3, T4, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7>(Func<T1, T2, T3, T4, T5, T6, T7, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5, T6, T7>(Func<T1, T2, T3, T4, T5, T6, T7, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8>(Func<T1, T2, T3, T4, T5, T6, T7, T8, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5, T6, T7, T8>(Func<T1, T2, T3, T4, T5, T6, T7, T8, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, Response, dynamic> func)
         {
             return "";
         }
-        public static string Init<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, dynamic> func)
+        public static string Request<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, Response, dynamic> func)
         {
             return "";
         }
-        */
+
         public static string Block<T>(Func<T, string> act)
         {
             return "";

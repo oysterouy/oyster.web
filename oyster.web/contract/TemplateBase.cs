@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using oyster.web.define;
 
 
 namespace oyster.web
@@ -15,7 +16,7 @@ namespace oyster.web
             html.Append(p == null ? "" : p.ToString());
             return html;
         }
-        public abstract dynamic Init(Request request);
+        public abstract object[] Init(Request request);
         public abstract void Request(Request request, Response response);
     }
 

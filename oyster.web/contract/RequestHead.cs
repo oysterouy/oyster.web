@@ -21,11 +21,6 @@ namespace oyster.web
     {
         public CacheToWhere CacheToWhere { get; set; }
         public string CacheKey { get; set; }
-        public dynamic Model { get; set; }
-
-        public RequestBody()
-        {
-            Model = new ExpandoObject();
-        }
+        public object[] Paramters { get; set; }
     }
 }

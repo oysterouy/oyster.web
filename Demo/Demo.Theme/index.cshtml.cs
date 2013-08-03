@@ -2,6 +2,7 @@
 namespace demotheme
 {
     using oyster.web;
+    using oyster.web.define;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +30,7 @@ namespace demotheme
         哈哈哈哈</p>
 </div>
 ");
-            invorker.Invork("Foot");});
+            invorker.Invork(typeof(Index),"Foot");});
 templateSections.Add("Foot",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
@@ -42,15 +43,15 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         }
 
         
-        public override dynamic Init(Request request)
+        public override object[] Init(Request request)
         {
             
     request.Layout<_layout>();
-    return request.Body = new RequestBody { Model = new { A = 1, B = 3 } };
+    return new object[] { 1, 3 };
 
         }
         
-        public override void Request(Request request,Response  response)
+        public dynamic RequestInternal(int idx, Response response)
         {
             
     int t = 5;
@@ -59,8 +60,17 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         md.Title = "AAAAAAAAAAA";
         return md;
     });
-    response.Model = new { Index = request.Body.Model.A + request.Body.Model.B * 13 };
+    response.Model.Index = 3;
+    return response.Model;
 
+        }
+
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            var model= RequestInternal((int)parms[0],response);
+            if (response.Model != model)
+                throw new Exception("Please Set Model To Response.Model!");
         }
 
     }

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Web;
-using oyster.web;
-using System.IO;
 using System.Collections.Generic;
-using oyster.web.hosting;
 using System.Configuration;
+using System.IO;
+using System.Web;
+using oyster.web.hosting;
+using oyster.web.define;
 
 namespace Demo.Host
 {
@@ -71,8 +71,15 @@ namespace Demo.Host
         }
         public void ProcessRequest(HttpContext context)
         {
+
+            dynamic ddddd = new DynamicModel();
+            ddddd.AAA = 5;
+
+            ddddd.B = ddddd.AAAA + 60;
+
+
             var host = GetAppHost(context);
-            var reqheader = new RequestHead { Path = context.Request.Path };
+            var reqheader = HostingHelper.CreateHead(context);
             var resp = host.DoRequest(reqheader);
             context.Response.StatusCode = resp.Header.StatusCode;
             context.Response.Write(resp.Body);
@@ -81,4 +88,3 @@ namespace Demo.Host
         #endregion
     }
 }
-//

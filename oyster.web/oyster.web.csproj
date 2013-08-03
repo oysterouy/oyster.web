@@ -43,17 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="define\DynamicModel.cs" />
     <Compile Include="contract\HostBase.cs" />
     <Compile Include="contract\TemplateBase.cs" />
     <Compile Include="contract\Request.cs" />
     <Compile Include="contract\RequestHead.cs" />
     <Compile Include="contract\Response.cs" />
     <Compile Include="contract\ResponseHead.cs" />
-    <Compile Include="contract\SectionInvork.cs" />
+    <Compile Include="define\KeyValueCollection.cs" />
+    <Compile Include="define\SectionInvork.cs" />
     <Compile Include="hosting\AssemblyManager.cs" />
     <Compile Include="hosting\DefaultResponseManager.cs" />
     <Compile Include="hosting\HostApplication.cs" />
     <Compile Include="hosting\HostAssermblyLoader.cs" />
+    <Compile Include="hosting\HostingHelper.cs" />
     <Compile Include="hosting\HostProxy.cs" />
     <Compile Include="hosting\ResponseInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

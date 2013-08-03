@@ -98,17 +98,24 @@ namespace oyster.web.codegenerator
             int ii = 0;
 
             int bgkh = 0;
+            int needRightAtKH = 0;
             for (; i < code.Length; i++)
             {
                 if (
                     (code[i] == '@' && (i == 0 || code[i - 1] != '@'))
                     || (bgkh > 0 && code[i] == '}')
                     || i > code.Length - 2
+                    || (needRightAtKH > 0 && code[i] == '}')
                     )
                 {
                     if (i - ii > 0)
                         StaticHtmlList.Add(NewNodeIndex, code.Substring(ii, i - ii));
-                    i += DoCSharpCodeResolve(code.Substring(i), out bgkh, bgkh);
+
+                    //遇到@{的右边括号跳过之后执行cs code 检测
+                    if (needRightAtKH > 0 && code[i] == '}')
+                        i++;
+
+                    i += DoCSharpCodeResolve(code.Substring(i), ref bgkh, ref needRightAtKH);
                     bgkh = bgkh > 0 ? bgkh : 0;
                     ii = i;
                 }
@@ -116,7 +123,7 @@ namespace oyster.web.codegenerator
             return true;
         }
 
-        int DoCSharpCodeResolve(string code, out int inbgkh, int bgkh = 0)
+        int DoCSharpCodeResolve(string code, ref int bgkh, ref int needAtRightKH)
         {
             //string codeEchoFormat = "\r\n            Echo(html, {0});";
             int i = 0;
@@ -177,8 +184,9 @@ namespace oyster.web.codegenerator
                             goto DoHtmlCodeResolve;
                         //@{XXX}
                         case '{':
-                            j = i + 2;
-                            ii = j;
+                            ii = j = i + 2;
+                            needAtRightKH++;
+                            ;
                             break;
 
                         //@section XXX{}
@@ -254,6 +262,9 @@ namespace oyster.web.codegenerator
                                 if (casc > 64 && casc < 123)
                                     continue;
 
+                                if (code[j] != '"' && code[j] != '(' && code[j] != ')')
+                                    break;
+
                                 j++;
                                 break;
                             }
@@ -301,7 +312,7 @@ namespace oyster.web.codegenerator
 
             //外层用循环避免递归
         DoHtmlCodeResolve:
-            inbgkh = bgkhleft;
+            bgkh = bgkhleft;
             return ii;
         }
     }

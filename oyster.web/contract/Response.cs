@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Dynamic;
+using System.Text;
+using oyster.web.define;
 
 namespace oyster.web
 {
@@ -11,13 +11,13 @@ namespace oyster.web
         public Response()
         {
             Head = new ResponseHead();
-            Model = new ExpandoObject();
+            Model = new DynamicModel();
         }
         internal TemplateBase Template { get; set; }
 
-        public ResponseHead Head { get; set; }
+        public ResponseHead Head { get; internal set; }
 
-        public dynamic Model { get; set; }
+        public dynamic Model { get; internal set; }
 
         public StringBuilder Body { get; set; }
 
@@ -51,7 +51,7 @@ namespace oyster.web
                 }
             }
             if (Exception != null)
-                throw Exception;
+                throw new Exception("Some Thing Wrong!", Exception);
 
             return this;
         }
@@ -64,7 +64,7 @@ namespace oyster.web
 
         public Response LayoutResponse { get; set; }
 
-        public void SetLayoutModel<T>(Func<dynamic, dynamic> setLayoutModelAction)
+        public void SetLayoutModel<T>(Func<dynamic, DynamicModel> setLayoutModelAction)
         {
             LayoutResponse.Model = setLayoutModelAction(LayoutResponse.Model);
         }
@@ -80,7 +80,7 @@ namespace oyster.web
             var actDic = new Dictionary<string, InvorkInfo>();
             foreach (var actKv in Template.Sections)
             {
-                actDic.Add(actKv.Key, new InvorkInfo { Response = this, Section = actKv.Value });
+                actDic.Add(actKv.Key, new InvorkInfo { Response = this, Section = actKv.Value, DefineType = Template.GetType() });
             }
             if (action != null)
             {
@@ -92,7 +92,11 @@ namespace oyster.web
                         actKv = new KeyValuePair<string, InvorkInfo>("Body", kv.Value);
                     }
                     if (actDic.ContainsKey(actKv.Key))
+                    {
+                        //layout 也定义了则最先定义的Type为layout
+                        actKv.Value.DefineType = Template.GetType();
                         actDic[actKv.Key] = actKv.Value;
+                    }
                     else
                         actDic.Add(actKv.Key, actKv.Value);
                 }
@@ -104,7 +108,7 @@ namespace oyster.web
             else
             {
                 var invorker = new SectionInvork { Html = html, Sections = actDic };
-                invorker.Invork();
+                invorker.Invork(Template.GetType());
             }
             return this;
         }

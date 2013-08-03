@@ -28,6 +28,8 @@
                         我是默认脚</p>
                 }
             </div>
+            @{int cc = t + 1000;}
+             <a></a>
         }
         <p>@TemplateHelper.Block((Login Log) => "AAAAAAAAAAAAAAAAAAAA")
         </p>
@@ -36,9 +38,10 @@
 </html>
 @TemplateHelper.Init((request) =>
 {
-    return request.Body;
+    request.Body.Paramters = new object[] { 1, 2, "str" };
+    return request.Body.Paramters;
 })
-@TemplateHelper.Request((req, resp) =>
+@TemplateHelper.Request((int index, int count, Response resp) =>
 {
-
+    return resp.Model;
 })

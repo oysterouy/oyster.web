@@ -2,6 +2,7 @@
 namespace demotheme
 {
     using oyster.web;
+    using oyster.web.define;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,18 +33,22 @@ namespace demotheme
                 <h2>
                     Body开始了</h2>
                 ");
-            invorker.Invork("Body");
+            invorker.Invork(typeof(_layout),"Body");
             Echo(html, @"
             </div>
             <div>
                 <h2>
                     Foot 开始</h2>
                 ");
-            invorker.Invork("Foot");
+            invorker.Invork(typeof(_layout),"Foot");
             Echo(html, @"
             </div>
-        }
-        <p>");
+            ");int cc = t + 1000;
+            Echo(html, @"
+             <a></a>
+        ");
+        
+            Echo(html, @"<p>");
             Echo(html, @"
         </p>
     </div>
@@ -66,18 +71,27 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         }
 
         
-        public override dynamic Init(Request request)
+        public override object[] Init(Request request)
         {
             
-    return request.Body;
+    request.Body.Paramters = new object[] { 1, 2, "str" };
+    return request.Body.Paramters;
 
         }
         
-        public override void Request(Request req,Response  resp)
+        public dynamic RequestInternal(int index, int count, Response resp)
         {
             
+    return resp.Model;
 
+        }
 
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            var model= RequestInternal((int)parms[0],(int)parms[1],response);
+            if (response.Model != model)
+                throw new Exception("Please Set Model To Response.Model!");
         }
 
     }

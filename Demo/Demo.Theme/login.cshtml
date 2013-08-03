@@ -2,9 +2,22 @@
 @using oyster.web
 <div>
     <span>姓名：张三</span> <span>年龄：@(Settings.aa + 1203)</span>
+    @{
+        for (int i = 0; i < 6; i++)
+        {
+        <p>@i</p>
+        <div>
+            aaaa</div>
+        @{i += 2;}
+         }
+        <p>
+            HHHHHHHHHHHHh</p> }
 </div>
 @oyster.web.TemplateHelper.Init((request) =>
 {
-    return new { Type = 1 };
+    return new object[] { 1 };
 })
-@oyster.web.TemplateHelper.Request((req, resp) => { })
+@oyster.web.TemplateHelper.Request((string req, Response resp) =>
+{
+    return resp.Model;
+})

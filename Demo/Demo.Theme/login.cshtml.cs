@@ -2,6 +2,7 @@
 namespace demotheme
 {
     using oyster.web;
+    using oyster.web.define;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -19,22 +20,47 @@ namespace demotheme
     <span>姓名：张三</span> <span>年龄：");
             Echo(html, Settings.aa + 1203);
             Echo(html, @"</span>
-</div>
+    ");
+        for (int i = 0; i < 6; i++)
+        {
+        
+            Echo(html, @"<p>");
+            Echo(html, i);
+            Echo(html, @"</p>
+        <div>
+            aaaa</div>
+        ");i += 2;}
+         
+            Echo(html, @"
+        <p>
+            HHHHHHHHHHHHh</p> ");
+
+            Echo(html, @"</div>
 ");});
 
         }
 
         
-        public override dynamic Init(Request request)
+        public override object[] Init(Request request)
         {
             
-    return new { Type = 1 };
+    return new object[] { 1 };
 
         }
         
-        public override void Request(Request req,Response  resp)
+        public dynamic RequestInternal(string req, Response resp)
         {
-             
+            
+    return resp.Model;
+
+        }
+
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            var model= RequestInternal((string)parms[0],response);
+            if (response.Model != model)
+                throw new Exception("Please Set Model To Response.Model!");
         }
 
     }

@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using oyster.web.hosting;
+using oyster.web.define;
 
 namespace oyster.web
 {
     [Serializable]
     public class Request
     {
+        public Request()
+        {
+            Head = new RequestHead();
+            Body = new RequestBody();
+        }
         public TemplateBase Template { get; internal set; }
-        public RequestHead Head { get; set; }
-        public RequestBody Body { get; set; }
+        public RequestHead Head { get; internal set; }
+        public RequestBody Body { get; internal set; }
 
         public Response Execute()
         {
@@ -58,12 +61,17 @@ namespace oyster.web
             LayoutRequest = new Request
             {
                 Head = Head,
-                Body = body,
                 Template = TemplateManager.GetTemplateInstance(typeof(T))
             };
+            if (body == null)
+            {
+                var parms = LayoutRequest.Template.Init(LayoutRequest);
+                LayoutRequest.Body.Paramters = parms;
+            }
+
         }
 
-        public void Block<T>(Func<string, dynamic> initBlockAction) where T : TemplateBase
+        public void Block<T>(Func<string, DynamicModel> initBlockAction) where T : TemplateBase
         {
 
         }

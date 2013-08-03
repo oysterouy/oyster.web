@@ -25,7 +25,8 @@ namespace oyster.web
                 request.Template = temp;
                 if (BeforeRouteFilter(request))
                 {
-                    var reqData = temp.Init(request);
+                    var parms = temp.Init(request);
+                    request.Body.Paramters = parms;
 
                     if (BeforeRequestFilter(request))
                     {

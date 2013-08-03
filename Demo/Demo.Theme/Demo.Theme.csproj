@@ -82,16 +82,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="settings.cshtml" />
+    <None Include="settings.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="index.cshtml" />
+    <None Include="index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="login.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_Layout.cshtml" />
+    <None Include="_Layout.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
