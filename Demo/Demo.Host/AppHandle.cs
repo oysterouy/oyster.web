@@ -71,13 +71,6 @@ namespace Demo.Host
         }
         public void ProcessRequest(HttpContext context)
         {
-
-            dynamic ddddd = new DynamicModel();
-            ddddd.AAA = 5;
-
-            ddddd.B = ddddd.AAAA + 60;
-
-
             var host = GetAppHost(context);
             var reqheader = HostingHelper.CreateHead(context);
             var resp = host.DoRequest(reqheader);

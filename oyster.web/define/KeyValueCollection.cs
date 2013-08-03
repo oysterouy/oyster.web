@@ -13,6 +13,12 @@ namespace oyster.web.define
         List<TValue> saveValues { get; set; }
         object lockObject = new object();
 
+        public KeyValueCollection()
+        {
+            saveKeys = new List<TKey>();
+            saveValues = new List<TValue>();
+        }
+
 
         private void ChangeData(KeyValuePair<TKey, TValue> e, int op)
         {
@@ -133,15 +139,17 @@ namespace oyster.web.define
             {
                 if (key == null)
                     return;
+                var kv = new KeyValuePair<TKey, TValue>(key, value);
                 for (int i = 0; i < Count; i++)
                 {
                     var e = base[i];
                     if (key.Equals(e.Key))
                     {
-                        ChangeData(new KeyValuePair<TKey, TValue>(e.Key, value), 1);
-                        break;
+                        ChangeData(kv, 1);
+                        return;
                     }
                 }
+                ChangeData(kv, 0);
             }
         }
 
