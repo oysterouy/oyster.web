@@ -48,7 +48,7 @@ namespace demotheme
         {
             
             
-    return new object[] { 1 };
+    return new object[] { "张三"};
 
         }
         
