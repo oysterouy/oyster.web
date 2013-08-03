@@ -109,3 +109,5 @@ UpgradeLog*.XML
 
 Demo\Demo.Host\Sites\libs*/
 Demo\Demo.Host\templateroot\DemoTheme*/
+Demo/Demo.Host/sites/libs/oyster.web.dll
+Demo/Demo.Host/templateroot/DemoTheme/Demo.Theme.dll
