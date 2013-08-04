@@ -20,7 +20,7 @@ namespace oyster.web
     public class RequestBody
     {
         public CacheToWhere CacheToWhere { get; set; }
-        public string CacheKey { get; set; }
+        public Func<object[], string> CacheKeySelect { get; set; }
         public object[] Paramters { get; set; }
     }
 }

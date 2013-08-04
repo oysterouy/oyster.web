@@ -15,5 +15,10 @@ namespace oyster.web.hosting
                 Path = context.Request.Path,
             };
         }
+
+        public static IRequestCache GetRequestCacheProvider()
+        {
+            return null;
+        }
     }
 }

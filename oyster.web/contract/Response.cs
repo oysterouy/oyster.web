@@ -15,6 +15,13 @@ namespace oyster.web
             Model = new DynamicModel();
         }
 
+        internal Response(string outText)
+            : this()
+        {
+            Body = new StringBuilder(outText);
+            hadRander = true;
+        }
+
         internal Request Request { get; set; }
 
         internal TemplateBase Template { get; set; }

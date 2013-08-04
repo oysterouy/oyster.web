@@ -53,7 +53,27 @@ namespace oyster.web
 
         internal Response RequestInternal(Request Request)
         {
-            Response response = Request.Execute();
+            Response response = null;
+            string outText = "";
+            var cacheProvider = HostingHelper.GetRequestCacheProvider();
+            if (cacheProvider != null && Request.Body.CacheKeySelect != null)
+            {
+                outText = cacheProvider.GetResponseText(Request.Body.CacheKeySelect, () =>
+                           {
+                               response = Request.Execute();
+                               return response.GetOutPut();
+                           });
+            }
+            if (!string.IsNullOrEmpty(outText))
+            {
+                response = new Response(outText);
+            }
+            else
+            {
+                //没有缓存设置时候
+                response = Request.Execute();
+            }
+
 
             return response;
         }

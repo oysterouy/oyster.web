@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="contract\IRequestCache.cs" />
     <Compile Include="define\BlockCall.cs" />
     <Compile Include="define\DynamicModel.cs" />
     <Compile Include="contract\HostBase.cs" />
