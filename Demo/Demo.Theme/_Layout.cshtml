@@ -43,6 +43,6 @@
 })
 @TemplateHelper.Request((int index, int count, Response resp) =>
 {
-    resp.BlockModel<Login>("LLL",Login.Parameters("BBB"));
+    resp.BlockInvork<Login>("LLL",Login.Parameters("BBB"));
     return resp.Model;
 })

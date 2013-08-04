@@ -126,19 +126,19 @@ namespace oyster.web
             return this;
         }
 
-        public string Block<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
+        public string BlockRander<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
         {
-            return Request.Block<TTemplate>(callId, sync);
+            return Request.BlockRander<TTemplate>(callId, sync);
         }
 
-        public void BlockModel<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
+        public void BlockInvork<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
         {
-            Request.BlockModel<TTemplate>(callId, reqParams);
+            Request.BlockInvork<TTemplate>(callId, reqParams);
         }
 
-        public void InvorkBlock<TTemplate>(string callId) where TTemplate : TemplateBase
+        public void BlockRegister<TTemplate>(string callId) where TTemplate : TemplateBase
         {
-            Request.InvorkBlock<TTemplate>(callId);
+            Request.BlockRegister<TTemplate>(callId);
         }
 
         public string GetOutPut()

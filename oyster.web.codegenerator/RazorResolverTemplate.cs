@@ -141,8 +141,8 @@ namespace oyster.web.codegenerator
                         string template = parms[0];
                         string id = parms[3];
                         bool sync = m.Groups[2].Value.Contains("false");
-                        r.OutCodeList[codeIdx] = string.Format("response.Block<{0}>({1},{2})", template, id, sync ? "true" : "false");
-                        blockInvorks += string.Format("__initParamName__.InvorkBlock<{1}>({2});\r\n", initParamName, template, id);
+                        r.OutCodeList[codeIdx] = string.Format("response.BlockRander<{0}>({1},{2})", template, id, sync ? "true" : "false");
+                        blockInvorks += string.Format("__initParamName__.BlockRegister<{1}>({2});\r\n", initParamName, template, id);
                     }
                     else
                         r.OutCodeList[codeIdx] = null;

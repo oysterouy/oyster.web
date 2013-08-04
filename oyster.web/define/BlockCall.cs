@@ -21,7 +21,7 @@ namespace oyster.web.define
             return string.Format("{0}-{1}", tp.FullName, callId);
         }
 
-        public string Block<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
+        public string BlockRander<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
         {
             string key = GetCallID<TTemplate>(callId);
             BlockCallInfo callData = null;
@@ -29,16 +29,16 @@ namespace oyster.web.define
             {
                 return callData.Waiting(sync);
             }
-            throw new Exception(string.Format("Block<{0}> Id:{1} No found!", typeof(TTemplate).FullName, callId));
+            throw new Exception(string.Format("BlockRander<{0}> Id:{1} No found!", typeof(TTemplate).FullName, callId));
         }
 
-        public void InvorkBlock<TTemplate>(string callId) where TTemplate : TemplateBase
+        public void BlockRegister<TTemplate>(string callId) where TTemplate : TemplateBase
         {
             string key = GetCallID<TTemplate>(callId);
             blocks.Add(key, new BlockCallInfo(callId, TemplateManager.GetTemplateInstance(typeof(TTemplate)), Header));
         }
 
-        public void BlockModel<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
+        public void BlockInvork<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
         {
             string key = GetCallID<TTemplate>(callId);
             BlockCallInfo callData = null;
@@ -75,7 +75,7 @@ namespace oyster.web.define
         public string Waiting(bool alwaysBack)
         {
             if (!hadInvork)
-                throw new Exception(string.Format("Block<{0}> Id:{1}  Had No Set Request Paramsters Yet!", Template.GetType().FullName, Id));
+                throw new Exception(string.Format("BlockRander<{0}> Id:{1}  Had No Set Request Paramsters Yet!", Template.GetType().FullName, Id));
 
             if (alwaysBack)
                 Response.Waiting(0);

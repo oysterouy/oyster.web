@@ -77,19 +77,19 @@ namespace oyster.web
 
         [NonSerialized]
         BlockCall BlockCall = null;
-        public string Block<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
+        public string BlockRander<TTemplate>(string callId, bool sync) where TTemplate : TemplateBase
         {
-            return BlockCall.Block<TTemplate>(callId, sync);
+            return BlockCall.BlockRander<TTemplate>(callId, sync);
         }
 
-        public void BlockModel<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
+        public void BlockInvork<TTemplate>(string callId, object[] reqParams) where TTemplate : TemplateBase
         {
-            BlockCall.BlockModel<TTemplate>(callId, reqParams);
+            BlockCall.BlockInvork<TTemplate>(callId, reqParams);
         }
 
-        public void InvorkBlock<TTemplate>(string callId) where TTemplate : TemplateBase
+        public void BlockRegister<TTemplate>(string callId) where TTemplate : TemplateBase
         {
-            BlockCall.InvorkBlock<TTemplate>(callId);
+            BlockCall.BlockRegister<TTemplate>(callId);
         }
     }
 }

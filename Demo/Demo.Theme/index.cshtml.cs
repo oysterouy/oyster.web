@@ -31,7 +31,7 @@ namespace demotheme
     <div>
         <b>加载Login..</b>
         ");
-            Echo(html, response.Block<Login>("Index_Login",false));
+            Echo(html, response.BlockRander<Login>("Index_Login",false));
             Echo(html, @"
     </div>
 </div>
@@ -51,11 +51,11 @@ templateSections.Add("Foot",(html,response,invorker)=>{
         
         public override object[] Init(Request request)
         {
-            request.InvorkBlock<Login>("Index_Login");
+            request.BlockRegister<Login>("Index_Login");
 
             
     request.Layout<_layout>();
-    request.BlockModel<Login>("Index_Login",Login.Parameters("AAA"));
+    request.BlockInvork<Login>("Index_Login",Login.Parameters("AAA"));
     return new object[] { 1, 3 };
 
         }
