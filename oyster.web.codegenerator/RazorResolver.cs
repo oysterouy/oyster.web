@@ -78,7 +78,7 @@ namespace oyster.web.codegenerator
                 {
                     if (m.Success && m.Groups.Count > 1)
                     {
-                        string nsp = m.Groups[1].Value;
+                        string nsp = m.Groups[1].Value.Trim();
                         if (!UsingNames.Contains(nsp))
                         {
                             UsingNames.Add(nsp);

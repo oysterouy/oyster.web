@@ -228,6 +228,11 @@ namespace oyster.web.codegenerator
                 codeUsing += string.Format("    using {0};\r\n", s);
             }
             blockInvorks = blockInvorks.Replace("__initParamName__", initParamName);
+            if (string.IsNullOrEmpty(initMethod))
+            {
+                Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Init((request)=>{...}) 方法未设置!");
+                Environment.Exit(1);
+            }
             initMethod = initMethod.Replace("/*inputblocks*/", blockInvorks);
             string codetxt = @"
 namespace " + NameSpace + @"

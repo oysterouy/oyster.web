@@ -49,10 +49,10 @@ namespace oyster.web.codegenerator
                 }
                 string nameSpace = "oyster.web.themes";
                 if (args.Length > 2 && !string.IsNullOrEmpty(args[2]))
-                    nameSpace = args[2].ToLower();
+                    nameSpace = args[2].ToLower().Replace('-', '_');
 
                 var lsGenCodeFiles = new List<string>();
-                var fs = System.IO.Directory.GetFiles(dir, "*" + ext);
+                var fs = System.IO.Directory.GetFiles(dir, "*" + ext, SearchOption.AllDirectories);
                 foreach (string f in fs)
                 {
                     string fnameSpace = f.Substring(dir.Length, f.Length - dir.Length - ext.Length)
