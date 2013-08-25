@@ -119,7 +119,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)\oyster.web.codegenerator\bin\Debug\oyster.web.codegenerator.exe $(ProjectDir) .cshtml DemoTheme $(ProjectPath)</PreBuildEvent>
+    <PreBuildEvent>E:\work\git\bitbucket\gelu\bussiness\frontend\library\tools\oyster.web.codegenerator\oyster.web.codegenerator.exe $(ProjectDir) .cshtml DemoTheme $(ProjectPath)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

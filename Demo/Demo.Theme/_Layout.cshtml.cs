@@ -2,6 +2,8 @@
 namespace demotheme
 {
     using oyster.web;
+    using demotheme;
+    using oyster.web;
     using oyster.web.define;
     using System;
     using System.Collections.Generic;
@@ -82,20 +84,17 @@ templateSections.Add("Foot",(html,response,invorker)=>{
 
         }
         
-        public dynamic RequestInternal(int index, int count, Response resp)
+        public void RequestInternal(int index, int count, Response resp)
         {
             
     resp.BlockInvork<Login>("LLL",Login.Parameters("BBB"));
-    return resp.Model;
 
         }
 
         public override void Request(Request request,Response response)
         {
             object[] parms=request.Body.Paramters;
-            var model= RequestInternal((int)parms[0],(int)parms[1],response);
-            if (response.Model != model)
-                throw new Exception("Please Set Model To Response.Model!");
+            RequestInternal((int)parms[0],(int)parms[1],response);
         }
         
         public static object[] Parameters(int p0,int p1)

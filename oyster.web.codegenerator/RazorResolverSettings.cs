@@ -32,7 +32,7 @@ namespace oyster.web.codegenerator
 
             Regex regRoute = new Regex("TemplateHelper\\.Route\\((.*)\\)", RegexOptions.Singleline);
 
-            Regex regFilter = new Regex("TemplateHelper\\.Filter(^[\\(])+\\s*\\((.*)\\)", RegexOptions.Singleline);
+            Regex regFilter = new Regex("TemplateHelper\\.Filter([^\\(]+)\\s*\\((.*)\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
 
@@ -101,7 +101,7 @@ namespace oyster.web.codegenerator
                 var ls = filterCodeDic[fon];
                 foreach (var f in ls)
                 {
-                    addcodeFilter.AppendFormat("            filter{0}.Add({0});\r\n", fon, f);
+                    addcodeFilter.AppendFormat("            filter{0}.Add({1});\r\n", fon, f);
                 }
             }
 
@@ -120,7 +120,7 @@ namespace " + NameSpace + @"
 
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
-        static readonly List<Func<Request,bool>> filterBeforeRequest = new  List<Func<Request,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterBeforeRequest = new  List<Func<Request,Response,bool>>();
 
         static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
 
@@ -157,11 +157,11 @@ namespace " + NameSpace + @"
             return true;
         }
 
-        public override  bool BeforeRequestFilter(Request request)
+        public override  bool BeforeRequestFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRequest)
             {
-                if (!filter(request))
+                if (!filter(request,response))
                     return false;
             }
             return true;

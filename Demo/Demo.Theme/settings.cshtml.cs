@@ -2,6 +2,8 @@
 namespace demotheme
 {
     using oyster.web;
+    using demotheme;
+    using oyster.web;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -20,7 +22,7 @@ namespace demotheme
 
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
-        static readonly List<Func<Request,bool>> filterBeforeRequest = new  List<Func<Request,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterBeforeRequest = new  List<Func<Request,Response,bool>>();
 
         static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
 
@@ -42,6 +44,22 @@ namespace demotheme
 
 
             //******** filter setting *********//
+            filterBeforeRoute.Add((request) =>
+{
+    return true;
+});
+            filterBeforeRequest.Add((request, response) =>
+{
+    return true;
+});
+            filterBeforeRander.Add((request, resp) =>
+{
+    return true;
+});
+            filterAfterRander.Add((request, resp) =>
+{
+    return true;
+});
 
         }
 
@@ -67,11 +85,11 @@ namespace demotheme
             return true;
         }
 
-        public override  bool BeforeRequestFilter(Request request)
+        public override  bool BeforeRequestFilter(Request request, Response response)
         {
             foreach (var filter in filterBeforeRequest)
             {
-                if (!filter(request))
+                if (!filter(request,response))
                     return false;
             }
             return true;

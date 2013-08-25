@@ -1,5 +1,5 @@
-﻿@using demotheme
-@using oyster.web
+﻿@using demotheme;
+@using oyster.web;
 @{dynamic Model=null;}
 <div>
     <span>姓名：@Model.Name</span> <span>年龄：@(Settings.aa + 1203)</span>
@@ -21,5 +21,4 @@
 @oyster.web.TemplateHelper.Request((string name, Response resp) =>
 {
     resp.Model.Name=name;
-    return resp.Model;
 })

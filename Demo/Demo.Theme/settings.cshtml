@@ -1,7 +1,9 @@
 ﻿@using oyster.web;
 @using demotheme;
-@TemplateHelper.Config((int _loadingTimeout) => 300) @TemplateHelper.Config((int i) => 6)
-@TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd") @TemplateHelper.Config((decimal aa) => 6.978879M)
+@TemplateHelper.Config((int _loadingTimeout) => 300)
+@TemplateHelper.Config((int i) => 6)
+@TemplateHelper.Config((string Name) => "sdljflasdjfljwel,sd")
+@TemplateHelper.Config((decimal aa) => 6.978879M)
 @TemplateHelper.Route((Request) =>
 {
     string path = Request.Head.Path.ToLower();
@@ -15,7 +17,8 @@
 @TemplateHelper.FilterBeforeRoute((request) =>
 {
     return true;
-}) @TemplateHelper.FilterBeforeRequest((request) =>
+})
+@TemplateHelper.FilterBeforeRequest((request, response) =>
 {
     return true;
 })

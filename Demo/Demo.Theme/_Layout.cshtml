@@ -1,5 +1,5 @@
-﻿@using oyster.web
-@using demotheme
+﻿@using oyster.web;
+@using demotheme;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -44,5 +44,4 @@
 @TemplateHelper.Request((int index, int count, Response resp) =>
 {
     resp.BlockInvork<Login>("LLL",Login.Parameters("BBB"));
-    return resp.Model;
 })

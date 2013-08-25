@@ -2,6 +2,8 @@
 namespace demotheme
 {
     using oyster.web;
+    using demotheme;
+    using oyster.web;
     using oyster.web.define;
     using System;
     using System.Collections.Generic;
@@ -52,20 +54,17 @@ namespace demotheme
 
         }
         
-        public dynamic RequestInternal(string name, Response resp)
+        public void RequestInternal(string name, Response resp)
         {
             
     resp.Model.Name=name;
-    return resp.Model;
 
         }
 
         public override void Request(Request request,Response response)
         {
             object[] parms=request.Body.Paramters;
-            var model= RequestInternal((string)parms[0],response);
-            if (response.Model != model)
-                throw new Exception("Please Set Model To Response.Model!");
+            RequestInternal((string)parms[0],response);
         }
         
         public static object[] Parameters(string p0)

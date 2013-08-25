@@ -12,7 +12,7 @@ namespace oyster.web
     {
         public virtual ResponseInfo DoRequest(RequestHead header)
         {
-            Request request = new Request(header);
+            Request request = new Request(header) { Host = this };
             Response response = null;
             if (BeforeRouteFilter(request))
             {
@@ -23,21 +23,14 @@ namespace oyster.web
                     goto outmethod;
                 }
                 request.Template = temp;
-                if (BeforeRouteFilter(request))
-                {
-                    var parms = temp.Init(request);
-                    request.Body.Paramters = parms;
-                    if (BeforeRequestFilter(request))
-                    {
-                        response = RequestInternal(request);
-                    }
-                    response.Waiting();
-                    if (BeforeRanderFilter(request, response))
-                    {
-                        response.Rander();
-                        AfterRanderFilter(request, response);
-                    }
-                }
+                var parms = temp.Init(request);
+                request.Body.Paramters = parms;
+
+                response = RequestInternal(request);
+
+                response.Waiting();
+                response.Rander();
+                AfterRanderFilter(request, response);
             }
 
         outmethod:
@@ -46,7 +39,7 @@ namespace oyster.web
         }
         public abstract TemplateBase Route(Request request);
         public abstract bool BeforeRouteFilter(Request request);
-        public abstract bool BeforeRequestFilter(Request request);
+        public abstract bool BeforeRequestFilter(Request request, Response response);
         public abstract bool BeforeRanderFilter(Request request, Response response);
         public abstract bool AfterRanderFilter(Request request, Response response);
         public abstract int LoadingTimeout { get; }

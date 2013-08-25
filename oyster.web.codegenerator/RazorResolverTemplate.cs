@@ -83,13 +83,13 @@ namespace oyster.web.codegenerator
                         if (requestMethod == null)
                         {
                             string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (ps.Length < 2)
+                            if (ps.Length < 1)
                             {
                                 Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
                                 Environment.Exit(1);
                             }
                             requestMethod = string.Format(@"
-        public dynamic RequestInternal({0})
+        public void RequestInternal({0})
         {2}
             {1}
         {3}
@@ -111,9 +111,7 @@ namespace oyster.web.codegenerator
         public override void Request(Request request,Response response)
         {
             object[] parms=request.Body.Paramters;
-            var model= RequestInternal(" + pVal + @"response);
-            if (response.Model != model)
-                throw new Exception(""Please Set Model To Response.Model!"");
+            RequestInternal(" + pVal + @"response);
         }
         
         public static object[] Parameters(" + pParameters + @")

@@ -1,5 +1,5 @@
-﻿@using demotheme
-@using oyster.web
+﻿@using demotheme;
+@using oyster.web;
 @{dynamic Model = null;}
 @{
     var tttt = 12;
@@ -40,5 +40,4 @@
         return md;
     });
     response.Model.Index = 3;
-    return response.Model;
 })

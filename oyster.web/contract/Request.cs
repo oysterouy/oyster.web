@@ -17,13 +17,20 @@ namespace oyster.web
             Body = new RequestBody();
             BlockCall = new BlockCall(Head);
         }
+
+        internal HostBase Host { get; set; }
         public TemplateBase Template { get; internal set; }
         public RequestHead Head { get; internal set; }
         public RequestBody Body { get; internal set; }
 
         public Response Execute()
         {
-            Response resp = new Response { Template = Template, Request = this };
+            Response resp = new Response { Host = this.Host, Template = Template, Request = this };
+            if (Host != null)
+            {
+                if (!Host.BeforeRequestFilter(this, resp))
+                    return resp;
+            }
             if (LayoutRequest != null)
             {
                 resp.LayoutResponse = LayoutRequest.Execute();
@@ -64,6 +71,7 @@ namespace oyster.web
         {
             LayoutRequest = new Request
             {
+                Host = this.Host,
                 Head = Head,
                 Template = TemplateManager.GetTemplateInstance(typeof(T))
             };

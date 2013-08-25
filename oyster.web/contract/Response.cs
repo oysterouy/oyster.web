@@ -21,7 +21,7 @@ namespace oyster.web
             Body = new StringBuilder(outText);
             hadRander = true;
         }
-
+        internal HostBase Host { get; set; }
         internal Request Request { get; set; }
 
         internal TemplateBase Template { get; set; }
@@ -95,7 +95,11 @@ namespace oyster.web
 
         internal Response RanderInternal(StringBuilder html, Dictionary<string, InvorkInfo> action)
         {
+            if (Host != null && !Host.BeforeRanderFilter(Request, this))
+                return this;
+
             Waiting();
+
             var actDic = new Dictionary<string, InvorkInfo>();
             foreach (var actKv in Template.Sections)
             {

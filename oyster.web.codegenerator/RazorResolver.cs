@@ -69,6 +69,29 @@ namespace oyster.web.codegenerator
             {
                 firstCodeIndex = Math.Min(tindx, firstCodeIndex);
             }
+            if (firstCodeIndex < 0)
+            {
+                int codeIndex = -1;
+                for (int i = 0; i < OriginCode.Length; i++)
+                {
+                    if (OriginCode[i] == '@' && OriginCode.Length > i + 6 && !
+                        (
+                            OriginCode[i + 1] == 'u' &&
+                            OriginCode[i + 2] == 's' &&
+                            OriginCode[i + 3] == 'i' &&
+                            OriginCode[i + 4] == 'n' &&
+                            OriginCode[i + 5] == 'g' &&
+                            OriginCode[i + 6] == ' '))
+                    {
+                        codeIndex = i;
+                        break;
+                    }
+                }
+                if (codeIndex > 0)
+                    firstCodeIndex = codeIndex;
+            }
+
+
             if (firstCodeIndex > 0)
             {
                 string usingstr = OriginCode.Substring(0, firstCodeIndex);
