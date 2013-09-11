@@ -80,7 +80,8 @@ namespace oyster.web
                 var parms = LayoutRequest.Template.Init(LayoutRequest);
                 LayoutRequest.Body.Paramters = parms;
             }
-
+            else
+                LayoutRequest.Body = body;
         }
 
         [NonSerialized]
