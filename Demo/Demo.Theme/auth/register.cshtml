@@ -1,0 +1,31 @@
+﻿@using demotheme;
+@using demotheme.auth;
+@using oyster.web;
+@{dynamic Model = null;}
+@{
+    int step = Model.Step;
+    switch (step)
+    {
+        case 1:
+    @TemplateHelper.Block((Register_step1 step,string "Step1")=>true)
+            break;
+            case 2:
+    @TemplateHelper.Block((Register_step2 step,string "Step2")=>true)
+            break;
+    }
+}
+@oyster.web.TemplateHelper.Init((request) =>
+{
+    if (request.Head.Method == "GET")
+        return new object[0];
+    else
+        return new object[] { "张三" };
+})
+@TemplateHelper.Request((response) =>
+{
+
+})
+@TemplateHelper.Request((string str, Response response) =>
+{
+
+})

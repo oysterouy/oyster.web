@@ -126,7 +126,7 @@ namespace " + NameSpace + @"
 
         static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
-        static Settings()
+        static " + ClassName + @"()
         {
             //******** route setting *********//
  " + addcodeRoute + @"

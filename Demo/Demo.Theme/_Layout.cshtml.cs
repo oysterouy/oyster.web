@@ -84,23 +84,25 @@ templateSections.Add("Foot",(html,response,invorker)=>{
 
         }
         
-        public void RequestInternal(int index, int count, Response resp)
+        public void RequestInternal(int index ,  int count ,  Response resp)
         {
             
     resp.BlockInvork<Login>("LLL",Login.Parameters("BBB"));
 
         }
 
-        public override void Request(Request request,Response response)
-        {
-            object[] parms=request.Body.Paramters;
-            RequestInternal((int)parms[0],(int)parms[1],response);
-        }
-        
         public static object[] Parameters(int p0,int p1)
         {
             return new object[] {p0,p1 };
         }
-
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            if(parms==null)
+                throw new Exception("Paramters no set!");
+            
+            if(parms.Length==2)
+                RequestInternal((int)parms[0],(int)parms[1],response);        
+        }
     }
 }

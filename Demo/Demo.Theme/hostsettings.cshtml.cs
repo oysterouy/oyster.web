@@ -10,7 +10,7 @@ namespace demotheme
     using System.Text;
     using System.Web;
 
-    public class Settings : HostBase
+    public class Hostsettings : HostBase
     {
         public static readonly int _loadingTimeout = 300;
         public static readonly int i = 6;
@@ -28,7 +28,7 @@ namespace demotheme
 
         static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
-        static Settings()
+        static Hostsettings()
         {
             //******** route setting *********//
             routes.Add((Request) =>

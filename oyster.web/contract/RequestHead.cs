@@ -16,6 +16,11 @@ namespace oyster.web
     public class RequestHead
     {
         public string Path { get; set; }
+
+        /// <summary>
+        /// HttpMethod:GET,POST,PUT,DEL
+        /// </summary>
+        public string Method { get; set; }
     }
     public class RequestBody
     {

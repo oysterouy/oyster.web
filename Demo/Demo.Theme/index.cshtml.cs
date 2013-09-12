@@ -20,7 +20,7 @@ namespace demotheme
 
     var tttt = 12;
 
-    var ttt = Settings.i + 1 + tttt + Model.Index;
+    var ttt = Hostsettings.i + 1 + tttt + Model.Index;
 
             Echo(html, @"
 <h1>
@@ -62,7 +62,7 @@ templateSections.Add("Foot",(html,response,invorker)=>{
 
         }
         
-        public void RequestInternal(int idx, Response response)
+        public void RequestInternal(int idx ,  Response response)
         {
             
     int t = 5;
@@ -75,16 +75,18 @@ templateSections.Add("Foot",(html,response,invorker)=>{
 
         }
 
-        public override void Request(Request request,Response response)
-        {
-            object[] parms=request.Body.Paramters;
-            RequestInternal((int)parms[0],response);
-        }
-        
         public static object[] Parameters(int p0)
         {
             return new object[] {p0 };
         }
-
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            if(parms==null)
+                throw new Exception("Paramters no set!");
+            
+            if(parms.Length==1)
+                RequestInternal((int)parms[0],response);        
+        }
     }
 }

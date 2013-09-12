@@ -1,5 +1,5 @@
 ﻿
-namespace demotheme
+namespace demotheme.auth
 {
     using oyster.web;
     using demotheme;
@@ -11,9 +11,9 @@ namespace demotheme
     using System.Text;
     using System.Web;
 
-    public class Login : TemplateBase<Login>
+    public class Register_step2 : TemplateBase<Register_step2>
     {
-        static Login()
+        static Register_step2()
         {
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;

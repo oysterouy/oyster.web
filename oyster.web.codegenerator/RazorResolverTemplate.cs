@@ -35,7 +35,7 @@ namespace oyster.web.codegenerator
             Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
-            string blockInvorks = "", initMethod = null, initParamName = "", requestMethod = null, pstr = "";
+            string blockInvorks = "", initMethod = null, initParamName = "", requestMethod = "", requestMethodImp = "", pstr = "";
 
 
             var keyLs = r.OutCodeList.Keys.ToArray();
@@ -80,34 +80,52 @@ namespace oyster.web.codegenerator
                     var m = regLoad.Match(code);
                     if (m.Success && m.Groups.Count > 1)
                     {
-                        if (requestMethod == null)
+                        string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (ps.Length < 1)
                         {
-                            string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (ps.Length < 1)
-                            {
-                                Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
-                                Environment.Exit(1);
-                            }
-                            requestMethod = string.Format(@"
+                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
+                            Environment.Exit(1);
+                        }
+                        //TemplateHelper.Request((response)=>{})
+                        //兼容不带类型的方式
+                        if (ps.Length == 1 && ps[0].Trim().IndexOf(' ') < 0)
+                        {
+                            ps[0] = "Response " + ps[0];
+                        }
+                        string paramsStr = string.Join(" , ", ps);
+                        requestMethod += string.Format(@"
         public void RequestInternal({0})
         {2}
             {1}
         {3}
-", new string[] { m.Groups[1].Value, m.Groups[2].Value, "{", "}" });
+", new string[] { paramsStr, m.Groups[2].Value, "{", "}" });
 
-                            string pVal = "", pParameters = "", pParametersVal = "";
-                            for (int i = 0; i < ps.Length - 1; i++)
-                            {
-                                string pType = ps[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                                pVal += string.Format("({0})parms[{1}],", pType, i);
-                                pParameters += string.Format("{0} p{1},", pType, i);
-                                pParametersVal += string.Format("p{0},", i);
-                            }
+                        string pVal = "", pParameters = "", pParametersVal = "";
+                        for (int i = 0; i < ps.Length - 1; i++)
+                        {
+                            string pType = ps[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            pVal += string.Format("({0})parms[{1}],", pType, i);
+                            pParameters += string.Format("{0} p{1},", pType, i);
+                            pParametersVal += string.Format("p{0},", i);
+                        }
 
-                            pParameters = pParameters.EndsWith(",") ? pParameters.Substring(0, pParameters.Length - 1) : pParameters;
-                            pParametersVal = pParametersVal.EndsWith(",") ? pParametersVal.Substring(0, pParametersVal.Length - 1) : pParametersVal;
+                        pParameters = pParameters.EndsWith(",") ? pParameters.Substring(0, pParameters.Length - 1) : pParameters;
+                        pParametersVal = pParametersVal.EndsWith(",") ? pParametersVal.Substring(0, pParametersVal.Length - 1) : pParametersVal;
+                        if (ps.Length == 1)
+                        {
+                            requestMethodImp += @"
+            if(parms.Length==0)
+                RequestInternal(response);";
+                        }
+                        else
+                        {
+                            requestMethodImp += string.Format(@"
+            if(parms.Length=={0})
+                RequestInternal({1}response);", ps.Length - 1, pVal);
+                        }
 
-                            string requestOverride = @"
+                        /*
+                        string requestOverride = @"
         public override void Request(Request request,Response response)
         {
             object[] parms=request.Body.Paramters;
@@ -119,9 +137,14 @@ namespace oyster.web.codegenerator
             return new object[] {" + pParametersVal + @" };
         }
 ";
-                            requestMethod += requestOverride;
+                        */
+                        requestMethod += @"
+        public static object[] Parameters(" + pParameters + @")
+        {
+            return new object[] {" + pParametersVal + @" };
+        }";
 
-                        }
+
                     }
                     r.OutCodeList[codeIdx] = null;
                 }
@@ -246,6 +269,13 @@ namespace " + NameSpace + @"
 
         " + initMethod + @"
         " + requestMethod + @"
+        public override void Request(Request request,Response response)
+        {
+            object[] parms=request.Body.Paramters;
+            if(parms==null)
+                throw new Exception(""Paramters no set!"");
+            " + requestMethodImp + @"        
+        }
     }
 }
 ";
