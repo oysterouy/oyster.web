@@ -79,7 +79,7 @@ templateSections.Add("Foot",(html,response,invorker)=>{
             request.BlockRegister<Login>("LLL");
 
             
-    request.Body.Paramters = new object[] { 1, 2, "str" };
+    request.Body.Paramters = new object[] { 1, 2 };
     return request.Body.Paramters;
 
         }

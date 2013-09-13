@@ -29,7 +29,7 @@
 {
     request.Layout<_layout>();
     request.BlockInvork<Login>("Index_Login",Login.Parameters("AAA"));
-    return new object[] { 1, 3 };
+    return new object[] { 1};
 })
 @TemplateHelper.Request((int idx, Response response) =>
 {

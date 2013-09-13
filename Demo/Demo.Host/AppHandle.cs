@@ -40,7 +40,7 @@ namespace Demo.Host
                         foreach (var fs in tempFs)
                         {
                             var loader = HostAssermblyLoader.CreateLoader(Path.GetFileNameWithoutExtension(fs),
-                               libRoot, fs, AppDomain.CurrentDomain.BaseDirectory);
+                               libRoot, fs);
 
                             if (loader != null)
                                 settings.Add(loader.Application.HostSetting);

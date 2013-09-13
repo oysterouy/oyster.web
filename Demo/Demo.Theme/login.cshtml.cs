@@ -71,7 +71,7 @@ namespace demotheme
         public void RequestInternal(string str , Response response)
         {
             
-
+    response.Model.Name="张氏";
 
         }
 

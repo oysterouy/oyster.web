@@ -36,21 +36,24 @@ namespace oyster.web.hosting
             }
         }
 
-        public static HostAssermblyLoader CreateLoader(string name, string libRoot, string mainPath, string applicationBaseDir = null)
+        public static HostAssermblyLoader CreateLoader(string name, string libRoot, string mainPath)
         {
             var loaderTp = typeof(HostAssermblyLoader);
-            var assemblyPath = Path.GetTempFileName();
             var webDllPath = loaderTp.Assembly.Location;
-            System.IO.File.Copy(webDllPath, assemblyPath, true);
-
+            var appDir = Path.GetTempFileName();
+            File.Delete(appDir);
+            Directory.CreateDirectory(appDir);
+            File.Copy(webDllPath, Path.Combine(appDir, Path.GetFileName(webDllPath)), true);
             var domain = AppDomain.CreateDomain(name, null,
                 new AppDomainSetup
                 {
                     LoaderOptimization = LoaderOptimization.MultiDomain,
-                    ApplicationBase = applicationBaseDir,
+                    ApplicationBase = appDir,
                     ApplicationName = name,
+                    PrivateBinPath = ";bin",
                 });
-            var loader = domain.CreateInstanceFromAndUnwrap(assemblyPath, loaderTp.FullName) as HostAssermblyLoader;
+
+            var loader = domain.CreateInstanceAndUnwrap(loaderTp.Assembly.FullName, loaderTp.FullName) as HostAssermblyLoader;
 
             if (loader != null)
             {

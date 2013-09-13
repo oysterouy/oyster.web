@@ -58,7 +58,7 @@ templateSections.Add("Foot",(html,response,invorker)=>{
             
     request.Layout<_layout>();
     request.BlockInvork<Login>("Index_Login",Login.Parameters("AAA"));
-    return new object[] { 1, 3 };
+    return new object[] { 1};
 
         }
         

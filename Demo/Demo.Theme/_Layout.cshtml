@@ -38,7 +38,7 @@
 </html>
 @TemplateHelper.Init((request) =>
 {
-    request.Body.Paramters = new object[] { 1, 2, "str" };
+    request.Body.Paramters = new object[] { 1, 2 };
     return request.Body.Paramters;
 })
 @TemplateHelper.Request((int index, int count, Response resp) =>

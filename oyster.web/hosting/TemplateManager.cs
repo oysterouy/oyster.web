@@ -23,13 +23,16 @@ namespace oyster.web
                     if (!templateAssemblySettings.TryGetValue(asm.FullName, out setting))
                     {
                         var tps = asm.GetTypes();
+                        var tpHost = typeof(HostBase);
                         foreach (var tp in tps)
                         {
                             if (typeof(HostBase).IsAssignableFrom(tp))
                             {
-                                setting = Activator.CreateInstance(tp) as HostBase;
+                                var obj = Activator.CreateInstance(tp);
+                                setting = obj as HostBase;
                                 if (setting != null)
                                     templateAssemblySettings.Add(asm.FullName, setting);
+                                break;
                             }
                         }
                     }
