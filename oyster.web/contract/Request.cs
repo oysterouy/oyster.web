@@ -23,6 +23,12 @@ namespace oyster.web
         public RequestHead Head { get; internal set; }
         public RequestBody Body { get; internal set; }
 
+        /// <summary>
+        /// Init方法中设置该属性为true将直接使用ErrorResponse返回
+        /// </summary>
+        internal bool IsError { get; set; }
+        internal Response ErrorResponse { get; set; }
+
         public Response Execute()
         {
             Response resp = new Response { Host = this.Host, Template = Template, Request = this };
@@ -67,7 +73,15 @@ namespace oyster.web
         }
 
         public Request LayoutRequest { get; set; }
-        public void Layout<T>(RequestBody body = null) where T : TemplateBase
+
+        /// <summary>
+        /// 只能在Template.Init中设置Layout模板
+        /// 可以根据返回判断底层模板Init是否成功
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public bool Layout<T>(RequestBody body = null) where T : TemplateBase
         {
             LayoutRequest = new Request
             {
@@ -82,6 +96,8 @@ namespace oyster.web
             }
             else
                 LayoutRequest.Body = body;
+
+            return !IsError;
         }
 
         [NonSerialized]

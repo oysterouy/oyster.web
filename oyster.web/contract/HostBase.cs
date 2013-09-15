@@ -24,13 +24,18 @@ namespace oyster.web
                 }
                 request.Template = temp;
                 var parms = temp.Init(request);
-                request.Body.Paramters = parms;
+                if (request.IsError)
+                    response = request.ErrorResponse;
+                else
+                {
+                    request.Body.Paramters = parms;
 
-                response = RequestInternal(request);
+                    response = RequestInternal(request);
 
-                response.Waiting();
-                response.Rander();
-                AfterRanderFilter(request, response);
+                    response.Waiting();
+                    response.Rander();
+                    AfterRanderFilter(request, response);
+                }
             }
 
         outmethod:
