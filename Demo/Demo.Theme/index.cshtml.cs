@@ -38,11 +38,12 @@ namespace demotheme
     </div>
 </div>
 ");
-            invorker.Invork(typeof(Index),"Foot");});
+            invorker.Invoke(typeof(Index),"Foot");});
 templateSections.Add("Foot",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<div>
+            Echo(html, @"
+    <div>
         <h2>
             我是继承页页脚</h2>
     </div>

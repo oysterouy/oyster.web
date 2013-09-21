@@ -10,23 +10,25 @@ namespace oyster.web.define
         public Response Response { get; set; }
         public Action<StringBuilder, Response, SectionInvork> Section { get; set; }
         public Type DefineType { get; set; }
+        public Dictionary<string, InvorkInfo> OwnerSections { get; set; }
     }
     public class SectionInvork
     {
         public StringBuilder Html { get; set; }
-        public Dictionary<string, InvorkInfo> Sections { get; set; }
-        public void Invork(Type callFrom, string name = "Page")
+        public InvorkInfo MainInvoke { get; set; }
+        public void Invoke(Type callFrom)
+        {
+            MainInvoke.Section(Html, MainInvoke.Response, this);
+        }
+        public void Invoke(Type callFrom, string name)
         {
             InvorkInfo section = null;
-            if (!Sections.TryGetValue(name, out section))
+            if (MainInvoke.OwnerSections.TryGetValue(name, out section)
+                && callFrom == section.DefineType)
             {
-                if (name == "Page")
-                    throw new Exception("Page Section No Found!");
-                else
-                    return;
+                var secInvoke = new SectionInvork { Html = Html, MainInvoke = section, };
+                section.Section(Html, section.Response, secInvoke);
             }
-            if (callFrom == section.DefineType)
-                section.Section(Html, section.Response, this);
         }
     }
 }

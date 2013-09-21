@@ -26,14 +26,14 @@ namespace oyster.web.codegenerator
         string NameSpace { get; set; }
         string ClassName { get; set; }
 
+        Regex regBlock = new Regex("TemplateHelper\\.Block\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
+
+        Regex regRequest = new Regex("TemplateHelper\\.Init\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
+
+        Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
+
         public string DoResolve()
         {
-            Regex regBlock = new Regex("TemplateHelper\\.Block\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
-
-            Regex regRequest = new Regex("TemplateHelper\\.Init\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
-
-            Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
-
             var r = new RazorResolver(_codeText);
             string blockInvorks = "", initMethod = null, initParamName = "", requestMethod = "", requestMethodImp = "", pstr = "";
 
@@ -150,23 +150,26 @@ namespace oyster.web.codegenerator
                 }
                 else if (code.Contains("TemplateHelper.Block("))
                 {
+                    blockInvorks += BlockResolve(r, code, codeIdx);
+                    /*
                     var m = regBlock.Match(code);
                     if (m.Success && m.Groups.Count > 1)
                     {
                         string[] parms = m.Groups[1].Value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (parms.Length != 4)
                         {
-                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string callId)=>true) 参数设置不正确,必须使用明确类型的参数方式!");
+                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
                             Environment.Exit(1);
                         }
                         string template = parms[0];
                         string id = parms[3];
                         bool sync = m.Groups[2].Value.Contains("false");
                         r.OutCodeList[codeIdx] = string.Format("response.BlockRander<{0}>({1},{2})", template, id, sync ? "true" : "false");
-                        blockInvorks += string.Format("__initParamName__.BlockRegister<{1}>({2});\r\n", initParamName, template, id);
+                        blockInvorks += string.Format("__initParamName__.BlockRegister<{0}>({1});\r\n", template, id);
                     }
                     else
                         r.OutCodeList[codeIdx] = null;
+                    */
                 }
             }
             StringBuilder codeBody = new StringBuilder();
@@ -184,6 +187,7 @@ namespace oyster.web.codegenerator
                 {
                     if (string.IsNullOrEmpty(code))
                         continue;
+
                     codeBody.AppendFormat("\r\n            Echo(html, {0});", code);
                 }
                 else if (r.StaticHtmlList.TryGetValue(i, out code) && code.Trim().Length > 0)
@@ -194,19 +198,18 @@ namespace oyster.web.codegenerator
                 }
                 else if (r.sectionCodeList.TryGetValue(i, out section))
                 {
-                    codeBody.AppendFormat("\r\n            invorker.Invork(typeof({0}),\"{1}\");", ClassName, section.Key);
+                    codeBody.AppendFormat("\r\n            invorker.Invoke(typeof({0}),\"{1}\");", ClassName, section.Key);
                 }
             }
             Regex regxModel = new Regex("dynamic\\s*Model\\s*=\\s*null;");
             string codeBodyText = regxModel.Replace(codeBody.ToString(), "");
 
             StringBuilder codeSection = new StringBuilder();
+
             codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
                     @"{
     dynamic Model=response.Model;
 " + codeBodyText + "}");
-
-
             foreach (var idx in r.sectionCodeList.Keys)
             {
                 var kv = r.sectionCodeList[idx];
@@ -225,6 +228,14 @@ namespace oyster.web.codegenerator
                     {
                         if (string.IsNullOrEmpty(code))
                             continue;
+
+                        if (code.Contains("TemplateHelper.Block("))
+                        {
+                            blockInvorks += BlockResolve(secR, code, i);
+                            secR.OutCodeList.TryGetValue(i, out code);
+                            if (string.IsNullOrEmpty(code))
+                                continue;
+                        }
                         secFunc.AppendFormat("\r\n            Echo(html, {0});", code);
                     }
                     else if (secR.StaticHtmlList.TryGetValue(i, out code) && code.Trim().Length > 0)
@@ -287,6 +298,29 @@ namespace " + NameSpace + @"
 
 
             return codetxt;
+        }
+
+        string BlockResolve(RazorResolver r, string code, int codeIdx)
+        {
+            string blockInvork = "";
+            var m = regBlock.Match(code);
+            if (m.Success && m.Groups.Count > 1)
+            {
+                string[] parms = m.Groups[1].Value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parms.Length != 4)
+                {
+                    Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
+                    Environment.Exit(1);
+                }
+                string template = parms[0];
+                string id = parms[3];
+                bool sync = m.Groups[2].Value.Contains("false");
+                r.OutCodeList[codeIdx] = string.Format("response.BlockRander<{0}>({1},{2})", template, id, sync ? "true" : "false");
+                blockInvork = string.Format("__initParamName__.BlockRegister<{0}>({1});\r\n", template, id);
+            }
+            else
+                r.OutCodeList[codeIdx] = null;
+            return blockInvork;
         }
     }
 }

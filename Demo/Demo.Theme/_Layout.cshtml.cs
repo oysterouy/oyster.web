@@ -35,14 +35,14 @@ namespace demotheme
                 <h2>
                     Body开始了</h2>
                 ");
-            invorker.Invork(typeof(_layout),"Body");
+            invorker.Invoke(typeof(_layout),"Body");
             Echo(html, @"
             </div>
             <div>
                 <h2>
                     Foot 开始</h2>
                 ");
-            invorker.Invork(typeof(_layout),"Foot");
+            invorker.Invoke(typeof(_layout),"Foot");
             Echo(html, @"
             </div>
             ");int cc = t + 1000;
@@ -61,13 +61,15 @@ namespace demotheme
 templateSections.Add("Body",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<div>
+            Echo(html, @"
+                    <div>
                         默认Body!!!</div>
                ");});
 templateSections.Add("Foot",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<p>
+            Echo(html, @"
+                    <p>
                         我是默认脚</p>
                ");});
 

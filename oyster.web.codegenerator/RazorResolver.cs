@@ -63,34 +63,33 @@ namespace oyster.web.codegenerator
 
         string DoUsingResolve()
         {
-            int firstCodeIndex = OriginCode.IndexOf('<');
-            int tindx = OriginCode.IndexOf("@{");
-            if (tindx > 0)
+            int firstCodeIndex = -1;
+            int codeIndex = -1;
+            for (int i = 0; i < OriginCode.Length; i++)
             {
-                firstCodeIndex = Math.Min(tindx, firstCodeIndex);
-            }
-            if (firstCodeIndex < 0)
-            {
-                int codeIndex = -1;
-                for (int i = 0; i < OriginCode.Length; i++)
+                if (OriginCode[i] == '@' && OriginCode.Length > i + 6 && !
+                    (
+                        OriginCode[i + 1] == 'u' &&
+                        OriginCode[i + 2] == 's' &&
+                        OriginCode[i + 3] == 'i' &&
+                        OriginCode[i + 4] == 'n' &&
+                        OriginCode[i + 5] == 'g' &&
+                        OriginCode[i + 6] == ' '))
                 {
-                    if (OriginCode[i] == '@' && OriginCode.Length > i + 6 && !
-                        (
-                            OriginCode[i + 1] == 'u' &&
-                            OriginCode[i + 2] == 's' &&
-                            OriginCode[i + 3] == 'i' &&
-                            OriginCode[i + 4] == 'n' &&
-                            OriginCode[i + 5] == 'g' &&
-                            OriginCode[i + 6] == ' '))
-                    {
-                        codeIndex = i;
-                        break;
-                    }
+                    codeIndex = i;
+                    break;
                 }
-                if (codeIndex > 0)
-                    firstCodeIndex = codeIndex;
             }
+            if (codeIndex > 0)
+                firstCodeIndex = codeIndex;
 
+            int htmIdx = OriginCode.IndexOf('<');
+            if (htmIdx > -1)
+                firstCodeIndex = Math.Min(htmIdx, firstCodeIndex);
+
+            int codeIdx = OriginCode.IndexOf("@{");
+            if (codeIdx > -1)
+                firstCodeIndex = Math.Min(codeIdx, firstCodeIndex);
 
             if (firstCodeIndex > 0)
             {

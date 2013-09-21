@@ -103,12 +103,21 @@ namespace oyster.web
             var actDic = new Dictionary<string, InvorkInfo>();
             foreach (var actKv in Template.Sections)
             {
-                actDic.Add(actKv.Key, new InvorkInfo { Response = this, Section = actKv.Value, DefineType = Template.GetType() });
+                actDic.Add(actKv.Key, new InvorkInfo
+                {
+                    Response = this,
+                    DefineType = Template.GetType(),
+                    Section = actKv.Value,
+                    OwnerSections = actDic,
+                });
             }
             if (action != null)
             {
                 foreach (var kv in action)
                 {
+                    if (kv.Key == "Body")
+                        continue;
+
                     var actKv = kv;
                     if (actKv.Key == "Page")
                     {
@@ -124,14 +133,19 @@ namespace oyster.web
                         actDic.Add(actKv.Key, actKv.Value);
                 }
             }
+
             if (LayoutResponse != null)
             {
                 LayoutResponse.RanderInternal(html, actDic);
             }
             else
             {
-                var invorker = new SectionInvork { Html = html, Sections = actDic };
-                invorker.Invork(Template.GetType());
+                InvorkInfo pageSection = null;
+                if (actDic.TryGetValue("Page", out pageSection))
+                {
+                    var invorker = new SectionInvork { Html = html, MainInvoke = pageSection };
+                    invorker.Invoke(Template.GetType());
+                }
             }
             hadRander = true;
             return this;

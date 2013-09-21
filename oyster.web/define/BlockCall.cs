@@ -45,7 +45,7 @@ namespace oyster.web.define
             if (blocks.TryGetValue(key, out callData))
             {
                 callData.Paramsters = reqParams;
-                callData.Invork();
+                callData.Invoke();
             }
         }
 
@@ -66,7 +66,7 @@ namespace oyster.web.define
 
         bool hadInvork = false;
 
-        public void Invork()
+        public void Invoke()
         {
             Request.Body.Paramters = Paramsters;
             Response = TemplateManager.GetSetting(Template.GetType().Assembly).RequestInternal(Request);
