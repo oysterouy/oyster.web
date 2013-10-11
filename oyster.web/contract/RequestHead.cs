@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Dynamic;
+using System.Collections.Specialized;
+using System.Web;
 
 namespace oyster.web
 {
@@ -105,5 +107,9 @@ namespace oyster.web
         }
 
         #endregion
+
+        public NameValueCollection Paramters { get; set; }
+
+        public HttpCookieCollection Cookies { get; set; }
     }
 }

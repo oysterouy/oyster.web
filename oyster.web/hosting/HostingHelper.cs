@@ -13,6 +13,9 @@ namespace oyster.web.hosting
             return new RequestHead
             {
                 Path = context.Request.Path,
+                Method = context.Request.HttpMethod,
+                Paramters = context.Request.Params,
+                Cookies = context.Request.Cookies,
             };
         }
 

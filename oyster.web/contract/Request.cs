@@ -26,8 +26,8 @@ namespace oyster.web
         /// <summary>
         /// Init方法中设置该属性为true将直接使用ErrorResponse返回
         /// </summary>
-        internal bool IsError { get; set; }
-        internal Response ErrorResponse { get; set; }
+        public bool IsError { get; set; }
+        public Response ErrorResponse { get; set; }
 
         public Response Execute()
         {
@@ -97,7 +97,7 @@ namespace oyster.web
             else
                 LayoutRequest.Body = body;
 
-            return !IsError;
+            return !LayoutRequest.IsError;
         }
 
         [NonSerialized]
