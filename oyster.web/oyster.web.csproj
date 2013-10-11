@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="complation\TemplateBuildProvider.cs" />
     <Compile Include="contract\RequestBody.cs" />
     <Compile Include="contract\IRequestCache.cs" />
     <Compile Include="define\BlockCall.cs" />
@@ -66,7 +67,12 @@
     <Compile Include="template\TemplateHelper.cs" />
     <Compile Include="hosting\TemplateManager.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\oyster.web.codegenerator\oyster.web.codegenerator.csproj">
+      <Project>{BD945E2F-C9DD-46F0-AB16-54FA5423A931}</Project>
+      <Name>oyster.web.codegenerator</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

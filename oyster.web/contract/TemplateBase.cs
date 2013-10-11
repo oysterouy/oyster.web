@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using oyster.web.define;
+using System.IO;
 
 
 namespace oyster.web

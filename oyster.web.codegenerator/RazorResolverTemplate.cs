@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace oyster.web.codegenerator
 {
-    class RazorResolverTemplate : IResolve
+    public class RazorResolverTemplate : IResolve
     {
         public RazorResolverTemplate(string codeText, string classFullName, string filePath)
         {
