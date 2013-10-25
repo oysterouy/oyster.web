@@ -1,0 +1,32 @@
+﻿@{dynamic Model = null;}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="@(Model.Head.description)" />
+    <meta name="keywords" content="@(Model.Head.keywords)" />
+    <title>@Model.Head.title</title>
+    @section Head{
+        <!--html head-->
+    }
+</head>
+<body>
+    @section Body{
+        <!--html body-->
+    }
+    @section Foot{
+        <!--html foot-->
+    }
+</body>
+</html>
+@section OutHtml{
+    <!--out html-->
+}
+@oyster.web.TemplateHelper.Init((request) =>
+{
+    return new object[0];
+})
+@oyster.web.TemplateHelper.Request((response) =>
+{
+
+})

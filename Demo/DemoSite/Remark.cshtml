@@ -1,0 +1,11 @@
+﻿<h1>
+    神奇的Visual Studio,站点根目录下必须有个.cshtml的文件，否则子目录的.cshtml会映射不了编译绑定。 虽然我们不用他的绑定编译，但编辑页面时看着警告，确实不爽啊。
+</h1>
+@oyster.web.TemplateHelper.Init((request) =>
+{
+    return new object[0];
+})
+@oyster.web.TemplateHelper.Request((response) =>
+{
+
+})
