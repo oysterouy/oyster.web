@@ -20,7 +20,7 @@ namespace oyster.web.define
             object d = null;
             dataSet.TryGetValue(binder.Name, out d);
             result = d;
-            return result != null;
+            return true;
         }
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
