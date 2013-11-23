@@ -57,7 +57,7 @@ namespace oyster.web.codegenerator
                 {
                     string fnameSpace = f.Substring(dir.Length, f.Length - dir.Length - ext.Length)
                         .Replace(System.IO.Path.DirectorySeparatorChar, '.')
-                        .Replace(' ', '_').ToLower();
+                        .Replace(' ', '_');
                     fnameSpace = fnameSpace.StartsWith(".") ? fnameSpace.Substring(1) : fnameSpace;
 
                     fnameSpace = nameSpace + "." + fnameSpace;

@@ -18,7 +18,7 @@ namespace oyster.web.codegenerator
             className = className.StartsWith(".") ? className.Substring(1) : className;
             className = className.Substring(0, 1).ToUpper() + className.Substring(1);
 
-            NameSpace = nameSpace;
+            NameSpace = nameSpace.ToLower();
             ClassName = className;
         }
         string _codeText;
