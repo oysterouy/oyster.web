@@ -3,6 +3,7 @@ namespace demosite.Themes.WhiteBlue
 {
     using oyster.web;
     using demosite.Themes.WhiteBlue.Layout;
+    using oyster.web;
     using oyster.web.define;
     using System;
     using System.Collections.Generic;
@@ -17,11 +18,48 @@ namespace demosite.Themes.WhiteBlue
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<div>
+            Echo(html, @"
+<div>
     <h1>
         Hello world!</h1>
+    <div>
+        ");
+            
+            Echo(html, @"<a href>dsd</a>            
+            <p>
+                ");
+                    if (Model.I != null && Model.I)
+                    {
+                    
+            Echo(html, @"<a href="""">asas</a>
+                    ");}
+                
+            Echo(html, @"
+            </p>
+        ");
+    
+            Echo(html, @"</div>
 </div>
-");});
+");
+            invorker.Invoke(typeof(Index),"OutHtml");});
+templateSections.Add("OutHtml",(html,response,invorker)=>{
+    dynamic Model=response.Model;
+
+        if (Model.IsSuccess != null && Model.IsSuccess)
+        {
+        
+            Echo(html, @"<script type=""text/javascript"">
+            alert(1);
+        </script>
+        ");}
+        else
+        {
+        
+            Echo(html, @"<script type=""text/javascript"">
+            alert(2);
+        </script>
+        ");}
+    });
 
         }
 

@@ -10,7 +10,7 @@ namespace demosite.Themes.WhiteBlue
     using System.Text;
     using System.Web;
 
-    public class Settings : HostBase
+    public class ASettings : HostBase
     {
         public static readonly int _loadingTimeout = 200;
 
@@ -25,7 +25,7 @@ namespace demosite.Themes.WhiteBlue
 
         static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
-        static Settings()
+        static ASettings()
         {
             //******** route setting *********//
             routes.Add((Request) =>

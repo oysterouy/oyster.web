@@ -12,6 +12,7 @@ namespace oyster.web
     public abstract class TemplateBase
     {
         internal abstract Dictionary<string, Action<StringBuilder, Response, SectionInvork>> Sections { get; }
+
         protected static StringBuilder Echo(StringBuilder html, object p)
         {
             html.Append(p == null ? "" : p.ToString());

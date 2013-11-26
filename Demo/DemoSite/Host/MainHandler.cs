@@ -21,7 +21,7 @@ namespace DemoSite.Host
             // Usually this would be false in case you have some state information preserved per request.
             get { return true; }
         }
-        static readonly HostBase Host = new Settings();
+        static readonly HostBase Host = new ASettings();
         public void ProcessRequest(HttpContext context)
         {
             var reqheader = HostingHelper.CreateHead(context);

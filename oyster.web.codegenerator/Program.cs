@@ -55,15 +55,15 @@ namespace oyster.web.codegenerator
                 var fs = System.IO.Directory.GetFiles(dir, "*" + ext, SearchOption.AllDirectories);
                 foreach (string f in fs)
                 {
-                    string fnameSpace = f.Substring(dir.Length, f.Length - dir.Length - ext.Length)
+                    string classFullName = f.Substring(dir.Length, f.Length - dir.Length - ext.Length)
                         .Replace(System.IO.Path.DirectorySeparatorChar, '.')
-                        .Replace(' ', '_').ToLower();
-                    fnameSpace = fnameSpace.StartsWith(".") ? fnameSpace.Substring(1) : fnameSpace;
+                        .Replace(' ', '_');
+                    classFullName = classFullName.StartsWith(".") ? classFullName.Substring(1) : classFullName;
 
-                    fnameSpace = nameSpace + "." + fnameSpace;
+                    classFullName = nameSpace + "." + classFullName;
 
                     string txt = System.IO.File.ReadAllText(f);
-                    string code = CodeGenerator.MakeCode(txt, fnameSpace, f);
+                    string code = CodeGenerator.MakeCode(txt, classFullName, f);
 
                     string codef = f + ".cs";
 

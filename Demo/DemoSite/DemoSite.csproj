@@ -49,20 +49,17 @@
   <ItemGroup>
     <Compile Include="Host\MainHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remark.cshtml.cs">
+      <DependentUpon>Remark.cshtml</DependentUpon>
+    </Compile>
     <Compile Include="Themes\WhiteBlue\Index.cshtml.cs">
       <DependentUpon>Index.cshtml</DependentUpon>
-    </Compile>
-    <Compile Include="Themes\WhiteBlue\Settings.cshtml.cs">
-      <DependentUpon>Settings.cshtml</DependentUpon>
     </Compile>
     <Compile Include="Themes\WhiteBlue\Layout\_Home.cshtml.cs">
       <DependentUpon>_Home.cshtml</DependentUpon>
     </Compile>
-    <Compile Include="_Home.cshtml.cs">
-      <DependentUpon>Remark.cshtml</DependentUpon>
-    </Compile>
-    <Compile Include="Remark.cshtml.cs">
-      <DependentUpon>Remark.cshtml</DependentUpon>
+    <Compile Include="Themes\WhiteBlue\ASettings.cshtml.cs">
+      <DependentUpon>ASettings.cshtml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +69,7 @@
     <Content Include="Themes\WhiteBlue\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Themes\WhiteBlue\Settings.cshtml" />
+    <Content Include="Themes\WhiteBlue\ASettings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Themes\WhiteBlue\Layout\_Home.cshtml" />
