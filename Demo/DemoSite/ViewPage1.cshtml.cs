@@ -9,19 +9,26 @@ namespace demosite
     using System.Text;
     using System.Web;
 
-    public class Remark : TemplateBase<Remark>
+    public class ViewPage1 : TemplateBase<ViewPage1>
     {
-        static Remark()
+        static ViewPage1()
         {
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<h1>
-    ");
-    
+
             Echo(html, @"
-    站点根目录下必须有个.cshtml的文件，否则子目录的.cshtml会映射不了编译绑定。 虽然我们不用他的绑定编译，但编辑页面时看着警告，确实不爽啊。
-</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name=""viewport"" content=""width=device-width"" />
+    <title></title>
+</head>
+<body>
+    <div>
+    </div>
+</body>
+</html>
 ");});
 
         }

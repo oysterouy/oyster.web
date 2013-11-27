@@ -67,7 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="template\TemplateHelper.cs" />
     <Compile Include="hosting\TemplateManager.cs" />
-    <Compile Include="template\WebPageBaseExtends.cs" />
+    <Compile Include="template\TimTemplateBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\oyster.web.codegenerator\oyster.web.codegenerator.csproj">
