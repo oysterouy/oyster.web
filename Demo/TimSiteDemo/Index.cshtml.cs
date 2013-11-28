@@ -1,8 +1,6 @@
 ﻿
-namespace demosite.Themes.WhiteBlue
+namespace timsitedemo
 {
-    using oyster.web;
-    using demosite.Themes.WhiteBlue.Layout;
     using oyster.web;
     using oyster.web.define;
     using System;
@@ -18,48 +16,22 @@ namespace demosite.Themes.WhiteBlue
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
+            Echo(html, @"<!DOCTYPE html>
+<html>
+<head>
+    <meta name=""viewport"" content=""width=device-width"" />
+    <title>");
+            Echo(html, Write("Title"));
+            Echo(html, @"</title>
+</head>
+<body>
+    <div>");
+            Echo(html, Write("{0}-{1}-dsdda", 1, 3));
             Echo(html, @"
-<div>
-    <h1>
-        Hello world!</h1>
-    <div>
-        ");
-            
-            Echo(html, @"<a href>dsd</a>            
-            <p>
-                ");
-                    if (Model.I != null && Model.I)
-                    {
-                    
-            Echo(html, @"<a href="""">asas</a>
-                    ");}
-                
-            Echo(html, @"
-            </p>
-        ");
-    
-            Echo(html, @"</div>
-</div>
-");
-            invorker.Invoke(typeof(Index),"OutHtml");});
-templateSections.Add("OutHtml",(html,response,invorker)=>{
-    dynamic Model=response.Model;
-
-        if (Model.IsSuccess != null && Model.IsSuccess)
-        {
-        
-            Echo(html, @"<script type=""text/javascript"">
-            alert(1);
-        </script>
-        ");}
-        else
-        {
-        
-            Echo(html, @"<script type=""text/javascript"">
-            alert(2);
-        </script>
-        ");}
-    });
+    </div>
+</body>
+</html>
+");});
 
         }
 
@@ -68,7 +40,6 @@ templateSections.Add("OutHtml",(html,response,invorker)=>{
         {
             
             
-    request.Layout<_Home>();
     return new object[0];
 
         }

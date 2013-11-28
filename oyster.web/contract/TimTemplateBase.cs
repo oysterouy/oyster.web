@@ -8,9 +8,11 @@ namespace oyster.web
 {
     public abstract class TimTemplateBase
     {
-        public string Echo(string format, params object[] args)
+        public static string Write(string format, params object[] args)
         {
-            return "";
+            if (args == null || args.Length == 0)
+                return format;
+            return string.Format(format, args);
         }
     }
 }

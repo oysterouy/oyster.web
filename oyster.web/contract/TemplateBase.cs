@@ -9,7 +9,7 @@ using System.IO;
 
 namespace oyster.web
 {
-    public abstract class TemplateBase
+    public abstract class TemplateBase : TimTemplateBase
     {
         internal abstract Dictionary<string, Action<StringBuilder, Response, SectionInvork>> Sections { get; }
 

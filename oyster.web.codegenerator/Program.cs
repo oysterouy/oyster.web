@@ -25,10 +25,10 @@ namespace oyster.web.codegenerator
             try
             {
                 args = args.Length < 1 ? new string[] {
-            @"D:\oyster\git\develop\oyster.web\Demo\DemoSite\",
+            @"D:\oyster\git\develop\oyster.web\Demo\D2\",
             ".cshtml",
             "DemoSite",
-            @"D:\oyster\git\develop\oyster.web\Demo\DemoSite\DemoSite.csproj"
+            @"D:\oyster\git\develop\oyster.web\Demo\D2\DemoSite.csproj"
             } : args;
 
                 if (!string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["RazorProjectGuid"]))
@@ -174,6 +174,41 @@ namespace oyster.web.codegenerator
                         cmpNode.AppendChild(depNode);
                         pNode.AppendChild(cmpNode);
                     }
+
+                    foreach (XmlNode nd in projectNode.ChildNodes)
+                    {
+                        if (nd.Name != "ItemGroup")
+                            continue;
+                        foreach (XmlNode cnd in nd.ChildNodes)
+                        {
+                            if (cnd.Name == "Reference"
+                                && cnd.Attributes["Include"] != null
+                                &&
+                                (cnd.Attributes["Include"].Value.Contains("System.Web.WebPages.Deployment,")
+                                ||
+                                cnd.Attributes["Include"].Value.Contains("System.Web.WebPages.Razor,"))
+                                )
+                            {
+                                bool hadSet = false;
+                                foreach (XmlNode priNode in cnd.ChildNodes)
+                                {
+                                    if (priNode.Name == "Private")
+                                    {
+                                        priNode.InnerText = "True";
+                                        hadSet = true;
+                                    }
+                                }
+                                if (!hadSet)
+                                {
+                                    var node = doc.CreateElement("Private", projectNode.NamespaceURI);
+                                    node.InnerText = "True";
+                                    cnd.AppendChild(node);
+                                }
+                            }
+                        }
+                    }
+
+
                     StringWriter sw = new StringWriter();
                     doc.Save(sw);
                     if (!sw.ToString().Equals(oldXmlProj))
