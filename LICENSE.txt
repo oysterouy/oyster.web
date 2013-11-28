@@ -19,7 +19,7 @@ Commercial license:
 
    Commercial license can keep nothing about oyster.web License information.
 
-   Price:WebApplication Count * WebService Count * US$100
+   Price:WebApplication Count * Web Site Server Count * US$100
 
    Pay to Paypal[oyster.ouyang@gmail.com] and email your info to oyster.ouyang@gmail.com,
 will immediately obtain a commercial license.
