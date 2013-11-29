@@ -134,7 +134,7 @@ namespace oyster.web.codegenerator
                         StaticHtmlList.Add(NewNodeIndex, code.Substring(ii, i - ii));
 
                     //遇到@{的右边括号跳过之后执行cs code 检测
-                    if (needRightAtKH > 0 && code[i] == '}')
+                    if (needRightAtKH > 0 && bgkh == 0 && code[i] == '}')
                         i++;
 
                     i += DoCSharpCodeResolve(code.Substring(i), ref bgkh, ref needRightAtKH);
@@ -145,7 +145,7 @@ namespace oyster.web.codegenerator
             return true;
         }
 
-        int DoCSharpCodeResolve(string code, ref int bgkh, ref int needAtRightKH)
+        int DoCSharpCodeResolve(string code, ref int bgkh, ref int needRightAtKH)
         {
             //string codeEchoFormat = "\r\n            Echo(html, {0});";
             int i = 0;
@@ -207,7 +207,7 @@ namespace oyster.web.codegenerator
                         //@{XXX}
                         case '{':
                             ii = j = i + 2;
-                            needAtRightKH++;
+                            needRightAtKH++;
                             ;
                             break;
 

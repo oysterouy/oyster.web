@@ -1,5 +1,5 @@
 ﻿
-namespace demosite
+namespace timsitedemo
 {
     using oyster.web;
     using oyster.web.define;
@@ -9,16 +9,28 @@ namespace demosite
     using System.Text;
     using System.Web;
 
-    public class Remark : TemplateBase<Remark>
+    public class Index : TemplateBase<Index>
     {
-        static Remark()
+        static Index()
         {
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<h1>
-    神奇的Visual Studio,站点根目录下必须有个.cshtml的文件，否则子目录的.cshtml会映射不了编译绑定。 虽然我们不用他的绑定编译，但编辑页面时看着警告，确实不爽啊。
-</h1>
+            Echo(html, @"<!DOCTYPE html>
+<html>
+<head>
+    <meta name=""viewport"" content=""width=device-width"" />
+    <title>");
+            Echo(html, Write("Title"));
+            Echo(html, @"</title>
+</head>
+<body>
+    <div>");
+            Echo(html, Write("{0}-{1}-dsdda", 1, 3));
+            Echo(html, @"
+    </div>
+</body>
+</html>
 ");});
 
         }

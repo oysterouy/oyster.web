@@ -12,15 +12,15 @@ namespace oyster.web.codegenerator
     }
     class CodeGenerator
     {
-        public static string MakeCode(string templateCode, string filePathWithoutExt, string filePath)
+        public static string MakeCode(string templateCode, string classFullName, string filePath)
         {
-            if (filePathWithoutExt.ToLower().EndsWith("settings"))
+            if (classFullName.ToLower().EndsWith("settings"))
             {
-                return new RazorResolverSettings(templateCode, filePathWithoutExt, filePath).DoResolve();
+                return new RazorResolverSettings(templateCode, classFullName, filePath).DoResolve();
             }
             else
             {
-                var rt = new RazorResolverTemplate(templateCode, filePathWithoutExt, filePath);
+                var rt = new RazorResolverTemplate(templateCode, classFullName, filePath);
                 return rt.DoResolve();
             }
         }

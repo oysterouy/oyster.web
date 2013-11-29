@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Write("Title")</title>
+</head>
+<body>
+    <div>@Write("{0}-{1}-dsdda", 1, 3)
+    </div>
+</body>
+</html>
+@oyster.web.TemplateHelper.Init((request) =>
+{
+    return new object[0];
+})
+@oyster.web.TemplateHelper.Request((response) =>
+{
+
+})
