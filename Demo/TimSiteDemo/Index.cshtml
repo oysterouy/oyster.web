@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@TemplateHelper.Init((request) =>
+{
+    return new object[0];
+})
+@TemplateHelper.Request((response) =>
+{
+
+})
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -7,13 +15,8 @@
 <body>
     <div>@Write("{0}-{1}-dsdda", 1, 3)
     </div>
+    <div>
+        <b>@Model.AA</b>
+    </div>
 </body>
 </html>
-@oyster.web.TemplateHelper.Init((request) =>
-{
-    return new object[0];
-})
-@oyster.web.TemplateHelper.Request((response) =>
-{
-
-})
