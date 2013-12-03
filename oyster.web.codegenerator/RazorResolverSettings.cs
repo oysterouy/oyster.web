@@ -30,7 +30,10 @@ namespace oyster.web.codegenerator
         {
             Regex regField = new Regex("TemplateHelper\\.Config\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\)", RegexOptions.Singleline);
 
-            Regex regRoute = new Regex("TemplateHelper\\.Route\\((.*)\\)", RegexOptions.Singleline);
+            Regex regRoute = new Regex("TemplateHelper\\.Route(?'open'\\()((?'open'\\()+[^\\(\\)]*(?'-open'\\))[^\\(\\)]*)+(?(open)\\)|(?!))", RegexOptions.Singleline);
+
+            Regex regRouteUrl = new Regex("TemplateHelper\\.Route[^<]*<([^>]+)>[^\\(]*\\(([^\\)]+)\\)", RegexOptions.Singleline);
+
 
             Regex regFilter = new Regex("TemplateHelper\\.Filter([^\\(]+)\\s*\\((.*)\\)", RegexOptions.Singleline);
 
@@ -38,6 +41,7 @@ namespace oyster.web.codegenerator
 
             List<string> fieldCodeList = new List<string>();
             List<string> routeCodeList = new List<string>();
+            List<string> routeUrlCodeList = new List<string>();
 
             Dictionary<string, List<string>> filterCodeDic = new Dictionary<string, List<string>>();
 
@@ -57,6 +61,14 @@ namespace oyster.web.codegenerator
                     if (m.Success && m.Groups.Count > 1)
                     {
                         routeCodeList.Add(m.Groups[1].Value);
+                    }
+                }
+                else if (code.Contains("TemplateHelper.Route<"))
+                {
+                    var m = regRouteUrl.Match(code);
+                    if (m.Success && m.Groups.Count > 2)
+                    {
+                        routeUrlCodeList.Add(string.Format("<{0}>({1})", m.Groups[1].Value, m.Groups[2].Value));
                     }
                 }
                 else if (code.Contains("TemplateHelper.Filter"))
@@ -90,9 +102,13 @@ namespace oyster.web.codegenerator
             }
 
             StringBuilder addcodeRoute = new StringBuilder();
+            foreach (var f in routeUrlCodeList)
+            {
+                addcodeRoute.AppendFormat("            RouteManager.Route{0};\r\n", f);
+            }
             foreach (var f in routeCodeList)
             {
-                addcodeRoute.AppendFormat("           routes.Add({0});\r\n", f);
+                addcodeRoute.AppendFormat("            RouteManager.Route({0});\r\n", f);
             }
 
             StringBuilder addcodeFilter = new StringBuilder();
@@ -110,14 +126,12 @@ namespace oyster.web.codegenerator
 namespace " + NameSpace + @"
 {
     using oyster.web;
+    using oyster.web.define;
 " + codeUsing + @"
     public class " + ClassName + @" : HostBase
     {
 " + codeFields.ToString() +
   @"
-        
-        static readonly List<Func<Request, TemplateBase>> routes = new List<Func<Request, TemplateBase>>();
-
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
         static readonly List<Func<Request,Response,bool>> filterBeforeRequest = new  List<Func<Request,Response,bool>>();
@@ -132,21 +146,11 @@ namespace " + NameSpace + @"
  " + addcodeRoute + @"
 
             //******** filter setting *********//
-" + addcodeFilter + @"
+ " + addcodeFilter + @"
         }
 
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
-        public override TemplateBase Route(Request request)
-        {
-            foreach (var rt in routes)
-            {
-                var it = rt(request);
-                if (it != null)
-                    return it;
-            }
-            return null;
-        }
-
+       
         public override  bool BeforeRouteFilter(Request request)
         {
             foreach (var filter in filterBeforeRoute)

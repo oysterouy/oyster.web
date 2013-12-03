@@ -11,13 +11,6 @@ namespace oyster.web
     [Serializable]
     public class RequestHead : IConvertible
     {
-        public string Path { get; set; }
-
-        /// <summary>
-        /// HttpMethod:GET,POST,PUT,DEL
-        /// </summary>
-        public string Method { get; set; }
-
         #region IConvertible
 
 
@@ -107,6 +100,21 @@ namespace oyster.web
         }
 
         #endregion
+
+        public RequestHead()
+        {
+            Path = "";
+            Method = "GET";
+            Paramters = new NameValueCollection();
+            Cookies = new HttpCookieCollection();
+        }
+        public string Path { get; set; }
+
+        /// <summary>
+        /// HttpMethod:GET,POST,PUT,DEL
+        /// </summary>
+        public string Method { get; set; }
+
 
         public NameValueCollection Paramters { get; set; }
 

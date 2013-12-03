@@ -1,0 +1,8 @@
+﻿@TemplateHelper.Config((int _loadingTimeout) => 200)
+@(TemplateHelper.Route<timsitedemo.Index>("/", "/"))
+@(TemplateHelper.Route<timsitedemo.Index>("/index", "/index/{0}-_-{1}/", "name", "age"))
+@TemplateHelper.Route((request) =>
+{
+    return InstanceHelper<timsitedemo.Index>.Instance;
+})
+@(TemplateHelper.Route<timsitedemo.Index>("/idx", "/idx/{0}", "n"))

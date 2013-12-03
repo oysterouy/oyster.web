@@ -8,6 +8,7 @@ namespace timsitedemo
     using System.Linq;
     using System.Text;
     using System.Web;
+    using timsitedemo;
 
     public class Index : TemplateBase<Index>
     {
@@ -29,6 +30,16 @@ namespace timsitedemo
             Echo(html, Write("{0}-{1}-dsdda", 1, 3));
             Echo(html, @"
     </div>
+    <p>
+        <a href=""");
+            Echo(html, Url<Index>("oyster"));
+            Echo(html, @""">Title</a>
+    </p>
+    <p>
+        <a href=""");
+            Echo(html, Url<Index>("oyster", 4));
+            Echo(html, @""">Title1</a>
+    </p>
 </body>
 </html>
 ");});

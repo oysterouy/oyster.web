@@ -1,4 +1,5 @@
 ﻿using System;
+using oyster.web;
 using oyster.web.define;
 
 
@@ -7,11 +8,6 @@ namespace oyster.web
     public class TemplateHelper
     {
         public static string Config<T>(Func<T, T> exp)
-        {
-            return "";
-        }
-
-        public static string Route(Func<Request, TemplateBase> Route)
         {
             return "";
         }
@@ -90,5 +86,16 @@ namespace oyster.web
         {
             return "";
         }
+
+        public static string Route(Func<Request, TemplateBase> Route)
+        {
+            return "";
+        }
+        public static string Route<T>(string name, string format, params string[] paramNames)
+            where T : TemplateBase
+        {
+            return "";
+        }
+
     }
 }

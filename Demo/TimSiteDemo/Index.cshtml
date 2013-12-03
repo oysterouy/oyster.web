@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using timsitedemo;
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -7,13 +8,19 @@
 <body>
     <div>@Write("{0}-{1}-dsdda", 1, 3)
     </div>
+    <p>
+        <a href="@(Url<Index>("oyster"))">Title</a>
+    </p>
+    <p>
+        <a href="@(Url<Index>("oyster", 4))">Title1</a>
+    </p>
 </body>
 </html>
-@oyster.web.TemplateHelper.Init((request) =>
+@TemplateHelper.Init((request) =>
 {
     return new object[0];
 })
-@oyster.web.TemplateHelper.Request((response) =>
+@TemplateHelper.Request((response) =>
 {
 
 })
