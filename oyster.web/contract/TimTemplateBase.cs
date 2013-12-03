@@ -8,6 +8,10 @@ namespace oyster.web
 {
     public abstract class TimTemplateBase
     {
+        /// <summary>
+        /// Response.Model
+        /// </summary>
+        public dynamic Model { get; private set; }
         public static string Write(string format, params object[] args)
         {
             if (args == null || args.Length == 0)

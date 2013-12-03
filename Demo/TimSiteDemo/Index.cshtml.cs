@@ -16,7 +16,8 @@ namespace timsitedemo
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
-            Echo(html, @"<!DOCTYPE html>
+            Echo(html, @"
+<!DOCTYPE html>
 <html>
 <head>
     <meta name=""viewport"" content=""width=device-width"" />
@@ -28,6 +29,11 @@ namespace timsitedemo
     <div>");
             Echo(html, Write("{0}-{1}-dsdda", 1, 3));
             Echo(html, @"
+    </div>
+    <div>
+        <b>");
+            Echo(html, Model.AA);
+            Echo(html, @"</b>
     </div>
 </body>
 </html>
