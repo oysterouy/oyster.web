@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using oyster.web.hosting;
+using oyster.web.define;
 
 
 namespace oyster.web
@@ -42,7 +43,10 @@ namespace oyster.web
 
             return new ResponseInfo { Header = response.Head, Body = response.Body };
         }
-        public abstract TemplateBase Route(Request request);
+        public virtual TemplateBase Route(Request request)
+        {
+            return RouteManager.Match(request);
+        }
         public abstract bool BeforeRouteFilter(Request request);
         public abstract bool BeforeRequestFilter(Request request, Response response);
         public abstract bool BeforeRanderFilter(Request request, Response response);
@@ -74,6 +78,13 @@ namespace oyster.web
 
 
             return response;
+        }
+
+        static readonly KeyValueCollection<string, string> staticDir = new KeyValueCollection<string, string>();
+
+        public void AddStaticDir(string urlRoot, string dir)
+        {
+            staticDir.Add(urlRoot.ToLower(), dir.ToLower());
         }
     }
 }

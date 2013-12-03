@@ -18,5 +18,16 @@ namespace oyster.web
                 return format;
             return string.Format(format, args);
         }
+
+        public static string Url<T>(string pathStart, object[] args)
+            where T : TemplateBase
+        {
+            return RouteManager.Url<T>(pathStart, args);
+        }
+        public static string Url<T>(params object[] args)
+            where T : TemplateBase
+        {
+            return Url<T>(null, args);
+        }
     }
 }

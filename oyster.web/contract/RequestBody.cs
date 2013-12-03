@@ -6,6 +6,13 @@ using System.Dynamic;
 
 namespace oyster.web
 {
+    public enum HttpMethod
+    {
+        GET,
+        POST,
+        PUT,
+        DEL
+    }
     public enum CacheToWhere
     {
         Brose = 1,

@@ -25,10 +25,10 @@ namespace oyster.web.codegenerator
             try
             {
                 args = args.Length < 1 ? new string[] {
-            @"D:\oyster\git\develop\oyster.web\Demo\D2\",
+            @"E:\work\develop\projects\gelu.business.main\deps\common\oyster.web\Demo\TimSiteDemo",
             ".cshtml",
-            "DemoSite",
-            @"D:\oyster\git\develop\oyster.web\Demo\D2\DemoSite.csproj"
+            "TimSiteDemo",
+            @"E:\work\develop\projects\gelu.business.main\deps\common\oyster.web\Demo\TimSiteDemo\TimSiteDemo.csproj"
             } : args;
 
                 if (!string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["RazorProjectGuid"]))

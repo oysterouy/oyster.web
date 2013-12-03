@@ -1,4 +1,5 @@
-﻿@TemplateHelper.Init((request) =>
+﻿﻿@using timsitedemo;
+@TemplateHelper.Init((request) =>
 {
     return new object[0];
 })
@@ -15,8 +16,11 @@
 <body>
     <div>@Write("{0}-{1}-dsdda", 1, 3)
     </div>
-    <div>
-        <b>@Model.AA</b>
-    </div>
+    <p>
+        <a href="@(Url<Index>("oyster"))">Title</a>
+    </p>
+    <p>
+        <a href="@(Url<Index>("oyster", 4))">Title1</a>
+    </p>
 </body>
 </html>

@@ -10,13 +10,19 @@ namespace oyster.web.hosting
     {
         public static RequestHead CreateHead(HttpContext context)
         {
-            return new RequestHead
+            var hd = new RequestHead
             {
                 Path = context.Request.Path,
                 Method = context.Request.HttpMethod,
-                Paramters = context.Request.Params,
-                Cookies = context.Request.Cookies,
             };
+            hd.Paramters.Add(context.Request.Params);
+            foreach (string key in context.Request.Cookies.AllKeys)
+            {
+                var ck = context.Request.Cookies[key];
+                hd.Cookies.Add(ck);
+            }
+
+            return hd;
         }
 
         public static IRequestCache GetRequestCacheProvider()
