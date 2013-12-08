@@ -22,12 +22,16 @@ namespace oyster.web
         public static string Url<T>(string pathStart, object[] args)
             where T : TemplateBase
         {
-            return RouteManager.Url<T>(pathStart, args);
+            return RouteManager.Instance.Url<T>(pathStart, args);
         }
         public static string Url<T>(params object[] args)
             where T : TemplateBase
         {
             return Url<T>(null, args);
+        }
+        public static string Src(string fileName)
+        {
+            return RouteManager.Instance.Src(fileName);
         }
     }
 }

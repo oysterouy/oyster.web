@@ -13,6 +13,7 @@ namespace oyster.web
     {
         public virtual ResponseInfo DoRequest(RequestHead header)
         {
+            RequestContext.SetHost(this);
             Request request = new Request(header) { Host = this };
             Response response = null;
             if (BeforeRouteFilter(request))
@@ -45,13 +46,14 @@ namespace oyster.web
         }
         public virtual TemplateBase Route(Request request)
         {
-            return RouteManager.Match(request);
+            return RouteManager.Instance.Match(request);
         }
         public abstract bool BeforeRouteFilter(Request request);
         public abstract bool BeforeRequestFilter(Request request, Response response);
         public abstract bool BeforeRanderFilter(Request request, Response response);
         public abstract bool AfterRanderFilter(Request request, Response response);
         public abstract int LoadingTimeout { get; }
+        public abstract string TemplateStaticResourceDir { get; }
 
         internal Response RequestInternal(Request Request)
         {
@@ -78,13 +80,6 @@ namespace oyster.web
 
 
             return response;
-        }
-
-        static readonly KeyValueCollection<string, string> staticDir = new KeyValueCollection<string, string>();
-
-        public void AddStaticDir(string urlRoot, string dir)
-        {
-            staticDir.Add(urlRoot.ToLower(), dir.ToLower());
         }
     }
 }

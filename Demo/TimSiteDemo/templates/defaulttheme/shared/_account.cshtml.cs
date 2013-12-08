@@ -1,5 +1,5 @@
 ﻿
-namespace timsitedemo
+namespace timsitedemo.templates.defaulttheme.shared
 {
     using oyster.web;
     using oyster.web.define;
@@ -8,11 +8,10 @@ namespace timsitedemo
     using System.Linq;
     using System.Text;
     using System.Web;
-    using timsitedemo;
 
-    public class Index : TemplateBase<Index>
+    public class _account : TemplateBase<_account>
     {
-        static Index()
+        static _account()
         {
             templateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
@@ -22,25 +21,11 @@ namespace timsitedemo
 <html>
 <head>
     <meta name=""viewport"" content=""width=device-width"" />
-    <title>");
-            Echo(html, Write("Title"));
-            Echo(html, @"</title>
+    <title></title>
 </head>
 <body>
-    <div>");
-            Echo(html, Write("{0}-{1}-dsdda", 1, 3));
-            Echo(html, @"
+    <div>
     </div>
-    <p>
-        <a href=""");
-            Echo(html, Url<Index>("oyster"));
-            Echo(html, @""">Title</a>
-    </p>
-    <p>
-        <a href=""");
-            Echo(html, Url<Index>("oyster", 4));
-            Echo(html, @""">Title1</a>
-    </p>
 </body>
 </html>
 ");});

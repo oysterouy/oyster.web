@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using oyster.web.define;
 
-namespace oyster.web.define
+namespace oyster.web.hosting
 {
     class BlockCall
     {

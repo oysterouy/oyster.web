@@ -5,13 +5,19 @@ using System.Text;
 
 namespace oyster.web
 {
+    class Box<T>
+    {
+
+    }
     public class InstanceHelper
     {
         protected static Dictionary<string, object> _instances = new Dictionary<string, object>();
+
         public static object GetInstance(Type tname, params object[] paramsobj)
         {
             object t = null;
-            lock (tname)
+            var boxTp = typeof(Box<>).MakeGenericType(tname);
+            lock (boxTp)
             {
                 string key = tname.FullName;
                 if (paramsobj != null)
@@ -28,7 +34,8 @@ namespace oyster.web
                 if (!_instances.ContainsKey(key))
                 {
                     t = Activator.CreateInstance(tname, paramsobj);
-                    _instances.Add(key, t);
+                    if (!_instances.ContainsKey(key))
+                        _instances.Add(key, t);
                 }
                 else
                 {
