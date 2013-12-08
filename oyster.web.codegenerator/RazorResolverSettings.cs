@@ -68,7 +68,7 @@ namespace oyster.web.codegenerator
                     var m = regRouteUrl.Match(code);
                     if (m.Success && m.Groups.Count > 2)
                     {
-                        routeUrlCodeList.Add(string.Format("<{0}>({1})", m.Groups[1].Value, m.Groups[2].Value));
+                        routeUrlCodeList.Add(string.Format("<{0}>(This,{1})", m.Groups[1].Value, m.Groups[2].Value));
                     }
                 }
                 else if (code.Contains("TemplateHelper.Filter"))
@@ -104,11 +104,11 @@ namespace oyster.web.codegenerator
             StringBuilder addcodeRoute = new StringBuilder();
             foreach (var f in routeUrlCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Route{0};\r\n", f);
+                addcodeRoute.AppendFormat("            RouteManager.Instance.Route{0};\r\n", f);
             }
             foreach (var f in routeCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Route({0});\r\n", f);
+                addcodeRoute.AppendFormat("            RouteManager.Instance.Route(This,{0});\r\n", f);
             }
 
             StringBuilder addcodeFilter = new StringBuilder();
@@ -130,6 +130,7 @@ namespace " + NameSpace + @"
 " + codeUsing + @"
     public class " + ClassName + @" : HostBase
     {
+        static HostBase This = InstanceHelper<" + ClassName + @">.Instance;
 " + codeFields.ToString() +
   @"
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
@@ -150,6 +151,7 @@ namespace " + NameSpace + @"
         }
 
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
+        public override string TemplateStaticResourceDir{get{ return _templateStaticResourceDir;}}
        
         public override  bool BeforeRouteFilter(Request request)
         {

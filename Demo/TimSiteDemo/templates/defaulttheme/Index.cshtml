@@ -1,0 +1,22 @@
+﻿@using timsitedemo.templates.defaulttheme;
+@using timsitedemo.templates.defaulttheme.shared;
+@TemplateHelper.Init((request) =>
+{
+    request.Layout<_home>();
+    return new object[0];
+})
+@TemplateHelper.Request((response) =>
+{
+
+})
+@section Body{
+    <div>
+        <p>
+            I amd Index!</p>
+    </div>
+}
+@section Script{
+    <script language="javascript" type="text/javascript">
+        alert(jQuery);
+    </script>
+}

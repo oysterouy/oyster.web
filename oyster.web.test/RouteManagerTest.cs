@@ -65,6 +65,39 @@ namespace oyster.web.test
         //
         #endregion
 
+        class TestHost : HostBase
+        {
+
+            public override bool BeforeRouteFilter(Request request)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool BeforeRequestFilter(Request request, Response response)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool BeforeRanderFilter(Request request, Response response)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override bool AfterRanderFilter(Request request, Response response)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override int LoadingTimeout
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public override string TemplateStaticResourceDir
+            {
+                get { throw new NotImplementedException(); }
+            }
+        }
 
         /// <summary>
         ///Match 的测试
@@ -74,8 +107,8 @@ namespace oyster.web.test
         {
             Request request = new Request();
             request.Head.Path = "/ttt/adds-123/5dadf.html";
-            RouteManager.Route<T1>("/ttt/", "/ttt/{0}-{1}/{2}.html", "n", "q", "s");
-            TemplateBase actual = RouteManager.Match(request);
+            RouteManager.Instance.Route<T1>(new TestHost(), "/ttt/", "/ttt/{0}-{1}/{2}.html", "n", "q", "s");
+            TemplateBase actual = RouteManager.Instance.Match(request);
             Assert.AreNotEqual(actual, null);
         }
 

@@ -2,11 +2,18 @@
 using System.Web;
 using oyster.web;
 using timsitedemo;
+using timsitedemo.templates.defaulttheme;
+using timsitedemo.templates.newtheme;
 
 namespace TimSiteDemo.application
 {
     public class ApplicationHandle : IHttpHandler
     {
+        public ApplicationHandle()
+        {
+            RouteManager.SetInstance(new DefaultRouteManager());
+        }
+
         /// <summary>
         /// 您将需要在您网站的 web.config 文件中配置此处理程序，
         /// 并向 IIS 注册此处理程序，然后才能进行使用。有关详细信息，
@@ -20,11 +27,25 @@ namespace TimSiteDemo.application
             // 如果按请求保留某些状态信息，则通常这将为 false。
             get { return true; }
         }
-        HostBase host = null;
+
+        HostBase GetHost(HttpContext context)
+        {
+            string vparam = context.Request.Params["v"];
+            if (!string.IsNullOrWhiteSpace(vparam) && vparam.Trim().ToLower().Equals("newtheme"))
+            {
+                return InstanceHelper<NewSettings>.Instance;
+            }
+
+            return InstanceHelper<DefaultSettings>.Instance;
+        }
+
         public void ProcessRequest(HttpContext context)
         {
-            //在此写入您的处理程序实现。
-            host = InstanceHelper<SiteSettings>.Instance;
+            //是静态资源
+            if (ProcessStaticResource(context))
+                return;
+
+            var host = GetHost(context);
 
             var header = oyster.web.hosting.HostingHelper.CreateHead(context);
             var resp = host.DoRequest(header);
@@ -40,7 +61,27 @@ namespace TimSiteDemo.application
             }
 
             context.Response.Write(resp.Body);
+        }
 
+        bool ProcessStaticResource(HttpContext context)
+        {
+            string path = context.Request.Path.Trim().ToLower();
+            if (!path.StartsWith("/context"))
+                return false;
+
+            var urlInfo = RouteManager.Instance.GetSrcUrlInfo(path);
+            if (urlInfo == null)
+                return false;
+
+            string oldETag = context.Request.Headers["If-None-Match"];
+            var response = context.Response;
+            response.ContentType = urlInfo.ContentType;
+            response.AppendHeader("ETAG", urlInfo.ETag);
+            if (urlInfo.ETag == oldETag)
+                response.StatusCode = 304;
+            else
+                response.WriteFile(urlInfo.RealPath);
+            return true;
         }
 
         #endregion

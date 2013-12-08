@@ -1,5 +1,5 @@
 ﻿
-namespace timsitedemo
+namespace timsitedemo.templates.newtheme
 {
     using oyster.web;
     using oyster.web.define;
@@ -8,10 +8,13 @@ namespace timsitedemo
     using System.Linq;
     using System.Text;
     using System.Web;
+    using timsitedemo.templates.newtheme;
 
-    public class SiteSettings : HostBase
+    public class NewSettings : HostBase
     {
+        static HostBase This = InstanceHelper<NewSettings>.Instance;
         public static readonly int _loadingTimeout = 200;
+        public static readonly string _templateStaticResourceDir = "/templates/defaulttheme/context";
 
         static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
 
@@ -21,15 +24,15 @@ namespace timsitedemo
 
         static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
 
-        static SiteSettings()
+        static NewSettings()
         {
             //******** route setting *********//
-             RouteManager.Route<timsitedemo.Index>("/", "/");
-            RouteManager.Route<timsitedemo.Index>("/index", "/index/{0}-_-{1}/", "name", "age");
-            RouteManager.Route<timsitedemo.Index>("/idx", "/idx/{0}", "n");
-            RouteManager.Route((request) =>
+             RouteManager.Instance.Route<Index>(This,"/", "/");
+            RouteManager.Instance.Route<Index>(This,"/index", "/index/{0}-_-{1}/", "name", "age");
+            RouteManager.Instance.Route<Index>(This,"/idx", "/idx/{0}", "n");
+            RouteManager.Instance.Route(This,(request) =>
 {
-    return InstanceHelper<timsitedemo.Index>.Instance;
+    return InstanceHelper<Index>.Instance;
 });
 
 
@@ -38,6 +41,7 @@ namespace timsitedemo
         }
 
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
+        public override string TemplateStaticResourceDir{get{ return _templateStaticResourceDir;}}
        
         public override  bool BeforeRouteFilter(Request request)
         {

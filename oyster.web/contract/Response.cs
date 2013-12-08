@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 using oyster.web.define;
+using oyster.web.hosting;
 
 namespace oyster.web
 {

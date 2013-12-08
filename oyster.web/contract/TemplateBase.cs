@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using oyster.web.define;
 using System.IO;
+using oyster.web.hosting;
 
 
 namespace oyster.web

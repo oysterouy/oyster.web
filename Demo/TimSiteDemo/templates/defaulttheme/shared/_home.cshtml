@@ -1,0 +1,28 @@
+﻿@TemplateHelper.Init((request) =>
+{
+    return new object[0];
+})
+@TemplateHelper.Request((response) =>
+{
+
+})
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="@Src("/context/bootstrapv3.03/css/bootstrap.min.css")" />
+    <title></title>
+</head>
+<body>
+    @section Body{
+        <h1>
+            _home layout body!</h1>
+    }
+    <script src="@Src("/context/jquery/jquery-1.10.2.min.js")"></script>
+    <script src="@Src("/context/bootstrapv3.03/js/bootstrap.min.js")"></script>
+    @section Script{
+    }
+</body>
+</html>
+@section Foot{
+}
