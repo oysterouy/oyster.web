@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="application\ApplicationHandle.cs" />
     <Compile Include="application\DefaultRouteManager.cs" />
+    <Compile Include="application\TimFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="templates\defaulttheme\shared\_account.cshtml.cs">
       <DependentUpon>_account.cshtml</DependentUpon>

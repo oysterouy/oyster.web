@@ -44,6 +44,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="A\contract\Response.cs" />
+    <Compile Include="A\contract\Request.cs" />
+    <Compile Include="A\contract\TimOrder.cs" />
+    <Compile Include="A\theme\TimTemplate.cs" />
+    <Compile Include="A\host\TimEngine.cs" />
+    <Compile Include="A\host\TimHost.cs" />
+    <Compile Include="A\implement\manage\ResponseManager.cs" />
+    <Compile Include="A\implement\manage\RouteManager.cs" />
+    <Compile Include="A\implement\manage\StaticResourceManager.cs" />
+    <Compile Include="A\implement\TimProcess.cs" />
+    <Compile Include="A\implement\TimProcessContext.cs" />
+    <Compile Include="A\theme\TimTheme.cs" />
+    <Compile Include="A\theme\TimSetting.cs" />
+    <Compile Include="A\utility\DynamicModel.cs" />
+    <Compile Include="A\utility\InstanceHelper.cs" />
+    <Compile Include="A\utility\KeyValueCollection.cs" />
     <Compile Include="contract\RequestBody.cs" />
     <Compile Include="contract\IRequestCache.cs" />
     <Compile Include="hosting\manage\StaticResourceManager.cs" />
@@ -66,7 +82,6 @@
     <Compile Include="hosting\HostingHelper.cs" />
     <Compile Include="hosting\domain-load\HostProxy.cs" />
     <Compile Include="hosting\ResponseInfo.cs" />
-    <Compile Include="hosting\manage\RouteManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="template\TemplateHelper.cs" />
     <Compile Include="hosting\manage\TemplateManager.cs" />
@@ -78,6 +93,7 @@
       <Name>oyster.web.codegenerator</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
