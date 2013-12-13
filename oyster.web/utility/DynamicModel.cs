@@ -6,12 +6,12 @@ using System.Dynamic;
 using System.Collections;
 using System.Runtime.Serialization;
 
-namespace oyster.web.A.utility
+namespace oyster.web
 {
     [Serializable]
-    public class DynamicModel : DynamicObject, ISerializable
+    public class TimDynamicModel : DynamicObject, ISerializable
     {
-        public DynamicModel()
+        public TimDynamicModel()
         {
         }
         KeyValueCollection<string, object> dataSet = new KeyValueCollection<string, object>();
@@ -19,6 +19,11 @@ namespace oyster.web.A.utility
         {
             object d = null;
             dataSet.TryGetValue(binder.Name, out d);
+            if (d == null && binder.Name == "Head")
+            {
+                d = new TimDynamicModel();
+                dataSet[binder.Name] = d;
+            }
             result = d;
             return true;
         }
@@ -33,7 +38,7 @@ namespace oyster.web.A.utility
         {
             info.AddValue("dataSet", dataSet, typeof(KeyValueCollection<string, object>));
         }
-        public DynamicModel(SerializationInfo info, StreamingContext context)
+        public TimDynamicModel(SerializationInfo info, StreamingContext context)
             : base()
         {
             dataSet = info.GetValue("dataSet", typeof(KeyValueCollection<string, object>)) as KeyValueCollection<string, object>;

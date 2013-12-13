@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using oyster.web.manage;
 
-namespace oyster.web.A.contract
+namespace oyster.web.host
 {
     public class TimEngine
     {

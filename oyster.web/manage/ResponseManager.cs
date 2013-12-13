@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace oyster.web.hosting
+namespace oyster.web.manage
 {
     public class ResponseManager
     {
@@ -23,7 +23,10 @@ namespace oyster.web.hosting
         }
         public virtual Response GetResponseByStatusCode(int code)
         {
-            return new Response { Head = new ResponseHead { StatusCode = code }, Body = new StringBuilder("Page No Found!") };
+            return new Response
+            {
+                //Head = new ResponseHead { StatusCode = code }, Body = new StringBuilder("Page No Found!")
+            };
         }
     }
 }

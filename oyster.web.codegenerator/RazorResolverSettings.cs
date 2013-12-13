@@ -32,6 +32,8 @@ namespace oyster.web.codegenerator
 
             Regex regRoute = new Regex("TemplateHelper\\.Route(?'open'\\()((?'open'\\()+[^\\(\\)]*(?'-open'\\))[^\\(\\)]*)+(?(open)\\)|(?!))", RegexOptions.Singleline);
 
+            Regex regbaseTheme = new Regex("TemplateHelper\\.BaseTheme[^<]*<([^>]+)>", RegexOptions.Singleline);
+
             Regex regRouteUrl = new Regex("TemplateHelper\\.Route[^<]*<([^>]+)>[^\\(]*\\(([^\\)]+)\\)", RegexOptions.Singleline);
 
 
@@ -39,6 +41,7 @@ namespace oyster.web.codegenerator
 
             var r = new RazorResolver(_codeText);
 
+            string baseThemeType = "";
             List<string> fieldCodeList = new List<string>();
             List<string> routeCodeList = new List<string>();
             List<string> routeUrlCodeList = new List<string>();
@@ -47,7 +50,15 @@ namespace oyster.web.codegenerator
 
             foreach (var code in r.OutCodeList.Values)
             {
-                if (code.Contains("TemplateHelper.Config("))
+                if (code.Contains("TemplateHelper.BaseTheme"))
+                {
+                    var m = regbaseTheme.Match(code);
+                    if (m.Success && m.Groups.Count > 1)
+                    {
+                        baseThemeType = m.Groups[1].Value;
+                    }
+                }
+                else if (code.Contains("TemplateHelper.Config("))
                 {
                     var m = regField.Match(code);
                     if (m.Success && m.Groups.Count > 2)

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace oyster.web.A.theme
+namespace oyster.web
 {
     public static class TimSetting
     {
@@ -82,17 +79,17 @@ namespace oyster.web.A.theme
         }
 
         public static string Block<T>(Func<T, string, bool> act)
-            where T : TemplateBase
+            where T : TimTemplate
         {
             return "";
         }
 
-        public static string Route(Func<Request, TemplateBase> Route)
+        public static string Route(Func<Request, TimTemplate> Route)
         {
             return "";
         }
         public static string Route<T>(string name, string format, params string[] paramNames)
-            where T : TemplateBase
+            where T : TimTemplate
         {
             return "";
         }

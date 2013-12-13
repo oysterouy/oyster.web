@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using oyster.web.define;
+using oyster.web;
+using oyster.web.host;
 
-namespace oyster.web.A.manage
+namespace oyster.web.manage
 {
     class StaticResourceManager
     {
@@ -110,27 +111,27 @@ namespace oyster.web.A.manage
                 return null;
 
             string fullFilePath = filePath;
-            var host = RequestContext.GetHost();
-            if (host != null)
-            {
-                AddWatch(host.TemplateStaticResourceDir);
-                fullFilePath = Path.Combine(host.TemplateStaticResourceDir,
-                    fullFilePath.StartsWith("/") ? fullFilePath.Substring(1) : fullFilePath);
-            }
+            //var host = TimHost.Instance.GetTheme(
+            //if (host != null)
+            //{
+            //    AddWatch(host.TemplateStaticResourceDir);
+            //    fullFilePath = Path.Combine(host.TemplateStaticResourceDir,
+            //        fullFilePath.StartsWith("/") ? fullFilePath.Substring(1) : fullFilePath);
+            //}
 
-            string realFullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                fullFilePath.StartsWith("/") ? fullFilePath.Substring(1) : fullFilePath);
-            if (File.Exists(realFullFilePath))
-            {
-                return new FileInfo(realFullFilePath);
-            }
-            else
-            {
-                var realCommonFullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                    filePath.StartsWith("/") ? filePath.Substring(1) : filePath);
-                if (File.Exists(realCommonFullFilePath))
-                    return new FileInfo(realCommonFullFilePath);
-            }
+            //string realFullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            //    fullFilePath.StartsWith("/") ? fullFilePath.Substring(1) : fullFilePath);
+            //if (File.Exists(realFullFilePath))
+            //{
+            //    return new FileInfo(realFullFilePath);
+            //}
+            //else
+            //{
+            //    var realCommonFullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            //        filePath.StartsWith("/") ? filePath.Substring(1) : filePath);
+            //    if (File.Exists(realCommonFullFilePath))
+            //        return new FileInfo(realCommonFullFilePath);
+            //}
 
             return null;
         }

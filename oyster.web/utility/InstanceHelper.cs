@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace oyster.web.A.utility
+namespace oyster.web
 {
-    class Box<T>
+    class InstanceHelper
     {
+        class Box<T>
+        {
 
-    }
-    public class InstanceHelper
-    {
+        }
         protected static Dictionary<string, object> _instances = new Dictionary<string, object>();
 
         public static object GetInstance(Type tname, params object[] paramsobj)
@@ -46,7 +46,7 @@ namespace oyster.web.A.utility
         }
     }
 
-    public class InstanceHelper<T> : InstanceHelper
+    class InstanceHelper<T> : InstanceHelper
     {
         public static T Instance
         {

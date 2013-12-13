@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace oyster.web.A.utility
+namespace oyster.web
 {
     [Serializable]
-    public class KeyValueCollection<TKey, TValue> : List<KeyValuePair<TKey, TValue>>
+    class KeyValueCollection<TKey, TValue> : List<KeyValuePair<TKey, TValue>>
     {
         List<TKey> saveKeys { get; set; }
         List<TValue> saveValues { get; set; }

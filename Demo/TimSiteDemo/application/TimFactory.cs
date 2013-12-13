@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using oyster.web.A.contract;
+using oyster.web;
 
 namespace TimSiteDemo.application
 {
@@ -10,6 +11,8 @@ namespace TimSiteDemo.application
     {
         public void ProcessRequest(HttpContext context)
         {
+            var t = new TimTheme();
+            var tt = new TimProcess();
             throw new NotImplementedException();
         }
 

@@ -44,48 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="A\contract\Response.cs" />
-    <Compile Include="A\contract\Request.cs" />
-    <Compile Include="A\contract\TimOrder.cs" />
-    <Compile Include="A\theme\TimTemplate.cs" />
-    <Compile Include="A\host\TimEngine.cs" />
-    <Compile Include="A\host\TimHost.cs" />
-    <Compile Include="A\implement\manage\ResponseManager.cs" />
-    <Compile Include="A\implement\manage\RouteManager.cs" />
-    <Compile Include="A\implement\manage\StaticResourceManager.cs" />
-    <Compile Include="A\implement\TimProcess.cs" />
-    <Compile Include="A\implement\TimProcessContext.cs" />
-    <Compile Include="A\theme\TimTheme.cs" />
-    <Compile Include="A\theme\TimSetting.cs" />
-    <Compile Include="A\utility\DynamicModel.cs" />
-    <Compile Include="A\utility\InstanceHelper.cs" />
-    <Compile Include="A\utility\KeyValueCollection.cs" />
-    <Compile Include="contract\RequestBody.cs" />
-    <Compile Include="contract\IRequestCache.cs" />
-    <Compile Include="hosting\manage\StaticResourceManager.cs" />
-    <Compile Include="hosting\RequestContext.cs" />
-    <Compile Include="hosting\BlockCall.cs" />
-    <Compile Include="define\DynamicModel.cs" />
-    <Compile Include="contract\HostBase.cs" />
-    <Compile Include="contract\TemplateBase.cs" />
-    <Compile Include="contract\Request.cs" />
-    <Compile Include="contract\RequestHead.cs" />
     <Compile Include="contract\Response.cs" />
-    <Compile Include="contract\ResponseHead.cs" />
-    <Compile Include="define\InstanceHelper.cs" />
-    <Compile Include="define\KeyValueCollection.cs" />
-    <Compile Include="hosting\SectionInvork.cs" />
-    <Compile Include="hosting\domain-load\AssemblyManager.cs" />
-    <Compile Include="hosting\manage\DefaultResponseManager.cs" />
-    <Compile Include="hosting\domain-load\HostApplication.cs" />
-    <Compile Include="hosting\domain-load\HostAssermblyLoader.cs" />
-    <Compile Include="hosting\HostingHelper.cs" />
-    <Compile Include="hosting\domain-load\HostProxy.cs" />
-    <Compile Include="hosting\ResponseInfo.cs" />
+    <Compile Include="contract\Request.cs" />
+    <Compile Include="contract\RouteInfo.cs" />
+    <Compile Include="manage\RouteManage.cs" />
+    <Compile Include="manage\StaticResourceManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="theme\TimThemeFilter.cs" />
+    <Compile Include="theme\TimRoute.cs" />
+    <Compile Include="theme\TimTemplate.cs" />
+    <Compile Include="host\TimEngine.cs" />
+    <Compile Include="host\TimHost.cs" />
+    <Compile Include="manage\ResponseManager.cs" />
+    <Compile Include="manage\RouteManager.cs" />
+    <Compile Include="process\TimProcess.cs" />
+    <Compile Include="process\TimProcessContext.cs" />
+    <Compile Include="theme\TimTemplateBase.cs" />
+    <Compile Include="theme\TimTheme.cs" />
+    <Compile Include="theme\TimSetting.cs" />
+    <Compile Include="utility\DynamicModel.cs" />
+    <Compile Include="utility\InstanceHelper.cs" />
+    <Compile Include="utility\KeyValueCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="template\TemplateHelper.cs" />
-    <Compile Include="hosting\manage\TemplateManager.cs" />
-    <Compile Include="contract\TimTemplateBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\oyster.web.codegenerator\oyster.web.codegenerator.csproj">
