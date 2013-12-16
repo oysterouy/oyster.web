@@ -19,12 +19,12 @@ namespace oyster.web
             return "";
         }
 
-        public static string FilterBeforeRander(Func<Request, Response, bool> filter)
+        public static string FilterBeforeRender(Func<Request, Response, bool> filter)
         {
             return "";
         }
 
-        public static string FilterAfterRander(Func<Request, Response, bool> filter)
+        public static string FilterAfterRender(Func<Request, Response, bool> filter)
         {
             return "";
         }

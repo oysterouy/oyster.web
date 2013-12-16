@@ -21,5 +21,21 @@ namespace oyster.web
             var obj = CallContext.GetData(GetProcessContextKey());
             return obj as TimProcess;
         }
+
+        public static Response GetResponse()
+        {
+            var process = GetProcess();
+            if (process != null)
+                return process.Response;
+            return null;
+        }
+        public static Response GetResponseModel()
+        {
+            var response = GetResponse();
+            if (response == null)
+                throw new Exception("ProcessContext don't get Response.");
+
+            return response.Model;
+        }
     }
 }

@@ -9,7 +9,6 @@ namespace oyster.web
 {
     public abstract partial class TimTheme
     {
-
         public TimTheme()
         {
             Route = RouteFactory.Create(this, null);

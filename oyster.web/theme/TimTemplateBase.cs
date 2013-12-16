@@ -8,12 +8,20 @@ namespace oyster.web
 {
     public abstract class TimTemplateBase
     {
+        static TimProcess Process { get { return TimProcessContext.GetProcess(); } }
         /// <summary>
         /// Response.Model
         /// </summary>
-        public dynamic Model { get; private set; }
-        public TimTemplate LayoutTemplate { get; protected set; }
+        public dynamic Model { get { return Process.Response.Model; } }
+        public TimTemplate LayoutTemplate { get { return Process.Layout.Template; } }
 
+        public static void Echo(StringBuilder sbuilder, string format, params object[] args)
+        {
+            if (args != null && args.Length > 0)
+                sbuilder.AppendFormat(format, args);
+            else
+                sbuilder.Append(format);
+        }
         public static string Write(string format, params object[] args)
         {
             if (args == null || args.Length == 0)
@@ -24,8 +32,7 @@ namespace oyster.web
         public static string Url<T>(string pathStart, object[] args)
             where T : TimTemplate
         {
-            var process = TimProcessContext.GetProcess();
-            return process.Theme.Route.Url<T>(pathStart, args);
+            return Process.Theme.Route.Url<T>(pathStart, args);
         }
         public static string Url<T>(params object[] args)
             where T : TimTemplate
@@ -38,9 +45,18 @@ namespace oyster.web
             return process.Theme.Route.Src(fileName);
         }
 
-        public void Layout<T>(params object[] args) where T : TimTemplate
+        public bool Layout<T>(params object[] args) where T : TimTemplate
         {
-            LayoutTemplate = InstanceHelper<T>.Instance;
+            return Process.SetLayout(InstanceHelper<T>.Instance, args);
+        }
+
+        public string Block<T>(string callID) where T : TimTemplate
+        {
+            return Process.BlockRender(InstanceHelper<T>.Instance, callID);
+        }
+        public void BlockInvoke<T>(string callID, params object[] args) where T : TimTemplate
+        {
+            Process.BlockInvoke(InstanceHelper<T>.Instance, callID, args);
         }
     }
 }

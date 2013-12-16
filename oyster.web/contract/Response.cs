@@ -10,5 +10,6 @@ namespace oyster.web
     {
         public object[] Paramters { get; set; }
         public dynamic Model { get; set; }
+        public StringBuilder BodyString { get; set; }
     }
 }

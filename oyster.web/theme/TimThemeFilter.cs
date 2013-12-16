@@ -17,13 +17,13 @@ namespace oyster.web
         {
             return RunningFilter(process, FilterType.BeforeRequest);
         }
-        internal bool BeforeRanderFilter(TimProcess process)
+        internal bool BeforeRenderFilter(TimProcess process)
         {
-            return RunningFilter(process, FilterType.BeforeRander);
+            return RunningFilter(process, FilterType.BeforeRender);
         }
-        internal bool AfterRanderFilter(TimProcess process)
+        internal bool AfterRenderFilter(TimProcess process)
         {
-            return RunningFilter(process, FilterType.AfterRander);
+            return RunningFilter(process, FilterType.AfterRender);
         }
         bool RunningFilter(TimProcess process, FilterType type)
         {
@@ -50,8 +50,8 @@ namespace oyster.web
         {
             BeforeRoute = 0,
             BeforeRequest = 1,
-            BeforeRander = 2,
-            AfterRander = 3,
+            BeforeRender = 2,
+            AfterRender = 3,
         }
         static readonly ConcurrentDictionary<TimTheme, ConcurrentDictionary<FilterType, List<Func<TimProcess, bool>>>> filters
               = new ConcurrentDictionary<TimTheme, ConcurrentDictionary<FilterType, List<Func<TimProcess, bool>>>>();
@@ -63,6 +63,11 @@ namespace oyster.web
             var ls = thisFilterFuncs.GetOrAdd(type, new List<Func<TimProcess, bool>>());
 
             ls.Add(filterFunc);
+        }
+        protected static void AddFilter<TTheme>(Func<TimProcess, bool> filterFunc, FilterType type)
+            where TTheme : TimTheme
+        {
+            InstanceHelper<TTheme>.Instance.AddFilter(filterFunc, type);
         }
     }
 }

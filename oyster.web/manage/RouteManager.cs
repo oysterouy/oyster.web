@@ -24,35 +24,37 @@ namespace oyster.web.manage
 
         static readonly List<RouteInfo> allRoutes = new List<RouteInfo>();
         static readonly List<Func<Request, TimTemplate>> allRouteFuncs = new List<Func<Request, TimTemplate>>();
-        static readonly KeyValueCollection<TimProcess, List<RouteInfo>> templateRoutes = new KeyValueCollection<TimProcess, List<RouteInfo>>();
-        static readonly KeyValueCollection<TimProcess, KeyValueCollection<string, List<RouteInfo>>> urlTemplateRoutes = new KeyValueCollection<TimProcess, KeyValueCollection<string, List<RouteInfo>>>();
-        static readonly KeyValueCollection<TimProcess, List<Func<Request, TimTemplate>>> templaterouteFuncs = new KeyValueCollection<TimProcess, List<Func<Request, TimTemplate>>>();
+        static readonly KeyValueCollection<TimTheme, List<RouteInfo>> templateRoutes = new KeyValueCollection<TimTheme, List<RouteInfo>>();
+        static readonly KeyValueCollection<TimTheme, KeyValueCollection<string, List<RouteInfo>>> urlTemplateRoutes = new KeyValueCollection<TimTheme, KeyValueCollection<string, List<RouteInfo>>>();
+        static readonly KeyValueCollection<TimTheme, List<Func<Request, TimTemplate>>> templaterouteFuncs = new KeyValueCollection<TimTheme, List<Func<Request, TimTemplate>>>();
 
         string GetTemplateTypeKey(Type tp, int argCount)
         {
             return string.Format("{0}-[{1}]", tp.FullName, argCount);
         }
 
-        public virtual void Route<T>(TimProcess process, string pathStart, string format, params string[] argNames)
-            where T : TimTemplate
+        public virtual void Route<TTheme, TTemplate>(string pathStart, string format, params string[] argNames)
+            where TTemplate : TimTemplate
+            where TTheme : TimTheme
         {
+            var theme = InstanceHelper<TTheme>.Instance;
             string s = string.Format(format, argNames);
-            var r = new RouteInfo<T> { PathStart = pathStart, Format = format, Args = argNames };
+            var r = new RouteInfo<TTemplate> { PathStart = pathStart, Format = format, Args = argNames };
             allRoutes.Add(r);
 
             List<RouteInfo> routeLs = null;
-            if (!templateRoutes.TryGetValue(process, out routeLs))
+            if (!templateRoutes.TryGetValue(theme, out routeLs))
             {
                 routeLs = new List<RouteInfo>();
-                templateRoutes.Add(process, routeLs);
+                templateRoutes.Add(theme, routeLs);
             }
             routeLs.Add(r);
 
             KeyValueCollection<string, List<RouteInfo>> tempRoutes = null;
-            if (!urlTemplateRoutes.TryGetValue(process, out tempRoutes))
+            if (!urlTemplateRoutes.TryGetValue(theme, out tempRoutes))
             {
                 tempRoutes = new KeyValueCollection<string, List<RouteInfo>>();
-                urlTemplateRoutes.Add(process, tempRoutes);
+                urlTemplateRoutes.Add(theme, tempRoutes);
             }
             List<RouteInfo> rls = null;
             string k = GetTemplateTypeKey(r.TemplateType, r.Args.Length);
@@ -64,14 +66,16 @@ namespace oyster.web.manage
             rls.Add(r);
         }
 
-        public virtual void Route(TimProcess process, Func<Request, TimTemplate> route)
+        public virtual void Route<TTheme>(Func<Request, TimTemplate> route)
+         where TTheme : TimTheme
         {
+            var theme = InstanceHelper<TTheme>.Instance;
             allRouteFuncs.Add(route);
             List<Func<Request, TimTemplate>> routeFuncs = null;
-            if (!templaterouteFuncs.TryGetValue(process, out routeFuncs))
+            if (!templaterouteFuncs.TryGetValue(theme, out routeFuncs))
             {
                 routeFuncs = new List<Func<Request, TimTemplate>>();
-                templaterouteFuncs.Add(process, routeFuncs);
+                templaterouteFuncs.Add(theme, routeFuncs);
             }
             routeFuncs.Add(route);
         }
@@ -80,11 +84,11 @@ namespace oyster.web.manage
         {
             List<RouteInfo> routes = null;
             List<Func<Request, TimTemplate>> routeFuncs = null;
-            var process = TimProcessContext.GetProcess();
-            if (process != null)
+            var theme = TimProcessContext.GetProcess();
+            if (theme != null)
             {
-                templateRoutes.TryGetValue(process, out routes);
-                templaterouteFuncs.TryGetValue(process, out routeFuncs);
+                templateRoutes.TryGetValue(theme.Theme, out routes);
+                templaterouteFuncs.TryGetValue(theme.Theme, out routeFuncs);
             }
             routes = routes ?? allRoutes;
 
@@ -114,13 +118,13 @@ namespace oyster.web.manage
         public virtual string Url<T>(string pathStart, object[] args)
             where T : TimTemplate
         {
-            var process = TimProcessContext.GetProcess();
+            var theme = TimProcessContext.GetProcess();
             string k = GetTemplateTypeKey(typeof(T), args == null ? 0 : args.Length);
 
             KeyValueCollection<string, List<RouteInfo>> urlRouteDic = null;
             List<RouteInfo> rls = null;
             if (
-                !urlTemplateRoutes.TryGetValue(process, out urlRouteDic) ||
+                !urlTemplateRoutes.TryGetValue(theme.Theme, out urlRouteDic) ||
                 !urlRouteDic.TryGetValue(k, out rls) ||
                 rls.Count < 1)
             {

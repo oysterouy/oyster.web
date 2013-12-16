@@ -10,12 +10,22 @@ namespace oyster.web
         {
             Host = host;
             Request = request;
+            Response = new Response();
+            BlockTemplates = new KeyValueCollection<string, TimBlock>();
         }
         public TimHost Host { get; protected set; }
         public TimTheme Theme { get; protected set; }
         public Request Request { get; protected set; }
         public Response Response { get; protected set; }
         public TimTemplate Template { get; protected set; }
+
+        public TimProcess Layout { get; protected set; }
+
+        internal KeyValueCollection<string, TimBlock> BlockTemplates { get; set; }
+
+        public bool IsError { get { return ErrorResponse != null; } }
+        public Response ErrorResponse { get; set; }
+
         public void Process()
         {
             TimProcessContext.SetProcess(this);
@@ -31,14 +41,47 @@ namespace oyster.web
                 return;
             }
             Template.Init(this);
+            ProcessRequest();
+        }
+
+        internal void ProcessRequest()
+        {
+            TimProcessContext.SetProcess(this);
             if (!Theme.BeforeRequestFilter(this))
                 return;
             Template.Request(this);
-            if (!Theme.BeforeRanderFilter(this))
+            if (!Theme.BeforeRenderFilter(this))
                 return;
-            Template.Rander(this);
-            if (!Theme.AfterRanderFilter(this))
+            Template.Render(this);
+            if (!Theme.AfterRenderFilter(this))
                 return;
+        }
+
+        internal bool SetLayout(TimTemplate layout, params object[] args)
+        {
+            Layout = new TimProcess(Host, Request);
+            Layout.Template = layout;
+            layout.Init(Layout, args);
+            return !IsError;
+        }
+        internal string BlockRender(TimTemplate block, string callID)
+        {
+            TimBlock bl = null;
+            if (BlockTemplates.TryGetValue(callID, out bl))
+            {
+                bl.Render();
+            }
+            throw new Exception(string.Format("Block type:{0},callId:{1} have no Invoke Before!",
+                block.GetType().FullName, callID));
+        }
+        internal void BlockInvoke(TimTemplate block, string callID, params object[] args)
+        {
+            if (BlockTemplates.ContainsKey(callID))
+                throw new Exception(string.Format("CallID:{0} Had Be Used!", callID));
+            var bl = new TimBlock { CallID = callID, Template = block, Parameters = args };
+            bl.Process = new TimProcess(Host, Request);
+            BlockTemplates.Add(callID, bl);
+            bl.Invoke();
         }
     }
 }

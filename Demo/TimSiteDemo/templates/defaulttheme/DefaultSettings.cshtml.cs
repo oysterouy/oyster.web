@@ -10,9 +10,13 @@ namespace timsitedemo.templates.defaulttheme
     using System.Web;
     using timsitedemo.templates.defaulttheme;
 
-    public class DefaultSettings : HostBase
+    public class DefaultSettings : TimTheme
     {
-        static HostBase This = InstanceHelper<DefaultSettings>.Instance;
+        public DefaultSettings()
+        {
+                        
+        }
+
         public static readonly int _loadingTimeout = 200;
         public static readonly string _templateStaticResourceDir = "/templates/defaulttheme/context";
 
@@ -20,9 +24,9 @@ namespace timsitedemo.templates.defaulttheme
 
         static readonly List<Func<Request,Response,bool>> filterBeforeRequest = new  List<Func<Request,Response,bool>>();
 
-        static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterBeforeRender = new  List<Func<Request,Response,bool>>();
 
-        static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
+        static readonly List<Func<Request,Response,bool>> filterAfterRender = new List<Func<Request,Response,bool>>();
 
         static DefaultSettings()
         {
@@ -63,9 +67,9 @@ namespace timsitedemo.templates.defaulttheme
             return true;
         }
 
-        public override  bool BeforeRanderFilter(Request request, Response response)
+        public override  bool BeforeRenderFilter(Request request, Response response)
         {
-            foreach (var filter in filterBeforeRander)
+            foreach (var filter in filterBeforeRender)
             {
                 if (!filter(request, response))
                     return false;
@@ -73,9 +77,9 @@ namespace timsitedemo.templates.defaulttheme
             return true;
         }
 
-        public override  bool AfterRanderFilter(Request request, Response response)
+        public override  bool AfterRenderFilter(Request request, Response response)
         {
-            foreach (var filter in filterBeforeRander)
+            foreach (var filter in filterBeforeRender)
             {
                 if (!filter(request, response))
                     return false;

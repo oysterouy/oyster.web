@@ -9,9 +9,12 @@ namespace oyster.web
     {
         public abstract object[] Init(Request request);
 
-        internal void Init(TimProcess timProcess)
+        internal void Init(TimProcess timProcess, params object[] args)
         {
-            timProcess.Response.Paramters = Init(timProcess.Request);
+            if (args != null && args.Length > 0)
+                timProcess.Response.Paramters = args;
+            else
+                timProcess.Response.Paramters = Init(timProcess.Request);
         }
 
         public abstract void Request(TimProcess timProcess);
@@ -28,9 +31,16 @@ namespace oyster.web
 
         //}
 
-        internal void Rander(TimProcess timProcess)
+        internal void Render(TimProcess timProcess)
         {
             throw new NotImplementedException();
         }
+    }
+    public abstract class TimTemplate<T> : TimTemplate
+    where T : TimTemplate
+    {
+        protected static readonly Dictionary<string, Action<StringBuilder, Response, TimSection>> templateSections = new Dictionary<string, Action<StringBuilder, Response, TimSection>>();
+
+        public static T Instance { get { return InstanceHelper<T>.Instance; } }
     }
 }

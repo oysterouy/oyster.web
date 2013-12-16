@@ -51,6 +51,8 @@
     <Compile Include="manage\StaticResourceManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="process\TimBlock.cs" />
+    <Compile Include="process\TimSection.cs" />
     <Compile Include="theme\TimThemeFilter.cs" />
     <Compile Include="theme\TimRoute.cs" />
     <Compile Include="theme\TimTemplate.cs" />
