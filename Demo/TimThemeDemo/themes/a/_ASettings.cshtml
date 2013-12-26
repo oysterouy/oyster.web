@@ -1,5 +1,6 @@
 ﻿@using oyster.web;
 @TimSetting.Config((int _loadingTimeout) => 200)
+@TimSetting.Config((string _themeName) => "AAAA")
 @TimSetting.Config((string _themeRelactivePath) => "/templates/defaulttheme")
 @(TimSetting.Route<timthemedemo.themes.a.Index>("/", "/"))
 @(TimSetting.Route<timthemedemo.themes.a.Index>("/index", "/index/{0}-_-{1}/", "name", "age"))

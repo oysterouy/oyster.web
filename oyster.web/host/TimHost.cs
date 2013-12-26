@@ -18,5 +18,6 @@ namespace oyster.web.host
         }
 
         public abstract TimTheme GetTheme(Request request);
+        public abstract TimTheme GetTheme(string themeName);
     }
 }

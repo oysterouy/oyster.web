@@ -13,6 +13,10 @@ namespace oyster.web
         {
             Route = RouteFactory.Create(this, null);
         }
+        public abstract string ThemeName { get; }
+        public abstract int LoadingTimeout { get; }
+        public abstract string ThemeRelactivePath { get; }
+
         public TimRoute Route { get; protected set; }
         TimTheme _baseTheme;
         public TimTheme BaseTheme

@@ -18,6 +18,7 @@ namespace timthemedemo.themes.a
         }
 
         public static readonly int _loadingTimeout = 200;
+        public static readonly string _themeName = "AAAA";
         public static readonly string _themeRelactivePath = "/templates/defaulttheme";
 
         static _ASettings()
@@ -36,6 +37,7 @@ namespace timthemedemo.themes.a
  
         }
 
+        public override string ThemeName{get{ return _themeName;}}
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
         public override string ThemeRelactivePath{get{ return _themeRelactivePath;}}
     }

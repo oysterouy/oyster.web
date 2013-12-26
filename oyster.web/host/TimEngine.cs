@@ -39,10 +39,10 @@ namespace oyster.web.host
         protected virtual bool ProcessStaticResourceRequest(HttpContext context)
         {
             string path = context.Request.Path.Trim().ToLower();
-            if (!path.StartsWith("/context/"))
+            if (!path.StartsWith(StaticResourceManager.ResourceUrlStart))
                 return false;
 
-            var urlInfo = RouteManager.Instance.GetSrcUrlInfo(path);
+            var urlInfo = RouteManager.Instance.GetSrcUrlInfo(context.Request.Url);
             if (urlInfo == null)
                 return false;
 

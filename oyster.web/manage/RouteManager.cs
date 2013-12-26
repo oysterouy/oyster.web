@@ -154,9 +154,9 @@ namespace oyster.web.manage
             return StaticResourceManager.GetResourceUrl(fileName);
         }
 
-        public virtual ResourceUrlInfo GetSrcUrlInfo(string fileName)
+        public virtual ResourceUrlInfo GetSrcUrlInfo(Uri url)
         {
-            return StaticResourceManager.GetResourceUrlInfo(fileName);
+            return StaticResourceManager.GetResourceUrlInfo(url);
         }
     }
 }

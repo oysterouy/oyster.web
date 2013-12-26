@@ -47,6 +47,7 @@
     <Compile Include="contract\Response.cs" />
     <Compile Include="contract\Request.cs" />
     <Compile Include="contract\RouteInfo.cs" />
+    <Compile Include="manage\ResourceUrlInfo.cs" />
     <Compile Include="manage\RouteManage.cs" />
     <Compile Include="manage\StaticResourceManager.cs">
       <SubType>Code</SubType>

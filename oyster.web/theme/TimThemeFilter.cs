@@ -43,9 +43,6 @@ namespace oyster.web
             return true;
         }
 
-        public abstract int LoadingTimeout { get; }
-        public abstract string ThemeRelactivePath { get; }
-
         protected enum FilterType
         {
             BeforeRoute = 0,

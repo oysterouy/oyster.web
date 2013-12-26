@@ -157,6 +157,7 @@ namespace " + NameSpace + @"
  " + addcodeFilter + @"
         }
 
+        public override string ThemeName{get{ return _themeName;}}
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
         public override string ThemeRelactivePath{get{ return _themeRelactivePath;}}
     }
