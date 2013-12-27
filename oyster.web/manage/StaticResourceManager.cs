@@ -19,7 +19,7 @@ namespace oyster.web.manage
         static readonly KeyValueCollection<string, string> realFileDic = new KeyValueCollection<string, string>();
         static readonly KeyValueCollection<string, ResourceUrlInfo> fileUrlDic = new KeyValueCollection<string, ResourceUrlInfo>();
 
-        public static ResourceUrlInfo GetResourceUrlInfo(Uri url)
+        public static ResourceUrlInfo GetResourceUrlInfo(TimHost host, Uri url)
         {
             var path = url.LocalPath;
             string filePath = path.Trim().ToLower();
@@ -34,7 +34,7 @@ namespace oyster.web.manage
                     var themeName = filePath.Substring(themeStart.Length, ct);
                     if (!string.IsNullOrWhiteSpace(themeName))
                     {
-                        theme = TimHost.Instance.GetTheme(themeName);
+                        theme = host.GetTheme(themeName);
                         if (theme != null && !string.IsNullOrWhiteSpace(theme.ThemeRelactivePath))
                         {
                             string fpath = Path.Combine(ResourceUrlStart, filePath.Substring(ct + 1));
@@ -98,9 +98,9 @@ namespace oyster.web.manage
             return urlInfo;
         }
 
-        public static string GetResourceUrl(string path)
+        public static string GetResourceUrl(TimHost host, string path)
         {
-            var urlInfo = GetResourceUrlInfo(new Uri(path));
+            var urlInfo = GetResourceUrlInfo(host, new Uri(path));
             return urlInfo == null ? NoFoundFileUrl : urlInfo.Url;
         }
 

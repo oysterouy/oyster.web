@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace oyster.web
 {
@@ -33,7 +34,10 @@ namespace oyster.web
 
                 if (!_instances.ContainsKey(key))
                 {
-                    t = Activator.CreateInstance(tname, paramsobj);
+                    t = Activator.CreateInstance(tname,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance
+                        | BindingFlags.Static | BindingFlags.Default,
+                        null, paramsobj, null);
                     if (!_instances.ContainsKey(key))
                         _instances.Add(key, t);
                 }

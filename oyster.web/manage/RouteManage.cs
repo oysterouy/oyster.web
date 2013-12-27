@@ -15,7 +15,7 @@ namespace oyster.web.manage
         }
         public static TimRoute Create(TimTheme theme, TimRoute baseRoute)
         {
-            var r = Activator.CreateInstance(routeType, theme, baseRoute) as TimRoute;
+            var r = InstanceHelper.GetInstance(routeType, theme, baseRoute) as TimRoute;
             if (r == null)
                 throw new Exception(string.Format("Can not Create TimRoute with route type of {0}!", routeType.FullName));
             return r;

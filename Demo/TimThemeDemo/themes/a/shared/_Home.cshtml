@@ -1,0 +1,30 @@
+﻿@using oyster.web;
+@TimSetting.Init((request) =>
+{
+    return new object[0];
+})
+@TimSetting.Request((response) =>
+{
+
+})
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Model.Head.Title</title>
+    <script language="javascript" type="text/javascript" src="@Src("/resource/jquery/jquery-1.10.2.min.js")"></script>
+    @section Head{
+        <!-- empty layout head!-->
+    }
+</head>
+<body>
+    <div>
+        @section Body{
+            <!-- empty layout body!-->
+        }
+    </div>
+    @section Script{
+        <!-- empty layout script!-->
+    }
+</body>
+</html>

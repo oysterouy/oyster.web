@@ -57,9 +57,18 @@ namespace oyster.web.host
             return true;
         }
 
-        protected virtual TimHost GetHost(System.Web.HttpContext context)
+        internal virtual TimHost GetHost(System.Web.HttpContext context)
         {
-            return TimHost.Instance;
+            if (getHostFunc == null)
+                throw new Exception("You must implement TimEngine.GetHost virtual method or Invoke TimEngine.SetHostFunc!");
+            return getHostFunc(context);
+        }
+
+        Func<HttpContext, TimHost> getHostFunc = null;
+        public TimEngine SetHostFunc(Func<HttpContext, TimHost> func)
+        {
+            getHostFunc = func;
+            return this;
         }
         Request CreateRequest(HttpRequest request)
         {

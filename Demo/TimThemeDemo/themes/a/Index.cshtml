@@ -1,7 +1,7 @@
 ﻿@using oyster.web;
 @TimSetting.Init((request) =>
 {
-
+    Layout<timthemedemo.themes.a.shared._Home>();
     return new object[0];
 })
 @TimSetting.Request((response) =>
@@ -10,5 +10,11 @@
 })
 <div>
     <h1>
-        aaaaaaa</h1>
+        Demo Index</h1>
+    <div>
+        <img src="@Src("/resource/img/demo.gif")" alt="" />
+    </div>
 </div>
+@section Script{
+    <script language="javascript" type="text/javascript" src="@Src("/resource/js/home.js")"></script>
+}

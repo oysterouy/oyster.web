@@ -19,8 +19,21 @@ namespace timthemedemo.themes.a
             Echo(html, @"
 <div>
     <h1>
-        aaaaaaa</h1>
+        Demo Index</h1>
+    <div>
+        <img src=""");
+            Echo(html, Src("/resource/img/demo.gif"));
+            Echo(html, @""" alt="""" />
+    </div>
 </div>
+");
+            invorker.Invoke(typeof(Index),"Script");});
+templateSections.Add("Script",(html,response,invorker)=>{
+    dynamic Model=response.Model;
+
+            Echo(html, @"<script language=""javascript"" type=""text/javascript"" src=""");
+            Echo(html, Src("/resource/js/home.js"));
+            Echo(html, @"""></script>
 ");});
 
         }
@@ -30,7 +43,7 @@ namespace timthemedemo.themes.a
         {
             
             
-
+    Layout<timthemedemo.themes.a.shared._Home>();
     return new object[0];
 
         }

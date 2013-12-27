@@ -118,13 +118,13 @@ namespace oyster.web.manage
         public virtual string Url<T>(string pathStart, object[] args)
             where T : TimTemplate
         {
-            var theme = TimProcessContext.GetProcess();
+            var process = TimProcessContext.GetProcess();
             string k = GetTemplateTypeKey(typeof(T), args == null ? 0 : args.Length);
 
             KeyValueCollection<string, List<RouteInfo>> urlRouteDic = null;
             List<RouteInfo> rls = null;
             if (
-                !urlTemplateRoutes.TryGetValue(theme.Theme, out urlRouteDic) ||
+                !urlTemplateRoutes.TryGetValue(process.Theme, out urlRouteDic) ||
                 !urlRouteDic.TryGetValue(k, out rls) ||
                 rls.Count < 1)
             {
@@ -151,12 +151,14 @@ namespace oyster.web.manage
 
         public virtual string Src(string fileName)
         {
-            return StaticResourceManager.GetResourceUrl(fileName);
+            var process = TimProcessContext.GetProcess();
+            return StaticResourceManager.GetResourceUrl(process.Host, fileName);
         }
 
         public virtual ResourceUrlInfo GetSrcUrlInfo(Uri url)
         {
-            return StaticResourceManager.GetResourceUrlInfo(url);
+            var process = TimProcessContext.GetProcess();
+            return StaticResourceManager.GetResourceUrlInfo(process.Host, url);
         }
     }
 }

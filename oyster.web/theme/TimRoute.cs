@@ -137,7 +137,8 @@ namespace oyster.web
 
         public virtual string Src(string fileName)
         {
-            return StaticResourceManager.GetResourceUrl(fileName);
+            var process = TimProcessContext.GetProcess();
+            return StaticResourceManager.GetResourceUrl(process.Host, fileName);
         }
     }
 }
