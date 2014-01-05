@@ -13,7 +13,7 @@ namespace timthemedemo.themes.a.shared
     {
         static _Home()
         {
-            templateSections.Add("Page",(html,response,invorker)=>{
+            TemplateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"
@@ -43,19 +43,19 @@ namespace timthemedemo.themes.a.shared
 </body>
 </html>
 ");});
-templateSections.Add("Head",(html,response,invorker)=>{
+TemplateSections.Add("Head",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"
         <!-- empty layout head!-->
    ");});
-templateSections.Add("Body",(html,response,invorker)=>{
+TemplateSections.Add("Body",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"
             <!-- empty layout body!-->
        ");});
-templateSections.Add("Script",(html,response,invorker)=>{
+TemplateSections.Add("Script",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"

@@ -35,9 +35,9 @@ namespace oyster.web
                 if (!_instances.ContainsKey(key))
                 {
                     t = Activator.CreateInstance(tname,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance
-                        | BindingFlags.Static | BindingFlags.Default,
+                       BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default,
                         null, paramsobj, null);
+
                     if (!_instances.ContainsKey(key))
                         _instances.Add(key, t);
                 }

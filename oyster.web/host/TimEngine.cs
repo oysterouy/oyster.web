@@ -26,23 +26,38 @@ namespace oyster.web.host
 
         public void ProcessRequest(HttpContext context)
         {
-            if (ProcessStaticResourceRequest(context))
+            var host = GetHost(context);
+            if (ProcessStaticResourceRequest(host, context))
                 return;
 
-            var host = GetHost(context);
             var request = CreateRequest(context.Request);
             var response = host.Execute(request);
 
-            //todo:output response
+            context.Response.StatusCode = response.StatusCode;
+            if (!string.IsNullOrWhiteSpace(response.RedirectLocation))
+                context.Response.RedirectLocation = response.RedirectLocation;
+
+            for (int i = 0; i < response.Headers.Count; i++)
+            {
+                var hd = response.Headers[i];
+                context.Response.AppendHeader(hd.Key, hd.Value);
+            }
+            for (int i = 0; i < response.Cookies.Count; i++)
+            {
+                var ck = response.Cookies[i];
+                context.Response.AppendCookie(ck);
+            }
+            context.Response.Write(response.Body);
+            context.Response.Flush();
         }
 
-        protected virtual bool ProcessStaticResourceRequest(HttpContext context)
+        protected virtual bool ProcessStaticResourceRequest(TimHost host, HttpContext context)
         {
             string path = context.Request.Path.Trim().ToLower();
             if (!path.StartsWith(StaticResourceManager.ResourceUrlStart))
                 return false;
 
-            var urlInfo = RouteManager.Instance.GetSrcUrlInfo(context.Request.Url);
+            var urlInfo = StaticResourceManager.GetResourceUrlInfo(host, context.Request.Url);
             if (urlInfo == null)
                 return false;
 
@@ -73,14 +88,14 @@ namespace oyster.web.host
         Request CreateRequest(HttpRequest request)
         {
             var timRequest = new Request();
-
-
             InitRequest(request, timRequest);
             return timRequest;
         }
 
         protected virtual void InitRequest(HttpRequest request, Request timRequest)
         {
+            timRequest.RequestUrl = request.Url;
+            timRequest.RequestUrlReferrer = request.UrlReferrer;
         }
     }
 }

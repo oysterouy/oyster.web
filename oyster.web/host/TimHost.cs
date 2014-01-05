@@ -5,9 +5,9 @@ namespace oyster.web.host
     {
         public virtual Response Execute(Request request)
         {
-            var process = new TimProcess(this, request);
-            process.Process();
-            return process.Response;
+            var process = new TimProcess(this, request, true);
+            var response = process.Process().OutputResponse;
+            return response;
         }
 
         public abstract TimTheme GetTheme(Request request);

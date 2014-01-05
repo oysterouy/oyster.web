@@ -13,7 +13,7 @@ namespace timthemedemo.themes.a
     {
         static Index()
         {
-            templateSections.Add("Page",(html,response,invorker)=>{
+            TemplateSections.Add("Page",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"
@@ -28,7 +28,7 @@ namespace timthemedemo.themes.a
 </div>
 ");
             invorker.Invoke(typeof(Index),"Script");});
-templateSections.Add("Script",(html,response,invorker)=>{
+TemplateSections.Add("Script",(html,response,invorker)=>{
     dynamic Model=response.Model;
 
             Echo(html, @"<script language=""javascript"" type=""text/javascript"" src=""");
@@ -44,6 +44,7 @@ templateSections.Add("Script",(html,response,invorker)=>{
             
             
     Layout<timthemedemo.themes.a.shared._Home>();
+
     return new object[0];
 
         }
@@ -59,6 +60,17 @@ templateSections.Add("Script",(html,response,invorker)=>{
         {
             return new object[] { };
         }
+        public void RequestInternal(string u ,  Response response)
+        {
+            
+
+
+        }
+
+        public static object[] Parameters(string p0)
+        {
+            return new object[] {p0 };
+        }
         public override void Request(TimProcess timProcess)
         {
             var response = timProcess.Response;
@@ -67,7 +79,9 @@ templateSections.Add("Script",(html,response,invorker)=>{
                 throw new Exception("Paramters no set!");
             
             if(parms.Length==0)
-                RequestInternal(response);        
+                RequestInternal(response);
+            if(parms.Length==1)
+                RequestInternal((string)parms[0],response);        
         }
     }
 }

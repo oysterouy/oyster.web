@@ -15,24 +15,32 @@ namespace oyster.web
         internal TimProcess Process { get; set; }
 
         internal ManualResetEvent waitHandle { get; set; }
-        internal string Render()
+
+        internal bool Wait()
+        {
+            var loadingTimeout = Process.LoadingTimeout;
+
+            if (loadingTimeout > 0)
+                return waitHandle.WaitOne(loadingTimeout);
+            else
+                return waitHandle.WaitOne();
+        }
+        internal TimBlock Render()
         {
             if (waitHandle != null)
             {
-                if (waitHandle.WaitOne(Process.Theme.LoadingTimeout))
+                if (!Wait())
                 {
-                    return Process.Response.BodyString == null ? "" : Process.Response.BodyString.ToString();
+                    Process.Response.Body.Append("<block id=\"This Block Md5\" class=\"block-rendering\">加载中...</block>");
                 }
-                else
-                {
-                    return string.Format("<block id=\"This Block Md5\" class=\"block-rendering\">加载中...</block>");
-                }
+                Process.ProcessRender();
+                return this;
             }
             throw new Exception(string.Format("Block:{0},CallID:{1} Had not Invoke yet.", Template.GetType().FullName,
                 CallID));
         }
 
-        internal void Invoke()
+        internal TimBlock Invoke()
         {
             waitHandle = new ManualResetEvent(false);
             ThreadPool.QueueUserWorkItem(new WaitCallback((p) =>
@@ -52,6 +60,7 @@ namespace oyster.web
                     block.waitHandle.Set();
                 }
             }), this);
+            return this;
         }
     }
 }

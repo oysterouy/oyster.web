@@ -79,7 +79,7 @@ namespace oyster.web.codegenerator
                     var m = regRouteUrl.Match(code);
                     if (m.Success && m.Groups.Count > 2)
                     {
-                        routeUrlCodeList.Add(string.Format("<" + ClassName + ",{0}>({1})", m.Groups[1].Value, m.Groups[2].Value));
+                        routeUrlCodeList.Add(string.Format("<{0}>({1})", m.Groups[1].Value, m.Groups[2].Value));
                     }
                 }
                 else if (code.Contains("TimSetting.Filter"))
@@ -115,11 +115,11 @@ namespace oyster.web.codegenerator
             StringBuilder addcodeRoute = new StringBuilder();
             foreach (var f in routeUrlCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Instance.Route{0};\r\n", f);
+                addcodeRoute.AppendFormat("            Route.Add{0};\r\n", f);
             }
             foreach (var f in routeCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Instance.Route<" + ClassName + ">({0});\r\n", f);
+                addcodeRoute.AppendFormat("            Route.Add({0});\r\n", f);
             }
 
             StringBuilder addcodeFilter = new StringBuilder();
@@ -141,22 +141,22 @@ namespace " + NameSpace + @"
 " + codeUsing + @"
     public class " + ClassName + @" : TimTheme
     {
+" + codeFields.ToString() +
+@"
         public " + ClassName + @"()
         {
-            " + (string.IsNullOrWhiteSpace(baseThemeType) ? "" : "SetBase(new " + baseThemeType + "());") + @"            
+            " + (string.IsNullOrWhiteSpace(baseThemeType) ? "" : "SetBase(new " + baseThemeType + "());") + @"             
         }
 
-" + codeFields.ToString() +
-  @"
-        static " + ClassName + @"()
-        {
+        public override void Init(){
+            if(HadInit)
+                return;
             //******** route setting *********//
- " + addcodeRoute + @"
-
+" + addcodeRoute + @"
             //******** filter setting *********//
- " + addcodeFilter + @"
+" + addcodeFilter + @"
+            HadInit = true;
         }
-
         public override string ThemeName{get{ return _themeName;}}
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
         public override string ThemeRelactivePath{get{ return _themeRelactivePath;}}

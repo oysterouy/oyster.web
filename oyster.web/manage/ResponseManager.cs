@@ -25,7 +25,8 @@ namespace oyster.web.manage
         {
             return new Response
             {
-                //Head = new ResponseHead { StatusCode = code }, Body = new StringBuilder("Page No Found!")
+                StatusCode = code,
+                Body = new StringBuilder("Page No Found!")
             };
         }
     }

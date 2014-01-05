@@ -60,7 +60,6 @@
     <Compile Include="host\TimEngine.cs" />
     <Compile Include="host\TimHost.cs" />
     <Compile Include="manage\ResponseManager.cs" />
-    <Compile Include="manage\RouteManager.cs" />
     <Compile Include="process\TimProcess.cs" />
     <Compile Include="process\TimProcessContext.cs" />
     <Compile Include="theme\TimTemplateBase.cs" />

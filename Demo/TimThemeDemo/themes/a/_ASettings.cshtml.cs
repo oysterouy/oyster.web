@@ -12,31 +12,31 @@ namespace timthemedemo.themes.a
 
     public class _ASettings : TimTheme
     {
+        public static readonly int _loadingTimeout = 0;
+        public static readonly string _themeName = "AAAA";
+        public static readonly string _themeRelactivePath = "/themes/a";
+
         public _ASettings()
         {
-                        
+                         
         }
 
-        public static readonly int _loadingTimeout = 200;
-        public static readonly string _themeName = "AAAA";
-        public static readonly string _themeRelactivePath = "/templates/defaulttheme";
-
-        static _ASettings()
-        {
+        public override void Init(){
+            if(HadInit)
+                return;
             //******** route setting *********//
-             RouteManager.Instance.Route<_ASettings,timthemedemo.themes.a.Index>("/", "/");
-            RouteManager.Instance.Route<_ASettings,timthemedemo.themes.a.Index>("/index", "/index/{0}-_-{1}/", "name", "age");
-            RouteManager.Instance.Route<_ASettings,timthemedemo.themes.a.Index>("/idx", "/idx/{0}", "n");
-            RouteManager.Instance.Route<_ASettings>((request) =>
+            Route.Add<timthemedemo.themes.a.Index>("/", "/");
+            Route.Add<timthemedemo.themes.a.Index>("/index", "/index/{0}-_-{1}/", "name", "age");
+            Route.Add<timthemedemo.themes.a.Index>("/idx", "/idx/{0}", "n");
+            Route.Add((request) =>
 {
     return timthemedemo.themes.a.Index.Instance;
 });
 
-
             //******** filter setting *********//
- 
-        }
 
+            HadInit = true;
+        }
         public override string ThemeName{get{ return _themeName;}}
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
         public override string ThemeRelactivePath{get{ return _themeRelactivePath;}}

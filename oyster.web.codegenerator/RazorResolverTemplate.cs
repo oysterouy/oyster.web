@@ -206,7 +206,7 @@ namespace oyster.web.codegenerator
 
             StringBuilder codeSection = new StringBuilder();
 
-            codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
+            codeSection.AppendFormat("TemplateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
                     @"{
     dynamic Model=response.Model;
 " + codeBodyText + "}");
@@ -245,7 +245,7 @@ namespace oyster.web.codegenerator
                         secFunc.AppendFormat("\r\n            Echo(html, @\"{0}\");", code.Replace("\"", "\"\""));
                     }
                 }
-                codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", kv.Key,
+                codeSection.AppendFormat("TemplateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", kv.Key,
                     @"{
     dynamic Model=response.Model;
 " + secFunc.ToString() + "}");

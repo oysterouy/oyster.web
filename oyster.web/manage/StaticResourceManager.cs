@@ -30,14 +30,14 @@ namespace oyster.web.manage
                 string themeStart = Path.Combine(ResourceUrlStart, "theme-").ToLower();
                 if (filePath.StartsWith(themeStart))
                 {
-                    var ct = filePath.IndexOf(Path.DirectorySeparatorChar, themeStart.Length) - themeStart.Length;
+                    var ct = filePath.IndexOf('/', themeStart.Length) - themeStart.Length;
                     var themeName = filePath.Substring(themeStart.Length, ct);
                     if (!string.IsNullOrWhiteSpace(themeName))
                     {
                         theme = host.GetTheme(themeName);
                         if (theme != null && !string.IsNullOrWhiteSpace(theme.ThemeRelactivePath))
                         {
-                            string fpath = Path.Combine(ResourceUrlStart, filePath.Substring(ct + 1));
+                            string fpath = Path.Combine(ResourceUrlStart, filePath.Substring(ct + themeStart.Length + 1));
                             var realfilePath = GetFileInfo(fpath, theme.ThemeRelactivePath);
                             if (!string.IsNullOrWhiteSpace(realfilePath))
                             {
@@ -46,8 +46,10 @@ namespace oyster.web.manage
                                     Path = filePath,
                                     RealPath = realfilePath,
                                 }.FreshETag();
-                                realFileDic.Add(realfilePath, filePath);
-                                fileUrlDic.Add(filePath, urlInfo);
+                                if (!realFileDic.ContainsKey(realfilePath))
+                                    realFileDic.Add(realfilePath, filePath);
+                                if (!fileUrlDic.ContainsKey(filePath))
+                                    fileUrlDic.Add(filePath, urlInfo);
                             }
                         }
                     }
@@ -67,11 +69,13 @@ namespace oyster.web.manage
                         {
                             urlInfo = new ResourceUrlInfo
                             {
-                                Path = Path.Combine(ResourceUrlStart, "theme-" + theme.ThemeName, filePath.Substring(ResourceUrlStart.Length)).ToLower(),
+                                Path = string.Format("{0}{1}/{2}", ResourceUrlStart, "theme-" + theme.ThemeName, filePath.Substring(ResourceUrlStart.Length)).ToLower(),
                                 RealPath = realfilePath,
                             }.FreshETag();
-                            realFileDic.Add(realfilePath, filePath);
-                            fileUrlDic.Add(filePath, urlInfo);
+                            if (!realFileDic.ContainsKey(realfilePath))
+                                realFileDic.Add(realfilePath, filePath);
+                            if (!fileUrlDic.ContainsKey(filePath))
+                                fileUrlDic.Add(filePath, urlInfo);
                         }
                     }
                 }
@@ -85,9 +89,10 @@ namespace oyster.web.manage
                             Path = filePath,
                             RealPath = realfilePath,
                         }.FreshETag();
-
-                        realFileDic.Add(realfilePath, filePath);
-                        fileUrlDic.Add(filePath, urlInfo);
+                        if (!realFileDic.ContainsKey(realfilePath))
+                            realFileDic.Add(realfilePath, filePath);
+                        if (!fileUrlDic.ContainsKey(filePath))
+                            fileUrlDic.Add(filePath, urlInfo);
                     }
                 }
             }
@@ -100,7 +105,13 @@ namespace oyster.web.manage
 
         public static string GetResourceUrl(TimHost host, string path)
         {
-            var urlInfo = GetResourceUrlInfo(host, new Uri(path));
+            if (string.IsNullOrWhiteSpace(path))
+                return NoFoundFileUrl;
+            var url = path;
+            if (!url.StartsWith("http"))
+                url = string.Format("http://tim-nohost{0}", url);
+
+            var urlInfo = GetResourceUrlInfo(host, new Uri(url));
             return urlInfo == null ? NoFoundFileUrl : urlInfo.Url;
         }
 
@@ -110,6 +121,7 @@ namespace oyster.web.manage
                 return null;
 
             string realFullFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                searchDir.StartsWith("/") ? searchDir.Substring(1) : searchDir,
                 filePath.StartsWith("/") ? filePath.Substring(1) : filePath);
             if (File.Exists(realFullFilePath))
             {

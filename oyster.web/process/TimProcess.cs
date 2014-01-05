@@ -12,36 +12,89 @@ namespace oyster.web
             Request = request;
             Response = new Response();
             BlockTemplates = new KeyValueCollection<string, TimBlock>();
-        }
-        public TimHost Host { get; protected set; }
-        public TimTheme Theme { get; protected set; }
-        public Request Request { get; protected set; }
-        public Response Response { get; protected set; }
-        public TimTemplate Template { get; protected set; }
 
-        public TimProcess Layout { get; protected set; }
-
-        internal KeyValueCollection<string, TimBlock> BlockTemplates { get; set; }
-
-        public bool IsError { get { return ErrorResponse != null; } }
-        public Response ErrorResponse { get; set; }
-
-        public void Process()
-        {
             TimProcessContext.SetProcess(this);
             Theme = Host.GetTheme(Request);
             if (Theme == null)
                 throw new Exception("No Theme Match This Request!");
             if (!Theme.BeforeRouteFilter(this))
                 return;
+            Theme.Init();
+        }
+        internal TimProcess(TimHost host, Request request, bool isMain)
+            : this(host, request)
+        {
+            IsMainProcess = isMain;
+        }
+        public TimHost Host { get; protected set; }
+        public TimTheme Theme { get; protected set; }
+        public Request Request { get; protected set; }
+        public Response Response { get; protected set; }
+        public TimTemplate Template { get; protected set; }
+        public TimProcess Layout { get; protected set; }
+
+        internal KeyValueCollection<string, TimBlock> BlockTemplates { get; set; }
+        TimBlock MainBlock { get; set; }
+        internal void InitMainBlock()
+        {
+            MainBlock = new TimBlock
+                {
+                    CallID = Guid.NewGuid().ToString(),
+                    Template = Template,
+                    Parameters = Response.Paramters,
+                    Process = this,
+                };
+        }
+        internal void InvokeMainBlock()
+        {
+            MainBlock.Invoke();
+        }
+
+        bool IsMainProcess { get; set; }
+        internal bool IsMainLayoutProcess { get { return IsMainProcess && Layout == null; } }
+        internal int LoadingTimeout
+        {
+            get
+            {
+                if (IsMainLayoutProcess || Request.LoadingTimeout < 0 || Theme.LoadingTimeout < 0)
+                    return 0;
+
+                if (Request.LoadingTimeout > 0)
+                    return Request.LoadingTimeout;
+
+                else if (Theme.LoadingTimeout > 0)
+                    return Theme.LoadingTimeout;
+
+                return 500;
+            }
+        }
+
+        public bool IsError { get { return ErrorResponse != null; } }
+        public Response ErrorResponse { get; set; }
+
+        public TimProcess Process()
+        {
             Template = Theme.Route.Match(Request);
             if (Template == null)
             {
                 Response = ResponseManager.Instance.GetResponseByStatusCode(404);
-                return;
+                return this;
             }
             Template.Init(this);
-            ProcessRequest();
+
+            MainBlock.Invoke().Render();
+
+            return this;
+        }
+
+        public Response OutputResponse
+        {
+            get
+            {
+                if (Layout != null)
+                    return Layout.OutputResponse;
+                return Response;
+            }
         }
 
         internal void ProcessRequest()
@@ -49,7 +102,14 @@ namespace oyster.web
             TimProcessContext.SetProcess(this);
             if (!Theme.BeforeRequestFilter(this))
                 return;
+            if (Layout != null)
+                Layout.InvokeMainBlock();
             Template.Request(this);
+        }
+
+        internal void ProcessRender()
+        {
+            TimProcessContext.SetProcess(this);
             if (!Theme.BeforeRenderFilter(this))
                 return;
             Template.Render(this);
@@ -59,10 +119,10 @@ namespace oyster.web
 
         internal bool SetLayout(TimTemplate layout, params object[] args)
         {
-            Layout = new TimProcess(Host, Request);
+            Layout = new TimProcess(Host, Request, IsMainProcess);
             Layout.Template = layout;
             layout.Init(Layout, args);
-            return !IsError;
+            return !Layout.IsError;
         }
         internal string BlockRender(TimTemplate block, string callID)
         {
