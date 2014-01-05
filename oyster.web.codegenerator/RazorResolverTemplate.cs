@@ -26,11 +26,11 @@ namespace oyster.web.codegenerator
         string NameSpace { get; set; }
         string ClassName { get; set; }
 
-        Regex regBlock = new Regex("TemplateHelper\\.Block\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
+        Regex regBlock = new Regex("TimSetting\\.Block\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\s*\\)", RegexOptions.Singleline);
 
-        Regex regRequest = new Regex("TemplateHelper\\.Init\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
+        Regex regRequest = new Regex("TimSetting\\.Init\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
-        Regex regLoad = new Regex("TemplateHelper\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
+        Regex regLoad = new Regex("TimSetting\\.Request\\(\\(([^\\)]+)\\)\\s*=>\\s*\\{(.*)\\}\\s*\\)", RegexOptions.Singleline);
 
         public string DoResolve()
         {
@@ -42,7 +42,7 @@ namespace oyster.web.codegenerator
             foreach (var codeIdx in keyLs)
             {
                 string code = r.OutCodeList[codeIdx];
-                if (code.Contains("TemplateHelper.Init("))
+                if (code.Contains("TimSetting.Init("))
                 {
                     var m = regRequest.Match(code);
                     if (m.Success && m.Groups.Count > 1)
@@ -75,7 +75,7 @@ namespace oyster.web.codegenerator
                         r.OutCodeList[codeIdx] = null;
                     }
                 }
-                else if (code.Contains("TemplateHelper.Request("))
+                else if (code.Contains("TimSetting.Request("))
                 {
                     var m = regLoad.Match(code);
                     if (m.Success && m.Groups.Count > 1)
@@ -83,10 +83,10 @@ namespace oyster.web.codegenerator
                         string[] ps = m.Groups[1].Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         if (ps.Length < 1)
                         {
-                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Request(request,response) 参数设置不正确!");
+                            Console.WriteLine(_fileFullPath + ": error :TimSetting.Request(request,response) 参数设置不正确!");
                             Environment.Exit(1);
                         }
-                        //TemplateHelper.Request((response)=>{})
+                        //TimSetting.Request((response)=>{})
                         //兼容不带类型的方式
                         if (ps.Length == 1 && ps[0].Trim().IndexOf(' ') < 0)
                         {
@@ -148,7 +148,7 @@ namespace oyster.web.codegenerator
                     }
                     r.OutCodeList[codeIdx] = null;
                 }
-                else if (code.Contains("TemplateHelper.Block("))
+                else if (code.Contains("TimSetting.Block("))
                 {
                     blockInvorks += BlockResolve(r, code, codeIdx);
                     /*
@@ -158,13 +158,13 @@ namespace oyster.web.codegenerator
                         string[] parms = m.Groups[1].Value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         if (parms.Length != 4)
                         {
-                            Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
+                            Console.WriteLine(_fileFullPath + ": error :TimSetting.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
                             Environment.Exit(1);
                         }
                         string template = parms[0];
                         string id = parms[3];
                         bool sync = m.Groups[2].Value.Contains("false");
-                        r.OutCodeList[codeIdx] = string.Format("response.BlockRander<{0}>({1},{2})", template, id, sync ? "true" : "false");
+                        r.OutCodeList[codeIdx] = string.Format("response.BlockRender<{0}>({1},{2})", template, id, sync ? "true" : "false");
                         blockInvorks += string.Format("__initParamName__.BlockRegister<{0}>({1});\r\n", template, id);
                     }
                     else
@@ -206,7 +206,7 @@ namespace oyster.web.codegenerator
 
             StringBuilder codeSection = new StringBuilder();
 
-            codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
+            codeSection.AppendFormat("TemplateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", "Page",
                     @"{
     dynamic Model=response.Model;
 " + codeBodyText + "}");
@@ -229,7 +229,7 @@ namespace oyster.web.codegenerator
                         if (string.IsNullOrEmpty(code))
                             continue;
 
-                        if (code.Contains("TemplateHelper.Block("))
+                        if (code.Contains("TimSetting.Block("))
                         {
                             blockInvorks += BlockResolve(secR, code, i);
                             secR.OutCodeList.TryGetValue(i, out code);
@@ -245,7 +245,7 @@ namespace oyster.web.codegenerator
                         secFunc.AppendFormat("\r\n            Echo(html, @\"{0}\");", code.Replace("\"", "\"\""));
                     }
                 }
-                codeSection.AppendFormat("templateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", kv.Key,
+                codeSection.AppendFormat("TemplateSections.Add(\"{0}\",(html,response,invorker)=>{1});\r\n", kv.Key,
                     @"{
     dynamic Model=response.Model;
 " + secFunc.ToString() + "}");
@@ -253,7 +253,6 @@ namespace oyster.web.codegenerator
             }
 
             string codeUsing = "";
-            r.UsingNames.Add("oyster.web.define");
             r.UsingNames.Sort();
             foreach (string s in r.UsingNames)
             {
@@ -262,7 +261,7 @@ namespace oyster.web.codegenerator
             blockInvorks = blockInvorks.Replace("__initParamName__", initParamName);
             if (string.IsNullOrEmpty(initMethod))
             {
-                Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Init((request)=>{...}) 方法未设置!");
+                Console.WriteLine(_fileFullPath + ": error :TimSetting.Init((request)=>{...}) 方法未设置!");
                 Environment.Exit(1);
             }
             initMethod = initMethod.Replace("/*inputblocks*/", blockInvorks);
@@ -271,7 +270,7 @@ namespace " + NameSpace + @"
 {
     using oyster.web;
 " + codeUsing + @"
-    public class " + ClassName + @" : TemplateBase<" + ClassName + @">
+    public class " + ClassName + @" : TimTemplate<" + ClassName + @">
     {
         static " + ClassName + @"()
         {
@@ -280,9 +279,10 @@ namespace " + NameSpace + @"
 
         " + initMethod + @"
         " + requestMethod + @"
-        public override void Request(Request request,Response response)
+        public override void Request(TimProcess timProcess)
         {
-            object[] parms=request.Body.Paramters;
+            var response = timProcess.Response;
+            object[] parms = response.Paramters;
             if(parms==null)
                 throw new Exception(""Paramters no set!"");
             " + requestMethodImp + @"        
@@ -309,13 +309,13 @@ namespace " + NameSpace + @"
                 string[] parms = m.Groups[1].Value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parms.Length != 4)
                 {
-                    Console.WriteLine(_fileFullPath + ": error :TemplateHelper.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
+                    Console.WriteLine(_fileFullPath + ": error :TimSetting.Block((T template,string \"callId\")=>true) 参数设置不正确,必须使用明确类型的参数方式!");
                     Environment.Exit(1);
                 }
                 string template = parms[0];
                 string id = parms[3];
                 bool sync = m.Groups[2].Value.Contains("false");
-                r.OutCodeList[codeIdx] = string.Format("response.BlockRander<{0}>({1},{2})", template, id, sync ? "true" : "false");
+                r.OutCodeList[codeIdx] = string.Format("response.BlockRender<{0}>({1},{2})", template, id, sync ? "true" : "false");
                 blockInvork = string.Format("__initParamName__.BlockRegister<{0}>({1});\r\n", template, id);
             }
             else

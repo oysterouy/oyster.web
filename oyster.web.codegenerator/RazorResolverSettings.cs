@@ -28,17 +28,20 @@ namespace oyster.web.codegenerator
 
         public string DoResolve()
         {
-            Regex regField = new Regex("TemplateHelper\\.Config\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\)", RegexOptions.Singleline);
+            Regex regField = new Regex("TimSetting\\.Config\\(\\(([^\\)]+)\\)\\s*=>\\s*(.*)\\)", RegexOptions.Singleline);
 
-            Regex regRoute = new Regex("TemplateHelper\\.Route(?'open'\\()((?'open'\\()+[^\\(\\)]*(?'-open'\\))[^\\(\\)]*)+(?(open)\\)|(?!))", RegexOptions.Singleline);
+            Regex regRoute = new Regex("TimSetting\\.Route(?'open'\\()((?'open'\\()+[^\\(\\)]*(?'-open'\\))[^\\(\\)]*)+(?(open)\\)|(?!))", RegexOptions.Singleline);
 
-            Regex regRouteUrl = new Regex("TemplateHelper\\.Route[^<]*<([^>]+)>[^\\(]*\\(([^\\)]+)\\)", RegexOptions.Singleline);
+            Regex regbaseTheme = new Regex("TimSetting\\.BaseTheme[^<]*<([^>]+)>", RegexOptions.Singleline);
+
+            Regex regRouteUrl = new Regex("TimSetting\\.Route[^<]*<([^>]+)>[^\\(]*\\(([^\\)]+)\\)", RegexOptions.Singleline);
 
 
-            Regex regFilter = new Regex("TemplateHelper\\.Filter([^\\(]+)\\s*\\((.*)\\)", RegexOptions.Singleline);
+            Regex regFilter = new Regex("TimSetting\\.Filter([^\\(]+)\\s*\\((.*)\\)", RegexOptions.Singleline);
 
             var r = new RazorResolver(_codeText);
 
+            string baseThemeType = "";
             List<string> fieldCodeList = new List<string>();
             List<string> routeCodeList = new List<string>();
             List<string> routeUrlCodeList = new List<string>();
@@ -47,7 +50,15 @@ namespace oyster.web.codegenerator
 
             foreach (var code in r.OutCodeList.Values)
             {
-                if (code.Contains("TemplateHelper.Config("))
+                if (code.Contains("TimSetting.BaseTheme"))
+                {
+                    var m = regbaseTheme.Match(code);
+                    if (m.Success && m.Groups.Count > 1)
+                    {
+                        baseThemeType = m.Groups[1].Value;
+                    }
+                }
+                else if (code.Contains("TimSetting.Config("))
                 {
                     var m = regField.Match(code);
                     if (m.Success && m.Groups.Count > 2)
@@ -55,7 +66,7 @@ namespace oyster.web.codegenerator
                         fieldCodeList.Add(string.Format("public static readonly {0} = {1};", m.Groups[1].Value, m.Groups[2].Value));
                     }
                 }
-                else if (code.Contains("TemplateHelper.Route("))
+                else if (code.Contains("TimSetting.Route("))
                 {
                     var m = regRoute.Match(code);
                     if (m.Success && m.Groups.Count > 1)
@@ -63,15 +74,15 @@ namespace oyster.web.codegenerator
                         routeCodeList.Add(m.Groups[1].Value);
                     }
                 }
-                else if (code.Contains("TemplateHelper.Route<"))
+                else if (code.Contains("TimSetting.Route<"))
                 {
                     var m = regRouteUrl.Match(code);
                     if (m.Success && m.Groups.Count > 2)
                     {
-                        routeUrlCodeList.Add(string.Format("<{0}>(This,{1})", m.Groups[1].Value, m.Groups[2].Value));
+                        routeUrlCodeList.Add(string.Format("<{0}>({1})", m.Groups[1].Value, m.Groups[2].Value));
                     }
                 }
-                else if (code.Contains("TemplateHelper.Filter"))
+                else if (code.Contains("TimSetting.Filter"))
                 {
                     var m = regFilter.Match(code);
                     if (m.Success && m.Groups.Count > 2)
@@ -104,11 +115,11 @@ namespace oyster.web.codegenerator
             StringBuilder addcodeRoute = new StringBuilder();
             foreach (var f in routeUrlCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Instance.Route{0};\r\n", f);
+                addcodeRoute.AppendFormat("            Route.Add{0};\r\n", f);
             }
             foreach (var f in routeCodeList)
             {
-                addcodeRoute.AppendFormat("            RouteManager.Instance.Route(This,{0});\r\n", f);
+                addcodeRoute.AppendFormat("            Route.Add({0});\r\n", f);
             }
 
             StringBuilder addcodeFilter = new StringBuilder();
@@ -126,72 +137,29 @@ namespace oyster.web.codegenerator
 namespace " + NameSpace + @"
 {
     using oyster.web;
-    using oyster.web.define;
+    using oyster.web.manage;
 " + codeUsing + @"
-    public class " + ClassName + @" : HostBase
+    public class " + ClassName + @" : TimTheme
     {
-        static HostBase This = InstanceHelper<" + ClassName + @">.Instance;
 " + codeFields.ToString() +
-  @"
-        static readonly List<Func<Request,bool>> filterBeforeRoute = new List<Func<Request,bool>>();
-
-        static readonly List<Func<Request,Response,bool>> filterBeforeRequest = new  List<Func<Request,Response,bool>>();
-
-        static readonly List<Func<Request,Response,bool>> filterBeforeRander = new  List<Func<Request,Response,bool>>();
-
-        static readonly List<Func<Request,Response,bool>> filterAfterRander = new List<Func<Request,Response,bool>>();
-
-        static " + ClassName + @"()
+@"
+        public " + ClassName + @"()
         {
+            " + (string.IsNullOrWhiteSpace(baseThemeType) ? "" : "SetBase(new " + baseThemeType + "());") + @"             
+        }
+
+        public override void Init(){
+            if(HadInit)
+                return;
             //******** route setting *********//
- " + addcodeRoute + @"
-
+" + addcodeRoute + @"
             //******** filter setting *********//
- " + addcodeFilter + @"
+" + addcodeFilter + @"
+            HadInit = true;
         }
-
+        public override string ThemeName{get{ return _themeName;}}
         public override int LoadingTimeout{get{ return _loadingTimeout;}}
-        public override string TemplateStaticResourceDir{get{ return _templateStaticResourceDir;}}
-       
-        public override  bool BeforeRouteFilter(Request request)
-        {
-            foreach (var filter in filterBeforeRoute)
-            {
-                if (!filter(request))
-                    return false;
-            }
-            return true;
-        }
-
-        public override  bool BeforeRequestFilter(Request request, Response response)
-        {
-            foreach (var filter in filterBeforeRequest)
-            {
-                if (!filter(request,response))
-                    return false;
-            }
-            return true;
-        }
-
-        public override  bool BeforeRanderFilter(Request request, Response response)
-        {
-            foreach (var filter in filterBeforeRander)
-            {
-                if (!filter(request, response))
-                    return false;
-            }
-            return true;
-        }
-
-        public override  bool AfterRanderFilter(Request request, Response response)
-        {
-            foreach (var filter in filterBeforeRander)
-            {
-                if (!filter(request, response))
-                    return false;
-            }
-            return true;
-        }
+        public override string ThemeRelactivePath{get{ return _themeRelactivePath;}}
     }
 }
 ";

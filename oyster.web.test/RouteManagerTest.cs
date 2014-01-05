@@ -1,8 +1,7 @@
-﻿using oyster.web.hosting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using oyster.web;
+﻿using System;
 using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using oyster.web.host;
 
 namespace oyster.web.test
 {
@@ -65,27 +64,11 @@ namespace oyster.web.test
         //
         #endregion
 
-        class TestHost : HostBase
+        class TestTheme : TimTheme
         {
-
-            public override bool BeforeRouteFilter(Request request)
+            public override string ThemeName
             {
-                throw new NotImplementedException();
-            }
-
-            public override bool BeforeRequestFilter(Request request, Response response)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool BeforeRanderFilter(Request request, Response response)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool AfterRanderFilter(Request request, Response response)
-            {
-                throw new NotImplementedException();
+                get { throw new NotImplementedException(); }
             }
 
             public override int LoadingTimeout
@@ -93,9 +76,14 @@ namespace oyster.web.test
                 get { throw new NotImplementedException(); }
             }
 
-            public override string TemplateStaticResourceDir
+            public override string ThemeRelactivePath
             {
                 get { throw new NotImplementedException(); }
+            }
+
+            public override void Init()
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -105,22 +93,23 @@ namespace oyster.web.test
         [TestMethod()]
         public void MatchTest()
         {
+            var theme = new TestTheme();
+
             Request request = new Request();
-            request.Head.Path = "/ttt/adds-123/5dadf.html";
-            RouteManager.Instance.Route<T1>(new TestHost(), "/ttt/", "/ttt/{0}-{1}/{2}.html", "n", "q", "s");
-            TemplateBase actual = RouteManager.Instance.Match(request);
+            request.RequestUrl = new Uri("http://xxxx/ttt/adds-123/5dadf.html");
+            theme.Route.Add<T1>("/ttt/", "/ttt/{0}-{1}/{2}.html", "n", "q", "s");
+            var actual = theme.Route.Match(request);
             Assert.AreNotEqual(actual, null);
         }
 
-        class T1 : TemplateBase<T1>
+        class T1 : TimTemplate<T1>
         {
-
             public override object[] Init(Request request)
             {
                 throw new NotImplementedException();
             }
 
-            public override void Request(Request request, Response response)
+            public override void Request(TimProcess timProcess)
             {
                 throw new NotImplementedException();
             }
@@ -148,6 +137,29 @@ namespace oyster.web.test
 
             var ms = regRoute.Matches(code);
             var msurl = regRouteUrl.Matches(code);
+        }
+        class TestHost : TimHost
+        {
+
+            public override TimTheme GetTheme(Request request)
+            {
+                return new TestTheme();
+            }
+
+            public override TimTheme GetTheme(string themeName)
+            {
+                return new TestTheme();
+            }
+        }
+
+        [TestMethod]
+        public void TestProcess()
+        {
+            var host = new TestHost();
+            host.Execute(new Request
+            {
+                RequestUrl = new Uri("")
+            });
         }
     }
 }
